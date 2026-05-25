@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+body {
+  background: linear-gradient(to bottom right, #f8fafc, #eff6ff, #faf5ff);
+  min-height: 100vh;
+}
+
+.card-hover {
+  transition: all 0.3s;
+}
+
+.card-hover:hover {
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  transform: translateY(-0.25rem);
+}
+
+.btn-primary {
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition: all 0.3s;
+  background: linear-gradient(to right, #0284c7, #0369a1);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  background: linear-gradient(to right, #0369a1, #075985);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #0369a1;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid #0284c7;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: #f0f9ff;
+}

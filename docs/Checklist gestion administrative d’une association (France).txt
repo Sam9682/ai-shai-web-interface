@@ -1,0 +1,146 @@
+1) À faire une seule fois (création)
+📌 Dossier officiel
+
+Statuts signés
+
+PV d’assemblée constitutive signé
+
+Liste des dirigeants
+
+Déclaration en ligne (service-public)
+
+📌 Après validation
+
+Réception du RNA (numéro officiel)
+
+Télécharger l’extrait JOAFE (publication)
+
+2) Juste après la création (fortement recommandé)
+🏦 Compte bancaire
+
+Ouvrir un compte au nom de l’association
+Documents demandés en général :
+
+Statuts
+
+PV constitutif
+
+RNA / récépissé
+
+pièces d’identité des dirigeants
+
+🧾 Demander un SIRET (gratuit)
+
+Pas obligatoire, mais utile si :
+
+tu factures des entreprises
+
+tu demandes des subventions
+
+tu veux être “propre” administrativement
+
+3) Chaque année (obligatoire / fortement conseillé)
+🗓️ A) Assemblée Générale Ordinaire (AGO)
+
+À faire 1 fois/an.
+
+Ordre du jour classique :
+
+rapport moral (activités)
+
+rapport financier (recettes/dépenses)
+
+vote du budget
+
+fixation cotisation
+
+renouvellement du bureau (si prévu)
+
+📌 Documents à produire :
+
+PV d’AGO signé
+
+feuille de présence (conseillée)
+
+💰 B) Comptabilité (minimum)
+
+Même sans comptable, tu dois garder :
+
+un tableau recettes / dépenses
+
+factures et justificatifs (tout)
+
+relevés bancaires
+
+📌 Conseil : garde tout dans un dossier Drive + un tableau Excel.
+
+🧑‍💼 C) Gestion des membres
+
+liste des adhérents
+
+paiement des cotisations
+
+mail / contact
+
+4) À faire seulement si besoin (selon ce que tu fais)
+🏛️ Déclaration de changement (préfecture)
+
+Obligatoire si :
+
+changement de président/trésorier/secrétaire
+
+changement de siège
+
+modification des statuts
+
+➡️ Déclaration en ligne, gratuit.
+
+🛡️ Assurance (très recommandée)
+
+Surtout si vous faites :
+
+événements publics
+
+ateliers en salle
+
+hackathons
+
+conférences
+
+📄 Facturation à des sociétés (si vous faites payer Softfluid)
+
+Si tu factures des entreprises, il faut :
+
+une facture au nom de l’association
+
+un SIRET (pratiquement indispensable)
+
+un suivi comptable propre
+
+⚠️ Et il faut surveiller un point :
+Si l’activité devient trop commerciale, l’asso peut être requalifiée (TVA / impôts).
+Mais si c’est “participation + objet associatif”, c’est généralement ok.
+
+5) Checklist “propre” spéciale Softfluid (ton cas)
+
+Si l’association propose Softfluid.fr à des entreprises :
+
+faire une adhésion entreprise
+
+une convention d’utilisation Softfluid
+
+facturation “participation annuelle” (ou “don avec contrepartie”, mais je conseille facture)
+
+💡 Le pack administratif annuel minimal (le plus simple)
+
+Chaque année tu fais juste :
+
+AGO
+
+PV signé
+
+Rapport financier (1 page)
+
+Mise à jour membres + cotisations
+
+Comptabilité basique
