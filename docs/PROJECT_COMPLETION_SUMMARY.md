@@ -346,17 +346,14 @@ Frontend disponible sur: http://frontend:5173
 ## 👥 Équipe
 
 **Association OPCP**
-- Président: Samuel LEPETRE
-- Trésorier: Thibaud BRUNEL
-- Secrétaire: Nal LEPETRE
+- Cloud Architect: Samuel LEPETRE
 
-Siège: 2 square des coquelicots 91370 VERRIÈRES LE BUISSON
 
 ---
 
 ## 📝 Licence
 
-Association loi 1901 - OPCP
+Free
 
 ---
 

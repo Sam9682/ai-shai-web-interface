@@ -111,39 +111,24 @@ def generate_pv_pdf(output_filename="docs/PROCES_VERBAL_ASSEMBLEE_CONSTITUTIVE.p
     story.append(Spacer(1, 0.5*cm))
     
     # Élection du Bureau
-    story.append(Paragraph("Élection du Bureau", styles['heading']))
-    story.append(Paragraph("Sont élus :", styles['normal']))
-    story.append(Paragraph("Président : Samuel LEPETRE", styles['normal']))
-    story.append(Paragraph("Trésorier : Thibaud BRUNEL", styles['normal']))
-    story.append(Paragraph("Secrétaire : Nael LEPETRE", styles['normal']))
+    story.append(Paragraph("Team PSMC", styles['heading']))
+    story.append(Paragraph("Cloud Architect : Samuel LEPETRE", styles['normal']))
     story.append(Spacer(1, 0.5*cm))
-    
-    # Cotisation
-    story.append(Paragraph("Cotisation", styles['heading']))
-    story.append(Paragraph("La cotisation annuelle est fixée à : 99 €.", styles['normal']))
-    story.append(Spacer(1, 0.5*cm))
-    
-    # Pouvoirs
-    story.append(Paragraph("Pouvoirs", styles['heading']))
-    story.append(Paragraph(
-        "Pouvoir est donné au Président pour effectuer les démarches de déclaration en préfecture et publication.",
-        styles['normal']
-    ))
-    story.append(Spacer(1, 0.5*cm))
+
     
     # Clôture
     story.append(Paragraph("La séance est levée à 21h.", styles['normal']))
     story.append(Spacer(1, 1*cm))
     
     # Signatures
-    story.append(Paragraph("Fait à VERRIERES LE BUISSON, le 16 février 2026", styles['center']))
+    story.append(Paragraph("Fait à OVH, le 16 février 2026", styles['center']))
 
     story.append(Spacer(1, 0.5*cm))
     
     signatures_data = [
-        ['Le Président', 'Le Trésorier', 'Le Secrétaire'],
-        ['Samuel LEPETRE', 'Thibaud BRUNEL', 'Nael LEPETRE'],
-        ['Signature :', 'Signature :', 'Signature :']
+        ['Cloud Architect'],
+        ['Samuel LEPETRE'],
+        ['Signature :']
     ]
     
     signatures_table = Table(signatures_data, colWidths=[5*cm, 5*cm, 5*cm])
@@ -503,9 +488,9 @@ def generate_reglement_pdf(output_filename="docs/REGLEMENT_INTERIEUR.pdf"):
     story.append(Spacer(1, 0.5*cm))
     
     signatures_data = [
-        ['Le Président', 'Le Trésorier', 'Le Secrétaire'],
-        ['Samuel LEPETRE', 'Thibaud BRUNEL', 'Nael LEPETRE'],
-        ['Signature :', 'Signature :', 'Signature :']
+        ['Cloud Architect'],
+        ['Samuel LEPETRE'],
+        ['Signature :']
     ]
     
     signatures_table = Table(signatures_data, colWidths=[5*cm, 5*cm, 5*cm])

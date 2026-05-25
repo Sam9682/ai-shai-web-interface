@@ -4,7 +4,6 @@ import { forumService, type Topic } from '../services/forumService';
 import { authService } from '../services/authService';
 import { infoService, type Stats } from '../services/infoService';
 import sampng from '../assets/Sam.png';
-import ninipng from '../assets/Nini.png';
 import OPCPpng from '/OPCP.png';
 
 export const HomePage = () => {

@@ -136,9 +136,7 @@ def generate_pv_pdf(output_filename="docs/PROCES_VERBAL_ASSEMBLEE_CONSTITUTIVE.p
     # Tableau du bureau
     bureau_data = [
         ['Fonction', 'Nom et Prénom'],
-        ['Président', 'Samuel LEPETRE'],
-        ['Trésorier', 'Thibaud BRUNEL'],
-        ['Secrétaire', 'Nael LEPETRE']
+        ['Président', 'Samuel LEPETRE']
     ]
     
     bureau_table = Table(bureau_data, colWidths=[6*cm, 9*cm])
@@ -195,8 +193,8 @@ def generate_pv_pdf(output_filename="docs/PROCES_VERBAL_ASSEMBLEE_CONSTITUTIVE.p
     
     # Tableau des signatures
     signatures_data = [
-        ['Le Président', 'Le Trésorier', 'Le Secrétaire'],
-        ['Samuel LEPETRE', 'Thibaud BRUNEL', 'Nael LEPETRE'],
+        ['Cloud Architect'],
+        ['Samuel LEPETRE'],
         ['', '', ''],
         ['', '', ''],
     ]
