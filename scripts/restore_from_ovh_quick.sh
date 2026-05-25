@@ -5,9 +5,9 @@
 set -e  # Arrêter en cas d'erreur
 
 # Configuration
-APP_DIR=~/deployments/admin/ai-hypervisia
-S3_BUCKET="ai-hypervisia"
-S3_KEY="10.1.3.176/20260220_160349/hypervisia_backup_20260220_160349.sql.gz"
+APP_DIR=~/deployments/admin/ai-OPCP
+S3_BUCKET="ai-OPCP"
+S3_KEY="10.1.3.176/20260220_160349/OPCP_backup_20260220_160349.sql.gz"
 AWS_PROFILE="OVH-SWAUTOMORPH"
 BACKUP_DIR="$APP_DIR/backups"
 
@@ -38,8 +38,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-BACKUP_FILE_GZ="$BACKUP_DIR/hypervisia_backup_20260220_160349.sql.gz"
-BACKUP_FILE="$BACKUP_DIR/hypervisia_backup_20260220_160349.sql"
+BACKUP_FILE_GZ="$BACKUP_DIR/OPCP_backup_20260220_160349.sql.gz"
+BACKUP_FILE="$BACKUP_DIR/OPCP_backup_20260220_160349.sql"
 
 # Vérifier que le fichier a été téléchargé
 if [ ! -f "$BACKUP_FILE_GZ" ]; then

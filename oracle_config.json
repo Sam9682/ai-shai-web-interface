@@ -2,8 +2,8 @@
   "module": {
     "name": "Oracle AI",
     "version": "1.0.0",
-    "description": "Interface d'IA agentique réutilisable pour les applications softfluid.fr",
-    "author": "HYPERVISIA",
+    "description": "Interface d'IA agentique réutilisable pour les applications opcp-psmc.com",
+    "author": "OPCP",
     "license": "MIT"
   },
   "providers": {

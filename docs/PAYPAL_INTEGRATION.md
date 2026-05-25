@@ -2,7 +2,7 @@
 
 ## Overview
 
-The HYPERVISIA website uses PayPal for processing membership fee payments as an alternative to credit card payments. This document explains how the PayPal integration is configured and how to use it.
+The OPCP website uses PayPal for processing membership fee payments as an alternative to credit card payments. This document explains how the PayPal integration is configured and how to use it.
 
 ## Configuration
 

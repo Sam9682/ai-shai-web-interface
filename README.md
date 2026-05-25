@@ -56,10 +56,10 @@ cp .env.example .env
 5. Setup PostgreSQL database:
 ```bash
 # Create database and user
-createdb hypervisia_db
-createuser hypervisia_user
+createdb OPCP_db
+createuser OPCP_user
 # Grant privileges (run in psql)
-GRANT ALL PRIVILEGES ON DATABASE hypervisia_db TO hypervisia_user;
+GRANT ALL PRIVILEGES ON DATABASE OPCP_db TO OPCP_user;
 ```
 
 6. Run database migrations:

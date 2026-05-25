@@ -1,5 +1,5 @@
 """Email service for sending notifications and invoices
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.4, 10.1, 10.2, 10.3, 10.5
 """
 import smtplib
@@ -121,12 +121,12 @@ class EmailService:
         Returns:
             True if email sent successfully, False otherwise
         """
-        subject = f"Votre facture HYPERVISIA - {invoice_number}"
+        subject = f"Votre facture OPCP - {invoice_number}"
         
         body_text = f"""
 Bonjour {user_name},
 
-Merci pour votre paiement de cotisation annuelle HYPERVISIA.
+Merci pour votre paiement de cotisation annuelle OPCP.
 
 Détails de votre paiement :
 - Numéro de facture : {invoice_number}
@@ -135,13 +135,13 @@ Détails de votre paiement :
 Vous trouverez votre facture en pièce jointe.
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
 
 ---
 
 Hello {user_name},
 
-Thank you for your HYPERVISIA annual membership payment.
+Thank you for your OPCP annual membership payment.
 
 Payment details:
 - Invoice number: {invoice_number}
@@ -150,7 +150,7 @@ Payment details:
 You will find your invoice attached.
 
 Best regards,
-The HYPERVISIA Team
+The OPCP Team
 """
         
         body_html = f"""
@@ -170,11 +170,11 @@ The HYPERVISIA Team
 <body>
     <div class="container">
         <div class="header">
-            <h1>HYPERVISIA</h1>
+            <h1>OPCP</h1>
         </div>
         <div class="content">
             <p>Bonjour {user_name},</p>
-            <p>Merci pour votre paiement de cotisation annuelle HYPERVISIA.</p>
+            <p>Merci pour votre paiement de cotisation annuelle OPCP.</p>
             
             <div class="details">
                 <h3>Détails de votre paiement / Payment Details</h3>
@@ -186,10 +186,10 @@ The HYPERVISIA Team
             <p>You will find your invoice attached.</p>
             
             <p>Cordialement / Best regards,<br>
-            L'équipe HYPERVISIA / The HYPERVISIA Team</p>
+            L'équipe OPCP / The OPCP Team</p>
         </div>
         <div class="footer">
-            <p>Association HYPERVISIA - Loi 1901</p>
+            <p>Association OPCP - Loi 1901</p>
         </div>
     </div>
 </body>

@@ -13,11 +13,11 @@ find app -type f -name "*.pyc" -delete 2>/dev/null || true
 
 echo ""
 echo "Step 3: Removing old backend container..."
-docker-compose rm -f ai-hypervisia
+docker-compose rm -f ai-OPCP
 
 echo ""
 echo "Step 4: Rebuilding backend with --no-cache..."
-docker-compose build --no-cache ai-hypervisia
+docker-compose build --no-cache ai-OPCP
 
 echo ""
 echo "Step 5: Starting all services..."
@@ -33,4 +33,4 @@ docker-compose ps
 
 echo ""
 echo "Step 8: Tailing logs (Ctrl+C to exit)..."
-docker-compose logs -f ai-hypervisia
+docker-compose logs -f ai-OPCP

@@ -1,1 +1,1 @@
-"""Test package for HYPERVISIA application"""
+"""Test package for OPCP application"""

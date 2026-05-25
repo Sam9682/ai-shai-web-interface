@@ -91,7 +91,7 @@
 ### 📁 Structure des Fichiers
 
 ```
-hypervisia/
+OPCP/
 ├── scripts/
 │   ├── backup_database.py          # Script principal de sauvegarde
 │   ├── restore_database.py         # Restauration locale
@@ -158,11 +158,11 @@ Pour ~10 GB de sauvegardes :
 ### 📊 Organisation S3
 
 ```
-s3://ai-hypervisia/
+s3://ai-OPCP/
 ├── 2026/
 │   ├── 02/
 │   │   └── 20/
-│   │       └── hypervisia_backup_20260220_143000.sql
+│   │       └── OPCP_backup_20260220_143000.sql
 │   └── 03/
 │       └── ...
 ```
@@ -177,7 +177,7 @@ python scripts/backup_database.py
 python scripts/restore_from_s3.py list
 
 # Restaurer
-python scripts/restore_from_s3.py restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3.py restore 2026/02/20/OPCP_backup_20260220_143000.sql
 ```
 
 ### 📝 Notes

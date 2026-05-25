@@ -2,8 +2,8 @@
 
 ## Votre Situation
 
-Backup disponible : `s3://ai-hypervisia/10.1.3.176/20260220_160349/hypervisia_backup_20260220_160349.sql.gz`  
-Application : `~/deployments/admin/ai-hypervisia`  
+Backup disponible : `s3://ai-OPCP/10.1.3.176/20260220_160349/OPCP_backup_20260220_160349.sql.gz`  
+Application : `~/deployments/admin/ai-OPCP`  
 Profil AWS : `OVH-SWAUTOMORPH`
 
 ## Méthode 1 : Restauration Rapide (Recommandée)
@@ -11,13 +11,13 @@ Profil AWS : `OVH-SWAUTOMORPH`
 ### Étape 1 : Télécharger le backup depuis OVH
 
 ```bash
-cd ~/deployments/admin/ai-hypervisia
+cd ~/deployments/admin/ai-OPCP
 
 # Créer le répertoire de sauvegarde
 mkdir -p backups
 
 # Télécharger depuis OVH avec AWS CLI
-aws s3 cp s3://ai-hypervisia/10.1.3.176/20260220_160349/hypervisia_backup_20260220_160349.sql.gz \
+aws s3 cp s3://ai-OPCP/10.1.3.176/20260220_160349/OPCP_backup_20260220_160349.sql.gz \
   backups/ \
   --profile OVH-SWAUTOMORPH
 ```
@@ -26,17 +26,17 @@ aws s3 cp s3://ai-hypervisia/10.1.3.176/20260220_160349/hypervisia_backup_202602
 
 ```bash
 # Décompresser le fichier .gz
-gunzip backups/hypervisia_backup_20260220_160349.sql.gz
+gunzip backups/OPCP_backup_20260220_160349.sql.gz
 
 # Vérifier que le fichier existe
-ls -lh backups/hypervisia_backup_20260220_160349.sql
+ls -lh backups/OPCP_backup_20260220_160349.sql
 ```
 
 ### Étape 3 : Charger les variables d'environnement
 
 ```bash
 # Charger le .env
-cd ~/deployments/admin/ai-hypervisia
+cd ~/deployments/admin/ai-OPCP
 export $(cat .env | grep -v '^#' | xargs)
 
 # Vérifier DATABASE_URL
@@ -47,7 +47,7 @@ echo $DATABASE_URL
 
 ```bash
 # Utiliser le script de restauration
-python3 scripts/restore_database.py backups/hypervisia_backup_20260220_160349.sql
+python3 scripts/restore_database.py backups/OPCP_backup_20260220_160349.sql
 ```
 
 ## Méthode 2 : Restauration Directe avec pg_restore
@@ -55,14 +55,14 @@ python3 scripts/restore_database.py backups/hypervisia_backup_20260220_160349.sq
 Si vous préférez utiliser directement pg_restore :
 
 ```bash
-cd ~/deployments/admin/ai-hypervisia
+cd ~/deployments/admin/ai-OPCP
 
 # Télécharger et décompresser
-aws s3 cp s3://ai-hypervisia/10.1.3.176/20260220_160349/hypervisia_backup_20260220_160349.sql.gz \
+aws s3 cp s3://ai-OPCP/10.1.3.176/20260220_160349/OPCP_backup_20260220_160349.sql.gz \
   backups/ \
   --profile OVH-SWAUTOMORPH
 
-gunzip backups/hypervisia_backup_20260220_160349.sql.gz
+gunzip backups/OPCP_backup_20260220_160349.sql.gz
 
 # Charger les variables d'environnement
 export $(cat .env | grep -v '^#' | xargs)
@@ -82,7 +82,7 @@ PGPASSWORD=$DB_PASS pg_restore \
   -d $DB_NAME \
   --clean \
   --if-exists \
-  backups/hypervisia_backup_20260220_160349.sql
+  backups/OPCP_backup_20260220_160349.sql
 ```
 
 ## Méthode 3 : Restauration avec Docker
@@ -90,20 +90,20 @@ PGPASSWORD=$DB_PASS pg_restore \
 Si votre application tourne dans Docker :
 
 ```bash
-cd ~/deployments/admin/ai-hypervisia
+cd ~/deployments/admin/ai-OPCP
 
 # Télécharger et décompresser
-aws s3 cp s3://ai-hypervisia/10.1.3.176/20260220_160349/hypervisia_backup_20260220_160349.sql.gz \
+aws s3 cp s3://ai-OPCP/10.1.3.176/20260220_160349/OPCP_backup_20260220_160349.sql.gz \
   backups/ \
   --profile OVH-SWAUTOMORPH
 
-gunzip backups/hypervisia_backup_20260220_160349.sql.gz
+gunzip backups/OPCP_backup_20260220_160349.sql.gz
 
 # Copier dans le conteneur
-docker cp backups/hypervisia_backup_20260220_160349.sql <container_name>:/app/backups/
+docker cp backups/OPCP_backup_20260220_160349.sql <container_name>:/app/backups/
 
 # Restaurer depuis le conteneur
-docker exec -it <container_name> python scripts/restore_database.py backups/hypervisia_backup_20260220_160349.sql
+docker exec -it <container_name> python scripts/restore_database.py backups/OPCP_backup_20260220_160349.sql
 ```
 
 ## Méthode 4 : Script Automatisé Complet
@@ -116,8 +116,8 @@ Créez un script pour automatiser tout le processus :
 
 set -e  # Arrêter en cas d'erreur
 
-APP_DIR=~/deployments/admin/ai-hypervisia
-S3_PATH="s3://ai-hypervisia/10.1.3.176/20260220_160349/hypervisia_backup_20260220_160349.sql.gz"
+APP_DIR=~/deployments/admin/ai-OPCP
+S3_PATH="s3://ai-OPCP/10.1.3.176/20260220_160349/OPCP_backup_20260220_160349.sql.gz"
 PROFILE="OVH-SWAUTOMORPH"
 BACKUP_DIR="$APP_DIR/backups"
 
@@ -132,14 +132,14 @@ aws s3 cp "$S3_PATH" "$BACKUP_DIR/" --profile "$PROFILE"
 
 # Décompresser
 echo "📦 Décompression..."
-BACKUP_FILE="$BACKUP_DIR/hypervisia_backup_20260220_160349.sql.gz"
+BACKUP_FILE="$BACKUP_DIR/OPCP_backup_20260220_160349.sql.gz"
 gunzip -f "$BACKUP_FILE"
 
 # Restaurer
 echo "🔄 Restauration..."
 cd "$APP_DIR"
 export $(cat .env | grep -v '^#' | xargs)
-python3 scripts/restore_database.py "$BACKUP_DIR/hypervisia_backup_20260220_160349.sql"
+python3 scripts/restore_database.py "$BACKUP_DIR/OPCP_backup_20260220_160349.sql"
 
 echo "✅ Restauration terminée!"
 ```
@@ -153,7 +153,7 @@ chmod +x restore_from_ovh.sh
 ## Vérification Après Restauration
 
 ```bash
-cd ~/deployments/admin/ai-hypervisia
+cd ~/deployments/admin/ai-OPCP
 
 # Charger les variables
 export $(cat .env | grep -v '^#' | xargs)
@@ -180,7 +180,7 @@ SELECT COUNT(*) FROM forum_topics;
 
 ```bash
 # Forcer la décompression
-gunzip -f backups/hypervisia_backup_20260220_160349.sql.gz
+gunzip -f backups/OPCP_backup_20260220_160349.sql.gz
 ```
 
 ### Erreur : "pg_restore: command not found"
@@ -195,7 +195,7 @@ sudo apt-get install postgresql-client
 
 ```bash
 # Vérifier le fichier .env
-cat ~/deployments/admin/ai-hypervisia/.env | grep DATABASE_URL
+cat ~/deployments/admin/ai-OPCP/.env | grep DATABASE_URL
 
 # Charger manuellement
 export DATABASE_URL="postgresql://user:pass@host:5432/dbname"
@@ -227,8 +227,8 @@ docker ps | grep postgres
 
 ✅ **Sauvegarde préventive** : Avant de restaurer, créez une sauvegarde de la base actuelle :
 ```bash
-cd ~/deployments/admin/ai-hypervisia
-python3 scripts/backup_database_universal.py --s3-provider ovh --s3-bucket ai-hypervisia
+cd ~/deployments/admin/ai-OPCP
+python3 scripts/backup_database_universal.py --s3-provider ovh --s3-bucket ai-OPCP
 ```
 
 ✅ **Test** : Si possible, testez d'abord la restauration sur une base de données de test.
@@ -236,7 +236,7 @@ python3 scripts/backup_database_universal.py --s3-provider ovh --s3-bucket ai-hy
 ✅ **Arrêt de l'application** : Arrêtez l'application pendant la restauration pour éviter les conflits :
 ```bash
 # Si systemd
-sudo systemctl stop hypervisia
+sudo systemctl stop OPCP
 
 # Si Docker
 docker-compose down
@@ -244,7 +244,7 @@ docker-compose down
 # Restaurer...
 
 # Redémarrer
-sudo systemctl start hypervisia
+sudo systemctl start OPCP
 # ou
 docker-compose up -d
 ```
@@ -254,17 +254,17 @@ docker-compose up -d
 Pour une restauration rapide :
 
 ```bash
-cd ~/deployments/admin/ai-hypervisia && \
+cd ~/deployments/admin/ai-OPCP && \
 mkdir -p backups && \
-aws s3 cp s3://ai-hypervisia/10.1.3.176/20260220_160349/hypervisia_backup_20260220_160349.sql.gz backups/ --profile OVH-SWAUTOMORPH && \
-gunzip -f backups/hypervisia_backup_20260220_160349.sql.gz && \
+aws s3 cp s3://ai-OPCP/10.1.3.176/20260220_160349/OPCP_backup_20260220_160349.sql.gz backups/ --profile OVH-SWAUTOMORPH && \
+gunzip -f backups/OPCP_backup_20260220_160349.sql.gz && \
 export $(cat .env | grep -v '^#' | xargs) && \
-python3 scripts/restore_database.py backups/hypervisia_backup_20260220_160349.sql
+python3 scripts/restore_database.py backups/OPCP_backup_20260220_160349.sql
 ```
 
 ## Support
 
 Si vous rencontrez des problèmes :
-1. Vérifiez les logs : `tail -f /var/log/hypervisia_backup.log`
+1. Vérifiez les logs : `tail -f /var/log/OPCP_backup.log`
 2. Consultez la documentation : `scripts/README_BACKUP.md`
-3. Vérifiez la connexion OVH : `aws s3 ls ai-hypervisia/ --profile OVH-SWAUTOMORPH`
+3. Vérifiez la connexion OVH : `aws s3 ls ai-OPCP/ --profile OVH-SWAUTOMORPH`

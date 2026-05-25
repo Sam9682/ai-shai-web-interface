@@ -21,7 +21,7 @@ def test_get_homepage_info_success():
     
     # Verify association information
     assert "association" in data
-    assert data["association"]["name"] == "HYPERVISIA"
+    assert data["association"]["name"] == "OPCP"
     assert "address" in data["association"]
     assert "board_members" in data["association"]
     assert len(data["association"]["board_members"]) > 0

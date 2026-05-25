@@ -1,5 +1,5 @@
 """Unit tests for payment webhook handlers
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.2
 """
 import pytest

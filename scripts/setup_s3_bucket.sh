@@ -1,10 +1,10 @@
 #!/bin/bash
-# Script de configuration du bucket S3 pour les sauvegardes Hypervisia
+# Script de configuration du bucket S3 pour les sauvegardes OPCP
 
-BUCKET_NAME="ai-hypervisia"
+BUCKET_NAME="ai-OPCP"
 REGION="eu-west-3"  # Paris
 
-echo "🚀 Configuration du bucket S3 pour les sauvegardes Hypervisia"
+echo "🚀 Configuration du bucket S3 pour les sauvegardes OPCP"
 echo "=================================================="
 
 # Vérifier si AWS CLI est installé

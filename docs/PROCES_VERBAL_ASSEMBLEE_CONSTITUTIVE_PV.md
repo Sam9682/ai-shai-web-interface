@@ -16,7 +16,7 @@ Pouvoirs pour déclaration
 
 Déroulé
 
-Les participants décident de créer l’association HYPERVISIA.
+Les participants décident de créer l’association OPCP.
 
 Les statuts sont lus et adoptés à l’unanimité.
 

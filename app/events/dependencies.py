@@ -1,5 +1,5 @@
 """Dependencies for event management endpoints
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 7.2
 """
 from fastapi import Depends, HTTPException, status

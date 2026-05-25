@@ -1,5 +1,5 @@
 """Pydantic schemas for event management
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 6.2
 """
 from datetime import datetime

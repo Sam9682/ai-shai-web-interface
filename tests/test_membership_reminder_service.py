@@ -1,5 +1,5 @@
 """Tests for membership expiry reminder service
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.6
 """
 import pytest

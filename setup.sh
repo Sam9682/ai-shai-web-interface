@@ -1,9 +1,9 @@
 #!/bin/bash
-# Setup script for HYPERVISIA website
+# Setup script for OPCP website
 
 set -e
 
-echo "=== HYPERVISIA Website Setup ==="
+echo "=== OPCP Website Setup ==="
 echo ""
 
 # Check Python version
@@ -60,8 +60,8 @@ echo ""
 echo "Next steps:"
 echo "1. Edit .env file with your configuration"
 echo "2. Setup PostgreSQL database:"
-echo "   createdb hypervisia_db"
-echo "   createuser hypervisia_user"
+echo "   createdb OPCP_db"
+echo "   createuser OPCP_user"
 echo "3. Run database migrations:"
 echo "   alembic upgrade head"
 echo "4. Start the development server:"

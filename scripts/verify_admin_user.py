@@ -15,17 +15,17 @@ def main():
     
     try:
         # Check for admin user
-        admin = db.query(User).filter(User.email == "admin@hypervisia.fr").first()
+        admin = db.query(User).filter(User.email == "admin@opcp-psmc.com").first()
         
         if not admin:
             print("❌ Admin user not found!")
             print("\nCreating admin user...")
             
             admin = User(
-                email="admin@hypervisia.fr",
+                email="admin@opcp-psmc.com",
                 password_hash=hash_password("Admin1234!"),
                 first_name="Admin",
-                last_name="HYPERVISIA",
+                last_name="OPCP",
                 role=UserRole.ADMINISTRATOR,
                 is_email_verified=True
             )
@@ -73,7 +73,7 @@ def main():
         
         print("\n" + "="*50)
         print("Login credentials:")
-        print("  Email: admin@hypervisia.fr")
+        print("  Email: admin@opcp-psmc.com")
         print("  Password: Admin1234!")
         print("="*50)
         

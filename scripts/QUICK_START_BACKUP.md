@@ -54,7 +54,7 @@ python scripts/restore_from_s3.py list
 python scripts/restore_from_s3.py list
 
 # 2. Restaurer une sauvegarde spécifique
-python scripts/restore_from_s3.py restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3.py restore 2026/02/20/OPCP_backup_20260220_143000.sql
 ```
 
 ## Automatisation avec Cron
@@ -64,7 +64,7 @@ python scripts/restore_from_s3.py restore 2026/02/20/hypervisia_backup_20260220_
 crontab -e
 
 # Ajouter cette ligne pour une sauvegarde quotidienne à 2h du matin
-0 2 * * * cd /path/to/hypervisia && /usr/bin/python3 scripts/backup_database.py >> /var/log/hypervisia_backup.log 2>&1
+0 2 * * * cd /path/to/OPCP && /usr/bin/python3 scripts/backup_database.py >> /var/log/OPCP_backup.log 2>&1
 ```
 
 ## Vérification
@@ -75,7 +75,7 @@ crontab -e
 python scripts/backup_database.py
 
 # 2. Vérifier dans S3
-aws s3 ls s3://ai-hypervisia/ --recursive
+aws s3 ls s3://ai-OPCP/ --recursive
 
 # 3. Lister via le script
 python scripts/restore_from_s3.py list
@@ -101,11 +101,11 @@ sudo apt-get install postgresql-client
 ## Structure des Sauvegardes
 
 ```
-s3://ai-hypervisia/
+s3://ai-OPCP/
 ├── 2026/
 │   ├── 02/
 │   │   └── 20/
-│   │       └── hypervisia_backup_20260220_143000.sql
+│   │       └── OPCP_backup_20260220_143000.sql
 │   └── 03/
 │       └── ...
 ```

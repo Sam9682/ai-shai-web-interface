@@ -2,7 +2,7 @@
 
 ## Vue d'ensemble
 
-L'application HYPERVISIA utilise SMTP pour envoyer des emails de confirmation lors de l'inscription des utilisateurs, ainsi que pour d'autres notifications.
+L'application OPCP utilise SMTP pour envoyer des emails de confirmation lors de l'inscription des utilisateurs, ainsi que pour d'autres notifications.
 
 ## Variables d'environnement
 
@@ -14,7 +14,7 @@ SMTP_HOST=smtp.example.com          # Serveur SMTP (ex: smtp.gmail.com, smtp.off
 SMTP_PORT=587                        # Port SMTP (587 pour TLS, 465 pour SSL)
 SMTP_USER=your-email@example.com    # Nom d'utilisateur SMTP (généralement votre email)
 SMTP_PASSWORD=your-email-password   # Mot de passe SMTP ou mot de passe d'application
-SMTP_FROM=noreply@hypervisia.org    # Adresse email d'expédition
+SMTP_FROM=noreply@OPCP.org    # Adresse email d'expédition
 ```
 
 ## Valeurs par défaut
@@ -25,7 +25,7 @@ Si les variables ne sont pas définies, les valeurs par défaut suivantes sont u
 - **SMTP_PORT**: `587`
 - **SMTP_USER**: `""` (vide)
 - **SMTP_PASSWORD**: `""` (vide)
-- **SMTP_FROM**: `noreply@hypervisia.org`
+- **SMTP_FROM**: `noreply@OPCP.org`
 
 ## Exemples de configuration
 
@@ -36,7 +36,7 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=votre-email@gmail.com
 SMTP_PASSWORD=votre-mot-de-passe-application
-SMTP_FROM=noreply@hypervisia.org
+SMTP_FROM=noreply@OPCP.org
 ```
 
 **Note importante pour Gmail**: Vous devez créer un "mot de passe d'application" dans les paramètres de sécurité de votre compte Google :
@@ -52,7 +52,7 @@ SMTP_HOST=smtp.office365.com
 SMTP_PORT=587
 SMTP_USER=votre-email@outlook.com
 SMTP_PASSWORD=votre-mot-de-passe
-SMTP_FROM=noreply@hypervisia.org
+SMTP_FROM=noreply@OPCP.org
 ```
 
 ### OVH
@@ -62,7 +62,7 @@ SMTP_HOST=ssl0.ovh.net
 SMTP_PORT=587
 SMTP_USER=votre-email@votredomaine.com
 SMTP_PASSWORD=votre-mot-de-passe
-SMTP_FROM=noreply@hypervisia.org
+SMTP_FROM=noreply@OPCP.org
 ```
 
 ### SendGrid
@@ -72,7 +72,7 @@ SMTP_HOST=smtp.sendgrid.net
 SMTP_PORT=587
 SMTP_USER=apikey
 SMTP_PASSWORD=votre-api-key-sendgrid
-SMTP_FROM=noreply@hypervisia.org
+SMTP_FROM=noreply@OPCP.org
 ```
 
 ### Mailgun
@@ -82,7 +82,7 @@ SMTP_HOST=smtp.mailgun.org
 SMTP_PORT=587
 SMTP_USER=postmaster@votredomaine.mailgun.org
 SMTP_PASSWORD=votre-mot-de-passe-mailgun
-SMTP_FROM=noreply@hypervisia.org
+SMTP_FROM=noreply@OPCP.org
 ```
 
 ## Fonctionnalités email
@@ -171,7 +171,7 @@ SMTP_HOST=smtp.mailtrap.io
 SMTP_PORT=587
 SMTP_USER=votre-username-mailtrap
 SMTP_PASSWORD=votre-password-mailtrap
-SMTP_FROM=noreply@hypervisia.org
+SMTP_FROM=noreply@OPCP.org
 ```
 
 ## Sécurité

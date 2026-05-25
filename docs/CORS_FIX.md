@@ -7,13 +7,13 @@ L'erreur CORS se produisait lors de l'accès à la page Oracle AI :
 ```
 Blocage d'une requête multiorigine (Cross-Origin Request) : 
 la politique « Same Origin » ne permet pas de consulter la ressource distante 
-située sur https://ai-hypervisia:8000/api/oracle/ask. 
+située sur https://ai-OPCP:8000/api/oracle/ask. 
 Raison : échec de la requête CORS. Code d'état : (null).
 ```
 
 ## Cause du problème
 
-Le service `oracleService.ts` utilisait directement `axios` avec une URL absolue (`https://ai-hypervisia:8000`) au lieu d'utiliser l'instance `api` configurée qui gère automatiquement :
+Le service `oracleService.ts` utilisait directement `axios` avec une URL absolue (`https://ai-OPCP:8000`) au lieu d'utiliser l'instance `api` configurée qui gère automatiquement :
 - Les URLs relatives (`/api`)
 - Les en-têtes d'authentification
 - Les intercepteurs de requêtes/réponses
@@ -27,7 +27,7 @@ Le service `oracleService.ts` utilisait directement `axios` avec une URL absolue
 ```typescript
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://ai-hypervisia:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://ai-OPCP:8000';
 
 async askOracle(query: OracleQuery): Promise<OracleResponse> {
   const response = await axios.post(
@@ -78,10 +78,10 @@ Dans le fichier `.env`, assurez-vous que `ALLOWED_ORIGINS` inclut toutes les ori
 
 ```env
 # Pour le développement
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:6003,http://ai-hypervisia:8000,https://ai-hypervisia:8000
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:6003,http://ai-OPCP:8000,https://ai-OPCP:8000
 
 # Pour la production
-ALLOWED_ORIGINS=https://hypervisia.fr,https://www.hypervisia.fr
+ALLOWED_ORIGINS=https://opcp-psmc.com,https://www.opcp-psmc.com
 ```
 
 ## Architecture de proxy
@@ -142,7 +142,7 @@ Si d'autres services ont le même problème, appliquez la même correction :
 ### ❌ Mauvaise pratique
 ```typescript
 import axios from 'axios';
-const API_URL = 'https://ai-hypervisia:8000';
+const API_URL = 'https://ai-OPCP:8000';
 axios.post(`${API_URL}/api/endpoint`, data);
 ```
 

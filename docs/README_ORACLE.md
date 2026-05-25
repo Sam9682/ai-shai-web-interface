@@ -1,8 +1,8 @@
 # 🔮 Module L'Oracle (AI)
 
-> Interface d'IA agentique réutilisable pour les applications softfluid.fr
+> Interface d'IA agentique réutilisable pour les applications opcp-psmc.com
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/hypervisia/oracle-ai)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/OPCP/oracle-ai)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
 [![React](https://img.shields.io/badge/react-18+-blue.svg)](https://reactjs.org/)
@@ -24,7 +24,7 @@ Le module "L'Oracle (AI)" est une interface conversationnelle d'IA agentique qui
 
 - 💬 **Chat interactif** avec différents fournisseurs d'IA
 - 📊 **Analyse automatique** du forum et prédictions
-- 🔄 **Réutilisable** dans toutes les applications softfluid.fr
+- 🔄 **Réutilisable** dans toutes les applications opcp-psmc.com
 - 🚀 **Facile à intégrer** avec documentation complète
 - 🔒 **Sécurisé** avec authentification et rate limiting
 
@@ -343,22 +343,22 @@ Les contributions sont les bienvenues ! Pour contribuer:
 
 ## 📞 Support
 
-- **Email:** contact@hypervisia.fr
+- **Email:** contact@opcp-psmc.com
 - **Documentation:** [docs/](docs/)
-- **Issues:** [GitHub Issues](https://github.com/hypervisia/oracle-ai/issues)
+- **Issues:** [GitHub Issues](https://github.com/OPCP/oracle-ai/issues)
 
 ## 📄 Licence
 
-Ce module fait partie de l'application HYPERVISIA et est distribué sous licence MIT.
+Ce module fait partie de l'application OPCP et est distribué sous licence MIT.
 
 ## 🙏 Remerciements
 
-- HYPERVISIA - Association loi 1901
-- softfluid.fr - Plateforme de déploiement
+- OPCP - Association loi 1901
+- opcp-psmc.com - Plateforme de déploiement
 - Communauté open source
 
 ---
 
-**Développé avec ❤️ par HYPERVISIA pour l'écosystème softfluid.fr**
+**Développé avec ❤️ par OPCP pour l'écosystème opcp-psmc.com**
 
 🔮 *"L'Oracle voit l'avenir de l'IA et de l'humanité"*

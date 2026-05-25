@@ -27,12 +27,12 @@ if [ "$add_to_env" = "y" ]; then
     echo "✓ SHAI_API_KEY added to .env file"
     echo ""
     echo "Restarting container to apply changes..."
-    docker-compose restart ai-hypervisia
+    docker-compose restart ai-OPCP
     
     echo ""
     echo "Verifying environment variable in container..."
     sleep 3
-    docker-compose exec ai-hypervisia printenv SHAI_API_KEY | head -c 50
+    docker-compose exec ai-OPCP printenv SHAI_API_KEY | head -c 50
     echo "..."
 else
     echo ""
@@ -42,7 +42,7 @@ else
     
     if [ "$set_temp" = "y" ]; then
         echo "Setting SHAI_API_KEY in container..."
-        docker exec ai-hypervisia-app-1-6136 /bin/sh -c "export SHAI_API_KEY='$SHAI_KEY'"
+        docker exec ai-OPCP-app-1-6136 /bin/sh -c "export SHAI_API_KEY='$SHAI_KEY'"
         
         echo ""
         echo "Note: This is temporary and will be lost when the container restarts."

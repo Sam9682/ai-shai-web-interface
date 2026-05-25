@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script de sauvegarde de la base de données PostgreSQL Hypervisia
+Script de sauvegarde de la base de données PostgreSQL OPCP
 Compatible avec AWS S3 et OVH Object Storage (S3-compatible)
 """
 import os
@@ -63,7 +63,7 @@ def get_s3_client(provider: str = "aws"):
 
 def upload_to_s3(
     file_path: Path, 
-    bucket_name: str = "ai-hypervisia",
+    bucket_name: str = "ai-OPCP",
     provider: str = "aws"
 ) -> bool:
     """
@@ -128,7 +128,7 @@ def create_backup(
     backup_dir: str = "./backups",
     retention_days: int = 30,
     upload_s3: bool = True,
-    s3_bucket: str = "ai-hypervisia",
+    s3_bucket: str = "ai-OPCP",
     s3_provider: str = "aws"
 ) -> bool:
     """
@@ -159,7 +159,7 @@ def create_backup(
     
     # Générer le nom du fichier de sauvegarde avec timestamp
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    backup_file = backup_path / f"hypervisia_backup_{timestamp}.sql"
+    backup_file = backup_path / f"OPCP_backup_{timestamp}.sql"
     
     print(f"🔄 Démarrage de la sauvegarde de la base de données '{db_config['database']}'...")
     print(f"📁 Fichier de sauvegarde: {backup_file}")
@@ -225,7 +225,7 @@ def cleanup_old_backups(backup_dir: Path, retention_days: int):
     
     print(f"\n🧹 Nettoyage des sauvegardes de plus de {retention_days} jours...")
     
-    for backup_file in backup_dir.glob("hypervisia_backup_*.sql"):
+    for backup_file in backup_dir.glob("OPCP_backup_*.sql"):
         file_time = datetime.fromtimestamp(backup_file.stat().st_mtime)
         if file_time < cutoff_date:
             try:
@@ -249,7 +249,7 @@ def list_backups(backup_dir: str = "./backups"):
         print(f"📁 Le répertoire {backup_dir} n'existe pas encore")
         return
     
-    backups = sorted(backup_path.glob("hypervisia_backup_*.sql"), reverse=True)
+    backups = sorted(backup_path.glob("OPCP_backup_*.sql"), reverse=True)
     
     if not backups:
         print(f"📁 Aucune sauvegarde trouvée dans {backup_dir}")
@@ -272,7 +272,7 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(
-        description="Sauvegarde de la base de données Hypervisia (AWS S3 ou OVH Object Storage)"
+        description="Sauvegarde de la base de données OPCP (AWS S3 ou OVH Object Storage)"
     )
     parser.add_argument(
         '--backup-dir',
@@ -292,8 +292,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         '--s3-bucket',
-        default='ai-hypervisia',
-        help='Nom du bucket S3 (défaut: ai-hypervisia)'
+        default='ai-OPCP',
+        help='Nom du bucket S3 (défaut: ai-OPCP)'
     )
     parser.add_argument(
         '--s3-provider',

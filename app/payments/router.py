@@ -1,5 +1,5 @@
 """Payment API endpoints
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.1, 4.2, 4.7
 """
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Header
@@ -255,7 +255,7 @@ async def initiate_payment(
             paypal_payment = paypal_service.create_payment(
                 amount=payment_data.amount,
                 currency=payment_data.currency,
-                description=f"HYPERVISIA Membership Fee - {current_user.email}",
+                description=f"OPCP Membership Fee - {current_user.email}",
                 return_url=payment_data.return_url,
                 cancel_url=payment_data.cancel_url,
                 metadata={

@@ -1,6 +1,6 @@
-# Sauvegarde et Restauration de la Base de Données Hypervisia
+# Sauvegarde et Restauration de la Base de Données OPCP
 
-Ce dossier contient les scripts pour sauvegarder et restaurer la base de données PostgreSQL Hypervisia, avec support multi-cloud (AWS S3 et OVH Object Storage).
+Ce dossier contient les scripts pour sauvegarder et restaurer la base de données PostgreSQL OPCP, avec support multi-cloud (AWS S3 et OVH Object Storage).
 
 ## Compatibilité Cloud
 
@@ -92,12 +92,12 @@ python scripts/backup_database.py
 
 ### Sauvegarde avec OVH Object Storage
 ```bash
-python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups
+python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups
 ```
 
 Cette commande va :
 1. Créer une sauvegarde locale dans `./backups/`
-2. Uploader automatiquement vers le cloud : `bucket/YYYY/MM/DD/hypervisia_backup_YYYYMMDD_HHMMSS.sql`
+2. Uploader automatiquement vers le cloud : `bucket/YYYY/MM/DD/OPCP_backup_YYYYMMDD_HHMMSS.sql`
 3. Nettoyer les anciennes sauvegardes locales (30 jours)
 
 ### Options disponibles
@@ -130,7 +130,7 @@ python scripts/restore_from_s3.py list
 
 OVH Object Storage:
 ```bash
-python scripts/restore_from_s3_universal.py --provider ovh --bucket hypervisia-backups list
+python scripts/restore_from_s3_universal.py --provider ovh --bucket OPCP-backups list
 ```
 
 Filtrer par date:
@@ -146,33 +146,33 @@ python scripts/restore_from_s3_universal.py --provider ovh list --prefix 2026/02
 
 AWS:
 ```bash
-python scripts/restore_from_s3_universal.py --provider aws download 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3_universal.py --provider aws download 2026/02/20/OPCP_backup_20260220_143000.sql
 ```
 
 OVH:
 ```bash
-python scripts/restore_from_s3_universal.py --provider ovh download 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3_universal.py --provider ovh download 2026/02/20/OPCP_backup_20260220_143000.sql
 ```
 
 ## Restauration de la Base de Données
 
 ### Depuis une sauvegarde locale
 ```bash
-python scripts/restore_database.py backups/hypervisia_backup_20260220_143000.sql
+python scripts/restore_database.py backups/OPCP_backup_20260220_143000.sql
 ```
 
 ### Depuis AWS S3 (téléchargement + restauration automatique)
 ```bash
 # Script universel
-python scripts/restore_from_s3_universal.py --provider aws restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3_universal.py --provider aws restore 2026/02/20/OPCP_backup_20260220_143000.sql
 
 # Script original
-python scripts/restore_from_s3.py restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3.py restore 2026/02/20/OPCP_backup_20260220_143000.sql
 ```
 
 ### Depuis OVH Object Storage
 ```bash
-python scripts/restore_from_s3_universal.py --provider ovh --bucket hypervisia-backups restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3_universal.py --provider ovh --bucket OPCP-backups restore 2026/02/20/OPCP_backup_20260220_143000.sql
 ```
 
 ⚠️ **ATTENTION**: La restauration écrasera toutes les données actuelles de la base de données !
@@ -183,28 +183,28 @@ Les sauvegardes sont organisées par date dans le stockage cloud :
 
 AWS S3:
 ```
-s3://ai-hypervisia/
+s3://ai-OPCP/
 ├── 2026/
 │   ├── 02/
 │   │   ├── 20/
-│   │   │   ├── hypervisia_backup_20260220_020000.sql
-│   │   │   └── hypervisia_backup_20260220_143000.sql
+│   │   │   ├── OPCP_backup_20260220_020000.sql
+│   │   │   └── OPCP_backup_20260220_143000.sql
 │   │   └── 21/
-│   │       └── hypervisia_backup_20260221_020000.sql
+│   │       └── OPCP_backup_20260221_020000.sql
 │   └── 03/
 │       └── ...
 ```
 
 OVH Object Storage:
 ```
-hypervisia-backups/
+OPCP-backups/
 ├── 2026/
 │   ├── 02/
 │   │   ├── 20/
-│   │   │   ├── hypervisia_backup_20260220_020000.sql
-│   │   │   └── hypervisia_backup_20260220_143000.sql
+│   │   │   ├── OPCP_backup_20260220_020000.sql
+│   │   │   └── OPCP_backup_20260220_143000.sql
 │   │   └── 21/
-│   │       └── hypervisia_backup_20260221_020000.sql
+│   │       └── OPCP_backup_20260221_020000.sql
 │   └── 03/
 │       └── ...
 ```
@@ -219,7 +219,7 @@ Pour automatiser les sauvegardes quotidiennes avec upload cloud :
 crontab -e
 
 # Ajouter cette ligne pour une sauvegarde quotidienne à 2h du matin
-0 2 * * * cd /path/to/hypervisia && /usr/bin/python3 scripts/backup_database_universal.py --s3-provider aws >> /var/log/hypervisia_backup.log 2>&1
+0 2 * * * cd /path/to/OPCP && /usr/bin/python3 scripts/backup_database_universal.py --s3-provider aws >> /var/log/OPCP_backup.log 2>&1
 ```
 
 ### Vers OVH Object Storage
@@ -228,7 +228,7 @@ crontab -e
 crontab -e
 
 # Ajouter cette ligne pour une sauvegarde quotidienne à 2h du matin
-0 2 * * * cd /path/to/hypervisia && /usr/bin/python3 scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups >> /var/log/hypervisia_backup.log 2>&1
+0 2 * * * cd /path/to/OPCP && /usr/bin/python3 scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups >> /var/log/OPCP_backup.log 2>&1
 ```
 
 ### Redondance Multi-Cloud
@@ -239,15 +239,15 @@ Pour sauvegarder vers AWS ET OVH simultanément :
 # backup_multi_cloud.sh
 
 # Sauvegarde vers AWS
-python scripts/backup_database_universal.py --s3-provider aws --s3-bucket ai-hypervisia
+python scripts/backup_database_universal.py --s3-provider aws --s3-bucket ai-OPCP
 
 # Sauvegarde vers OVH
-python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups
+python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups
 ```
 
 Cron:
 ```bash
-0 2 * * * /path/to/backup_multi_cloud.sh >> /var/log/hypervisia_backup.log 2>&1
+0 2 * * * /path/to/backup_multi_cloud.sh >> /var/log/OPCP_backup.log 2>&1
 ```
 
 ## Configuration Cloud
@@ -256,7 +256,7 @@ Cron:
 
 #### Permissions IAM requises
 
-Le compte AWS doit avoir les permissions suivantes sur le bucket `ai-hypervisia` :
+Le compte AWS doit avoir les permissions suivantes sur le bucket `ai-OPCP` :
 
 ```json
 {
@@ -271,8 +271,8 @@ Le compte AWS doit avoir les permissions suivantes sur le bucket `ai-hypervisia`
         "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::ai-hypervisia",
-        "arn:aws:s3:::ai-hypervisia/*"
+        "arn:aws:s3:::ai-OPCP",
+        "arn:aws:s3:::ai-OPCP/*"
       ]
     }
   ]
@@ -372,7 +372,7 @@ Si vous utilisez Docker, vous pouvez exécuter les scripts depuis le conteneur :
 docker exec -it <container_name> python scripts/backup_database_universal.py --s3-provider aws
 
 # Sauvegarde vers OVH
-docker exec -it <container_name> python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups
+docker exec -it <container_name> python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups
 
 # Lister les sauvegardes AWS
 docker exec -it <container_name> python scripts/restore_from_s3_universal.py --provider aws list
@@ -381,10 +381,10 @@ docker exec -it <container_name> python scripts/restore_from_s3_universal.py --p
 docker exec -it <container_name> python scripts/restore_from_s3_universal.py --provider ovh list
 
 # Restaurer depuis AWS
-docker exec -it <container_name> python scripts/restore_from_s3_universal.py --provider aws restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+docker exec -it <container_name> python scripts/restore_from_s3_universal.py --provider aws restore 2026/02/20/OPCP_backup_20260220_143000.sql
 
 # Restaurer depuis OVH
-docker exec -it <container_name> python scripts/restore_from_s3_universal.py --provider ovh restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+docker exec -it <container_name> python scripts/restore_from_s3_universal.py --provider ovh restore 2026/02/20/OPCP_backup_20260220_143000.sql
 ```
 
 ## Intégration avec l'Application
@@ -413,7 +413,7 @@ async def list_s3_backups(current_user: User = Depends(get_current_admin_user)):
     """Liste les sauvegardes disponibles dans S3"""
     import boto3
     s3 = boto3.client('s3')
-    response = s3.list_objects_v2(Bucket='ai-hypervisia')
+    response = s3.list_objects_v2(Bucket='ai-OPCP')
     backups = [obj['Key'] for obj in response.get('Contents', []) if obj['Key'].endswith('.sql')]
     return {"backups": backups}
 ```
@@ -448,13 +448,13 @@ Vérifiez que votre compte a les permissions nécessaires sur le bucket.
 ### Le bucket n'existe pas (AWS)
 Créez le bucket :
 ```bash
-aws s3 mb s3://ai-hypervisia --region eu-west-3
+aws s3 mb s3://ai-OPCP --region eu-west-3
 ```
 
 ### Le bucket n'existe pas (OVH)
 Créez le conteneur via l'espace client OVH ou avec AWS CLI :
 ```bash
-aws s3 mb s3://hypervisia-backups --endpoint-url https://s3.gra.io.cloud.ovh.net
+aws s3 mb s3://OPCP-backups --endpoint-url https://s3.gra.io.cloud.ovh.net
 ```
 
 ### Erreur: EndpointConnectionError (OVH)

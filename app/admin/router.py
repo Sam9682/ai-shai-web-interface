@@ -840,7 +840,7 @@ async def send_announcement(
         db=db,
         subject=announcement_data.subject,
         content=announcement_data.content,
-        sender_name=announcement_data.sender_name or "HYPERVISIA"
+        sender_name=announcement_data.sender_name or "OPCP"
     )
     
     # Create audit log entry
@@ -852,7 +852,7 @@ async def send_announcement(
         details={
             "subject": announcement_data.subject,
             "content_preview": announcement_data.content[:100] if len(announcement_data.content) > 100 else announcement_data.content,
-            "sender_name": announcement_data.sender_name or "HYPERVISIA",
+            "sender_name": announcement_data.sender_name or "OPCP",
             "notifications_sent": notifications_sent,
             "total_active_members": total_active_members
         }

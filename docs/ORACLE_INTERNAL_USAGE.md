@@ -2,7 +2,7 @@
 
 ## Introduction
 
-L'application HYPERVISIA peut utiliser l'Oracle AI en interne pour automatiser certaines tâches d'analyse et de génération de contenu.
+L'application OPCP peut utiliser l'Oracle AI en interne pour automatiser certaines tâches d'analyse et de génération de contenu.
 
 ## Cas d'usage implémentés
 

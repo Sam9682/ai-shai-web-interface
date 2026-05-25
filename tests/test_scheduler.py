@@ -1,5 +1,5 @@
 """Tests for background task scheduler
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.6, 6.4
 """
 import pytest

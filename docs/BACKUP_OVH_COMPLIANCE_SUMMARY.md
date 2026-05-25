@@ -2,7 +2,7 @@
 
 ## ✅ Vérification Complète
 
-Le système de sauvegarde et restauration Hypervisia est maintenant **100% compatible** avec :
+Le système de sauvegarde et restauration OPCP est maintenant **100% compatible** avec :
 
 1. **AWS S3** (Amazon Web Services) - Configuration originale
 2. **OVH Object Storage** - Nouvelle compatibilité ajoutée
@@ -72,7 +72,7 @@ OVH_S3_REGION=gra
 python scripts/backup_database_universal.py
 
 # Vers OVH
-python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups
+python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups
 ```
 
 ### Restauration
@@ -82,7 +82,7 @@ python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hyperv
 python scripts/restore_from_s3_universal.py --provider aws restore 2026/02/28/backup.sql
 
 # Depuis OVH
-python scripts/restore_from_s3_universal.py --provider ovh --bucket hypervisia-backups restore 2026/02/28/backup.sql
+python scripts/restore_from_s3_universal.py --provider ovh --bucket OPCP-backups restore 2026/02/28/backup.sql
 ```
 
 ### Redondance Multi-Cloud
@@ -95,7 +95,7 @@ python scripts/restore_from_s3_universal.py --provider ovh --bucket hypervisia-b
 python scripts/backup_database_universal.py --s3-provider aws
 
 # OVH
-python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups
+python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups
 ```
 
 ## 📊 Comparaison des Fournisseurs
@@ -185,7 +185,7 @@ Même processus en sens inverse.
 
 ## 🎉 Conclusion
 
-Le système de sauvegarde Hypervisia est maintenant :
+Le système de sauvegarde OPCP est maintenant :
 
 ✅ **Multi-cloud** - AWS et OVH supportés  
 ✅ **Flexible** - Choix du fournisseur selon les besoins  

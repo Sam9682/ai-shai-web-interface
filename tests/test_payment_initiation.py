@@ -1,5 +1,5 @@
 """Unit tests for payment initiation endpoint
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.1, 4.7
 """
 import pytest

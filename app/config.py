@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     SMTP_PORT: int = 587
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
-    SMTP_FROM: str = "noreply@hypervisia.fr"
+    SMTP_FROM: str = "noreply@opcp-psmc.com"
     
     # Payment (optional for development)
     STRIPE_API_KEY: str = "sk_test_dummy_key"
@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "AI-SHAI"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
-    ALLOWED_ORIGINS: str = "https://hypervisia.fr"
+    ALLOWED_ORIGINS: str = "https://opcp-psmc.com"
     
     # File Storage
     UPLOAD_DIR: str = "./storage/uploads"

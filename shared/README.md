@@ -129,7 +129,7 @@ HTTPS_PORT2 = HTTP_PORT2 + 1
 
 3. Test API health endpoint:
    ```bash
-   curl -f -s "https://www.softfluid.fr:${HTTPS_PORT}/"
+   curl -f -s "https://www.opcp-psmc.com:${HTTPS_PORT}/"
    ```
 
 4. Return success if services are running (health check is optional)

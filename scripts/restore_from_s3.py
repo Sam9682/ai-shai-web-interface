@@ -10,7 +10,7 @@ import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
 
 
-def list_s3_backups(bucket_name: str = "ai-hypervisia", prefix: str = ""):
+def list_s3_backups(bucket_name: str = "ai-OPCP", prefix: str = ""):
     """
     Liste les sauvegardes disponibles dans S3
     
@@ -65,12 +65,12 @@ def list_s3_backups(bucket_name: str = "ai-hypervisia", prefix: str = ""):
         return []
 
 
-def download_from_s3(s3_key: str, bucket_name: str = "ai-hypervisia", local_dir: str = "./backups") -> Path:
+def download_from_s3(s3_key: str, bucket_name: str = "ai-OPCP", local_dir: str = "./backups") -> Path:
     """
     Télécharge une sauvegarde depuis S3
     
     Args:
-        s3_key: Clé S3 du fichier (ex: "2026/02/20/hypervisia_backup_20260220_143000.sql")
+        s3_key: Clé S3 du fichier (ex: "2026/02/20/OPCP_backup_20260220_143000.sql")
         bucket_name: Nom du bucket S3
         local_dir: Répertoire local de destination
         
@@ -111,7 +111,7 @@ def download_from_s3(s3_key: str, bucket_name: str = "ai-hypervisia", local_dir:
         return None
 
 
-def restore_from_s3(s3_key: str, bucket_name: str = "ai-hypervisia"):
+def restore_from_s3(s3_key: str, bucket_name: str = "ai-OPCP"):
     """
     Télécharge et restaure une sauvegarde depuis S3
     
@@ -146,11 +146,11 @@ def restore_from_s3(s3_key: str, bucket_name: str = "ai-hypervisia"):
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Gestion des sauvegardes S3 Hypervisia")
+    parser = argparse.ArgumentParser(description="Gestion des sauvegardes S3 OPCP")
     parser.add_argument(
         '--bucket',
-        default='ai-hypervisia',
-        help='Nom du bucket S3 (défaut: ai-hypervisia)'
+        default='ai-OPCP',
+        help='Nom du bucket S3 (défaut: ai-OPCP)'
     )
     
     subparsers = parser.add_subparsers(dest='command', help='Commandes disponibles')
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     download_parser = subparsers.add_parser('download', help='Télécharger une sauvegarde')
     download_parser.add_argument(
         's3_key',
-        help='Clé S3 du fichier (ex: 2026/02/20/hypervisia_backup_20260220_143000.sql)'
+        help='Clé S3 du fichier (ex: 2026/02/20/OPCP_backup_20260220_143000.sql)'
     )
     download_parser.add_argument(
         '--local-dir',

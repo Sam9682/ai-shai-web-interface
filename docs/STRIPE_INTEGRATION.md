@@ -2,7 +2,7 @@
 
 ## Overview
 
-The HYPERVISIA website uses Stripe for processing membership fee payments via credit card. This document explains how the Stripe integration is configured and how to use it.
+The OPCP website uses Stripe for processing membership fee payments via credit card. This document explains how the Stripe integration is configured and how to use it.
 
 ## Configuration
 
@@ -194,7 +194,7 @@ Use Stripe CLI to forward webhooks to your local server:
 stripe login
 
 # Forward webhooks to local server
-stripe listen --forward-to ai-hypervisia:8000/api/payments/stripe/webhook
+stripe listen --forward-to ai-OPCP:8000/api/payments/stripe/webhook
 
 # Trigger test events
 stripe trigger payment_intent.succeeded

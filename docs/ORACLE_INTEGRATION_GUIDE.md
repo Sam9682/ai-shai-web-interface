@@ -1,8 +1,8 @@
-# Guide d'intégration du module Oracle AI dans softfluid.fr
+# Guide d'intégration du module Oracle AI dans opcp-psmc.com
 
 ## Introduction
 
-Ce guide explique comment intégrer le module "L'Oracle (AI)" dans n'importe quelle application de l'écosystème softfluid.fr.
+Ce guide explique comment intégrer le module "L'Oracle (AI)" dans n'importe quelle application de l'écosystème opcp-psmc.com.
 
 ## Prérequis
 
@@ -16,7 +16,7 @@ Ce guide explique comment intégrer le module "L'Oracle (AI)" dans n'importe que
 ### 1.1 Copier le module Oracle
 
 ```bash
-# Depuis le projet hypervisia
+# Depuis le projet OPCP
 cp -r app/oracle/ <votre_projet>/app/oracle/
 cp app/models/oracle.py <votre_projet>/app/models/
 ```
@@ -81,7 +81,7 @@ bash scripts/install_kiro_cli.sh
 ### 4.1 Copier les composants
 
 ```bash
-# Depuis le projet hypervisia
+# Depuis le projet OPCP
 cp frontend/src/pages/OraclePage.tsx <votre_frontend>/src/pages/
 cp frontend/src/components/OracleWidget.tsx <votre_frontend>/src/components/
 cp frontend/src/services/oracleService.ts <votre_frontend>/src/services/
@@ -249,7 +249,7 @@ async def public_ask_oracle(
 Pour mettre à jour le module Oracle dans votre application:
 
 1. Sauvegarder vos personnalisations
-2. Copier les nouveaux fichiers depuis hypervisia
+2. Copier les nouveaux fichiers depuis OPCP
 3. Réappliquer vos personnalisations
 4. Tester
 
@@ -320,6 +320,6 @@ async def analyze_customer_sentiment(db: Session):
 
 ## Conclusion
 
-Le module Oracle AI est maintenant intégré dans votre application softfluid.fr. Vous pouvez le personnaliser selon vos besoins spécifiques.
+Le module Oracle AI est maintenant intégré dans votre application opcp-psmc.com. Vous pouvez le personnaliser selon vos besoins spécifiques.
 
-Pour toute question, contactez l'équipe de développement à contact@hypervisia.fr
+Pour toute question, contactez l'équipe de développement à contact@opcp-psmc.com

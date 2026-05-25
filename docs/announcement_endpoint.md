@@ -2,7 +2,7 @@
 
 ## Overview
 
-The announcement endpoint allows administrators to send announcements to all active members of the HYPERVISIA association.
+The announcement endpoint allows administrators to send announcements to all active members of the OPCP association.
 
 ## Endpoint
 
@@ -18,7 +18,7 @@ Requires administrator role. The endpoint uses JWT token authentication and the 
 {
   "subject": "string (required, min_length=1, max_length=255)",
   "content": "string (required, min_length=1)",
-  "sender_name": "string (optional, default='HYPERVISIA')"
+  "sender_name": "string (optional, default='OPCP')"
 }
 ```
 
@@ -26,7 +26,7 @@ Requires administrator role. The endpoint uses JWT token authentication and the 
 
 - **subject**: The subject line of the announcement (required)
 - **content**: The main content of the announcement (required)
-- **sender_name**: The name of the sender to display in the email (optional, defaults to "HYPERVISIA")
+- **sender_name**: The name of the sender to display in the email (optional, defaults to "OPCP")
 
 ## Response
 
@@ -58,8 +58,8 @@ Requires administrator role. The endpoint uses JWT token authentication and the 
 2. **Notification Preferences**: Respects user notification preferences. Users who have disabled announcement notifications will not receive the email.
 
 3. **Email Format**: Sends both HTML and plain text versions of the email with:
-   - Professional HTML template with HYPERVISIA branding
-   - Subject line prefixed with "[HYPERVISIA]"
+   - Professional HTML template with OPCP branding
+   - Subject line prefixed with "[OPCP]"
    - Personalized greeting with user's first name
    - Announcement subject and content
    - Footer with association information
@@ -115,13 +115,13 @@ Returned when request validation fails (empty subject, empty content, etc.).
 
 ```bash
 # Login as administrator
-TOKEN=$(curl -X POST http://ai-hypervisia:8000/api/auth/login \
+TOKEN=$(curl -X POST http://ai-OPCP:8000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@hypervisia.fr","password":"Admin1234!"}' \
+  -d '{"email":"admin@opcp-psmc.com","password":"Admin1234!"}' \
   | jq -r '.access_token')
 
 # Send announcement
-curl -X POST http://ai-hypervisia:8000/api/admin/announcements \
+curl -X POST http://ai-OPCP:8000/api/admin/announcements \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -138,14 +138,14 @@ import requests
 
 # Login
 response = requests.post(
-    "http://ai-hypervisia:8000/api/auth/login",
-    json={"email": "admin@hypervisia.fr", "password": "Admin1234!"}
+    "http://ai-OPCP:8000/api/auth/login",
+    json={"email": "admin@opcp-psmc.com", "password": "Admin1234!"}
 )
 token = response.json()["access_token"]
 
 # Send announcement
 response = requests.post(
-    "http://ai-hypervisia:8000/api/admin/announcements",
+    "http://ai-OPCP:8000/api/admin/announcements",
     headers={"Authorization": f"Bearer {token}"},
     json={
         "subject": "Assemblée Générale 2024",
@@ -162,18 +162,18 @@ print(f"Sent to {result['notifications_sent']} members")
 
 ```javascript
 // Login
-const loginResponse = await fetch('http://ai-hypervisia:8000/api/auth/login', {
+const loginResponse = await fetch('http://ai-OPCP:8000/api/auth/login', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    email: 'admin@hypervisia.fr',
+    email: 'admin@opcp-psmc.com',
     password: 'Admin1234!'
   })
 });
 const { access_token } = await loginResponse.json();
 
 // Send announcement
-const response = await fetch('http://ai-hypervisia:8000/api/admin/announcements', {
+const response = await fetch('http://ai-OPCP:8000/api/admin/announcements', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${access_token}`,

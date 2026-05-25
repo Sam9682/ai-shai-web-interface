@@ -2,7 +2,7 @@
 
 ## 🎉 Félicitations !
 
-Le module "L'Oracle (AI)" a été implémenté avec succès dans votre application HYPERVISIA.
+Le module "L'Oracle (AI)" a été implémenté avec succès dans votre application OPCP.
 
 ## 📦 Ce qui a été créé
 
@@ -197,7 +197,7 @@ print(response.answer)
 
 ## 🔄 Réutilisation dans d'autres applications
 
-Le module est conçu pour être facilement réutilisable dans toutes les applications softfluid.fr.
+Le module est conçu pour être facilement réutilisable dans toutes les applications opcp-psmc.com.
 
 **Guide complet:** `docs/ORACLE_INTEGRATION_GUIDE.md`
 
@@ -293,7 +293,7 @@ async def analyze_custom_data(db: Session, data_type: str):
 
 ## 📞 Support
 
-- **Email:** contact@hypervisia.fr
+- **Email:** contact@opcp-psmc.com
 - **Documentation:** Voir dossier `docs/`
 - **Configuration:** `oracle_config.json`
 
@@ -326,7 +326,7 @@ async def analyze_custom_data(db: Session, data_type: str):
 
 ## 🎉 Conclusion
 
-Le module "L'Oracle (AI)" est maintenant complètement intégré dans votre application HYPERVISIA !
+Le module "L'Oracle (AI)" est maintenant complètement intégré dans votre application OPCP !
 
 **Vous pouvez:**
 - ✅ Poser des questions à l'Oracle
@@ -343,6 +343,6 @@ Le module "L'Oracle (AI)" est maintenant complètement intégré dans votre appl
 
 ---
 
-**Développé avec ❤️ par HYPERVISIA pour l'écosystème softfluid.fr**
+**Développé avec ❤️ par OPCP pour l'écosystème opcp-psmc.com**
 
 🔮 *"L'Oracle voit l'avenir de l'IA et de l'humanité"*

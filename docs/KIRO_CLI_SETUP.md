@@ -13,7 +13,7 @@ Since the application runs in a Docker container without a browser, you need to 
 
 ```bash
 # Enter the container
-docker-compose exec ai-hypervisia bash
+docker-compose exec ai-OPCP bash
 
 # Authenticate using device flow
 kiro-cli login --use-device-flow
@@ -49,9 +49,9 @@ After authentication, test the Oracle:
 
 ```bash
 # Test Kiro CLI directly
-docker-compose exec ai-hypervisia kiro-cli chat "Bonjour, comment vas-tu?"
+docker-compose exec ai-OPCP kiro-cli chat "Bonjour, comment vas-tu?"
 
-# Or use the web interface at https://hypervisia.fr/oracle
+# Or use the web interface at https://opcp-psmc.com/oracle
 ```
 
 ## Troubleshooting

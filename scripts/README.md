@@ -1,6 +1,6 @@
-# Scripts Hypervisia
+# Scripts OPCP
 
-Ce dossier contient tous les scripts utilitaires pour la gestion de l'application Hypervisia.
+Ce dossier contient tous les scripts utilitaires pour la gestion de l'application OPCP.
 
 ## 📦 Sauvegardes de Base de Données
 
@@ -53,7 +53,7 @@ python scripts/backup_database.py
 python scripts/restore_from_s3.py list
 
 # Restaurer depuis S3
-python scripts/restore_from_s3.py restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3.py restore 2026/02/20/OPCP_backup_20260220_143000.sql
 ```
 
 ## 📚 Documentation Complète
@@ -85,10 +85,10 @@ AWS_DEFAULT_REGION=eu-west-3
 
 ```bash
 # Sauvegarde depuis le conteneur
-docker exec -it hypervisia-container python scripts/backup_database.py
+docker exec -it OPCP-container python scripts/backup_database.py
 
 # Restaurer depuis le conteneur
-docker exec -it hypervisia-container python scripts/restore_from_s3.py restore <s3_key>
+docker exec -it OPCP-container python scripts/restore_from_s3.py restore <s3_key>
 ```
 
 ## 🔒 Sécurité
@@ -112,4 +112,4 @@ Pour ~10 GB de sauvegardes :
 
 ## 📝 Licence
 
-Partie du projet Hypervisia
+Partie du projet OPCP

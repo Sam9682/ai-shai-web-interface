@@ -26,7 +26,7 @@ client = TestClient(app)
 def admin_user(db_session: Session) -> User:
     """Create an administrator user for testing"""
     admin = User(
-        email="admin@hypervisia.fr",
+        email="admin@opcp-psmc.com",
         password_hash=hash_password("Admin1234!"),
         first_name="Admin",
         last_name="User",
@@ -46,7 +46,7 @@ def admin_headers(client, admin_user: User):
     response = client.post(
         "/api/auth/login",
         json={
-            "email": "admin@hypervisia.fr",
+            "email": "admin@opcp-psmc.com",
             "password": "Admin1234!"
         }
     )
@@ -59,7 +59,7 @@ def admin_headers(client, admin_user: User):
 def member_user(db_session: Session) -> User:
     """Create a regular member user for testing"""
     member = User(
-        email="member@hypervisia.org",
+        email="member@OPCP.org",
         password_hash=hash_password("MemberPass123"),
         first_name="Member",
         last_name="User",
@@ -79,7 +79,7 @@ def member_headers(client, member_user: User):
     response = client.post(
         "/api/auth/login",
         json={
-            "email": "member@hypervisia.org",
+            "email": "member@OPCP.org",
             "password": "MemberPass123"
         }
     )

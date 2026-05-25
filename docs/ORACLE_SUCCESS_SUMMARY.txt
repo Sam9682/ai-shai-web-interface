@@ -108,7 +108,7 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Le module Oracle AI est conçu pour être facilement réutilisable dans
-toutes les applications de l'écosystème softfluid.fr
+toutes les applications de l'écosystème opcp-psmc.com
 
 ✅ Architecture modulaire
 ✅ Configuration flexible
@@ -123,7 +123,7 @@ Voir: docs/ORACLE_INTEGRATION_GUIDE.md
 📞 SUPPORT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Email: contact@hypervisia.fr
+Email: contact@opcp-psmc.com
 Documentation: docs/
 Configuration: oracle_config.json
 
@@ -132,10 +132,10 @@ Configuration: oracle_config.json
 🎉 FÉLICITATIONS !
 
 Le module "L'Oracle (AI)" est maintenant complètement intégré dans
-votre application HYPERVISIA et prêt à être utilisé !
+votre application OPCP et prêt à être utilisé !
 
 🔮 "L'Oracle voit l'avenir de l'IA et de l'humanité"
 
-Développé avec ❤️ par HYPERVISIA pour l'écosystème softfluid.fr
+Développé avec ❤️ par OPCP pour l'écosystème opcp-psmc.com
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

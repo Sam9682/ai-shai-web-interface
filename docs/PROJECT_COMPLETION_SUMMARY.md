@@ -1,8 +1,8 @@
-# HYPERVISIA - Résumé Final du Projet
+# OPCP - Résumé Final du Projet
 
 ## 🎉 Statut du Projet: COMPLÉTÉ
 
-Le site web HYPERVISIA pour l'association loi 1901 est maintenant entièrement implémenté et prêt pour le déploiement.
+Le site web OPCP pour l'association loi 1901 est maintenant entièrement implémenté et prêt pour le déploiement.
 
 ---
 
@@ -124,7 +124,7 @@ Le site web HYPERVISIA pour l'association loi 1901 est maintenant entièrement i
 ## 📁 Structure du Projet
 
 ```
-ai-hypervisia/
+ai-OPCP/
 ├── app/                          # Backend FastAPI
 │   ├── auth/                     # Authentification
 │   ├── forum/                    # Forum
@@ -243,8 +243,8 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-Backend disponible sur: http://ai-hypervisia:8000
-Documentation API: http://ai-hypervisia:8000/docs
+Backend disponible sur: http://ai-OPCP:8000
+Documentation API: http://ai-OPCP:8000/docs
 
 ### Frontend
 
@@ -256,7 +256,7 @@ npm install
 
 # Configurer API
 cp .env.example .env
-# VITE_API_BASE_URL=http://ai-hypervisia:8000/api
+# VITE_API_BASE_URL=http://ai-OPCP:8000/api
 
 # Démarrer serveur dev
 npm run dev
@@ -345,7 +345,7 @@ Frontend disponible sur: http://frontend:5173
 
 ## 👥 Équipe
 
-**Association HYPERVISIA**
+**Association OPCP**
 - Président: Samuel LEPETRE
 - Trésorier: Thibaud BRUNEL
 - Secrétaire: Nal LEPETRE
@@ -356,7 +356,7 @@ Siège: 2 square des coquelicots 91370 VERRIÈRES LE BUISSON
 
 ## 📝 Licence
 
-Association loi 1901 - HYPERVISIA
+Association loi 1901 - OPCP
 
 ---
 
@@ -390,9 +390,9 @@ Toutes les exigences du cahier des charges ont été implémentées et testées:
 
 ## 🎊 Conclusion
 
-Le site web HYPERVISIA est **entièrement fonctionnel** et **prêt pour la production**. Tous les modules backend sont implémentés, testés et documentés. Le frontend offre une interface utilisateur moderne et responsive pour les fonctionnalités essentielles.
+Le site web OPCP est **entièrement fonctionnel** et **prêt pour la production**. Tous les modules backend sont implémentés, testés et documentés. Le frontend offre une interface utilisateur moderne et responsive pour les fonctionnalités essentielles.
 
-Le système peut être déployé immédiatement et servir les besoins de l'association HYPERVISIA pour la gestion complète de ses activités conformément à la loi 1901 et au RGPD.
+Le système peut être déployé immédiatement et servir les besoins de l'association OPCP pour la gestion complète de ses activités conformément à la loi 1901 et au RGPD.
 
 **Date de complétion:** 16 février 2026
 

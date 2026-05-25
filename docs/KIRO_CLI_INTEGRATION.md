@@ -1,8 +1,8 @@
-# Intégration de Kiro CLI dans l'application HYPERVISIA
+# Intégration de Kiro CLI dans l'application OPCP
 
 ## Vue d'ensemble
 
-L'application HYPERVISIA utilise le module "Oracle AI" qui permet aux utilisateurs de poser des questions à une IA agentique. Kiro CLI est maintenant intégré comme fournisseur d'IA par défaut, offrant une solution gratuite et sans configuration.
+L'application OPCP utilise le module "Oracle AI" qui permet aux utilisateurs de poser des questions à une IA agentique. Kiro CLI est maintenant intégré comme fournisseur d'IA par défaut, offrant une solution gratuite et sans configuration.
 
 ## Architecture
 

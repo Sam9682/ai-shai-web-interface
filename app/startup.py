@@ -18,10 +18,10 @@ def create_default_admin():
             
             # Create default admin user
             default_admin = User(
-                email="admin@hypervisia.fr",
+                email="admin@opcp-psmc.com",
                 password_hash=hash_password("Admin1234!"),
                 first_name="Admin",
-                last_name="HYPERVISIA",
+                last_name="OPCP",
                 role=UserRole.ADMINISTRATOR,
                 is_email_verified=True,
                 membership_expires_at=None,  # Lifetime membership
@@ -33,7 +33,7 @@ def create_default_admin():
             db.refresh(default_admin)
             
             logger.info(f"Default admin user created: {default_admin.email}")
-            logger.info("Default credentials - Email: admin@hypervisia.fr, Password: Admin1234!")
+            logger.info("Default credentials - Email: admin@opcp-psmc.com, Password: Admin1234!")
         else:
             logger.info(f"Database already contains {user_count} user(s). Skipping default admin creation.")
             

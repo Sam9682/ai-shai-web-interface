@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# HYPERVISIA Deployment Script
+# OPCP Deployment Script
 # This script safely stops and starts the application while preserving data
 
 set -e  # Exit on error
@@ -11,7 +11,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${GREEN}=== HYPERVISIA Deployment Script ===${NC}"
+echo -e "${GREEN}=== OPCP Deployment Script ===${NC}"
 
 # Function to print colored messages
 print_info() {
@@ -66,7 +66,7 @@ sleep 5
 # Check if postgres is healthy
 print_info "Checking database health..."
 for i in {1..30}; do
-    if docker-compose exec -T postgres pg_isready -U hypervisia_user -d hypervisia_db > /dev/null 2>&1; then
+    if docker-compose exec -T postgres pg_isready -U OPCP_user -d OPCP_db > /dev/null 2>&1; then
         print_info "Database is ready!"
         break
     fi
@@ -80,7 +80,7 @@ done
 
 # Run database migrations
 print_info "Running database migrations..."
-docker-compose exec -T ai-hypervisia alembic upgrade head || print_warning "Migration failed or already up to date"
+docker-compose exec -T ai-OPCP alembic upgrade head || print_warning "Migration failed or already up to date"
 
 # Show container status
 print_info "Container status:"

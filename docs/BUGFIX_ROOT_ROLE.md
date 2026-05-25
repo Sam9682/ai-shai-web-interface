@@ -21,13 +21,13 @@ This error occurs when attempting to connect to PostgreSQL without specifying th
 
 **Before:**
 ```env
-DATABASE_URL=postgresql://hypervisia_user:hypervisia_password@db:5432/hypervisia_db
+DATABASE_URL=postgresql://OPCP_user:OPCP_password@db:5432/OPCP_db
 ```
 
 **After:**
 ```env
-DATABASE_URL=postgresql://hypervisia_user:hypervisia_password@postgres:5432/hypervisia_db
-POSTGRES_PASSWORD=hypervisia_password
+DATABASE_URL=postgresql://OPCP_user:OPCP_password@postgres:5432/OPCP_db
+POSTGRES_PASSWORD=OPCP_password
 ```
 
 The hostname must match the service name in `docker-compose.yml` (which is `postgres`).
@@ -84,7 +84,7 @@ Created `docs/DATABASE_ACCESS.md` with:
 To prevent this error in the future:
 
 1. **Always use the helper script** for database access
-2. **Never run `psql` or `pg_dump` without specifying `-U hypervisia_user`**
+2. **Never run `psql` or `pg_dump` without specifying `-U OPCP_user`**
 3. **Use docker-compose exec** for database operations
 4. **Keep `.env` and `docker-compose.yml` service names in sync**
 

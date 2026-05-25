@@ -1,4 +1,4 @@
-HYPERVISIA
+OPCP
 
 RÈGLEMENT INTÉRIEUR
 
@@ -21,7 +21,7 @@ La cotisation annuelle est fixée par l’Assemblée Générale. Des contributio
 demandées pour :
 • participation à certains événements ;
 • accès à certains services ou formations ;
-• usage professionnel de ressources numériques, notamment Softfluid.fr, dans le cadre d’une
+• usage professionnel de ressources numériques, notamment opcp-psmc.com, dans le cadre d’une
 convention.
 
 Article 4 — Bureau
@@ -44,15 +44,15 @@ Article 6 — Commissions et groupes de travail
 Le Bureau peut créer des commissions temporaires (ex. organisation d’un événement, rédaction de
 contenus, relations partenaires). Elles rendent compte au Bureau.
 
-Article 7 — Usage de la plateforme Softfluid.fr
-La plateforme Softfluid.fr peut être utilisée par l’Association comme outil pédagogique, de démonstration
+Article 7 — Usage de la plateforme opcp-psmc.com
+La plateforme opcp-psmc.com peut être utilisée par l’Association comme outil pédagogique, de démonstration
 ou d’expérimentation.
 Pour les personnes morales (entreprises), un accès ou une utilisation professionnelle peut donner lieu à
 une convention et à une participation financière, conformément aux objectifs de l’Association et dans le
 respect de la réglementation applicable.
 
 Article 8 — Communication et image
-Les supports de communication de l’Association (site web Hypervisia.fr, réseaux sociaux, documents)
+Les supports de communication de l’Association (site web opcp-psmc.com, réseaux sociaux, documents)
 doivent respecter l’objet de l’Association et la neutralité de l’organisation.
 
 Article 9 — Gestion des conflits d’intérêts

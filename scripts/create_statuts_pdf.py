@@ -5,10 +5,10 @@ Convert STATUTS JPEG images to PDF
 from PIL import Image
 
 # Open the four JPEG images
-img1 = Image.open('docs/STATUTS_ASSOCIATION_HYPERVISIA_(1).jpeg')
-img2 = Image.open('docs/STATUTS_ASSOCIATION_HYPERVISIA_(2).jpeg')
-img3 = Image.open('docs/STATUTS_ASSOCIATION_HYPERVISIA_(3).jpeg')
-img4 = Image.open('docs/STATUTS_ASSOCIATION_HYPERVISIA_(4).jpeg')
+img1 = Image.open('docs/STATUTS_ASSOCIATION_OPCP_(1).jpeg')
+img2 = Image.open('docs/STATUTS_ASSOCIATION_OPCP_(2).jpeg')
+img3 = Image.open('docs/STATUTS_ASSOCIATION_OPCP_(3).jpeg')
+img4 = Image.open('docs/STATUTS_ASSOCIATION_OPCP_(4).jpeg')
 
 # Convert to RGB if needed (PDF requires RGB)
 images = [img1, img2, img3, img4]
@@ -20,10 +20,10 @@ for img in images:
         rgb_images.append(img)
 
 # Save as PDF with all images
-rgb_images[0].save('docs/STATUTS_ASSOCIATION_HYPERVISIA_FROM_IMAGES.pdf', 
+rgb_images[0].save('docs/STATUTS_ASSOCIATION_OPCP_FROM_IMAGES.pdf', 
           save_all=True, 
           append_images=rgb_images[1:],
           resolution=100.0,
           quality=95)
 
-print("✓ PDF created successfully: docs/STATUTS_ASSOCIATION_HYPERVISIA_FROM_IMAGES.pdf")
+print("✓ PDF created successfully: docs/STATUTS_ASSOCIATION_OPCP_FROM_IMAGES.pdf")

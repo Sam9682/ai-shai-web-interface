@@ -1,5 +1,5 @@
 """Notification service for delivering notifications to users
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 10.1, 10.2, 10.3, 10.5
 
 This service handles the delivery of notifications to users based on their preferences.
@@ -183,7 +183,7 @@ class NotificationService:
             body_text = f"""
 Bonjour {user.first_name},
 
-{reply_author} a répondu à votre sujet sur le forum HYPERVISIA.
+{reply_author} a répondu à votre sujet sur le forum OPCP.
 
 Sujet: {topic_title}
 Réponse: {reply_content}
@@ -191,7 +191,7 @@ Réponse: {reply_content}
 Connectez-vous pour voir la réponse complète et continuer la discussion.
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
 """
             
             body_html = f"""
@@ -211,7 +211,7 @@ L'équipe HYPERVISIA
 <body>
     <div class="container">
         <div class="header">
-            <h1>HYPERVISIA Forum</h1>
+            <h1>OPCP Forum</h1>
         </div>
         <div class="content">
             <p>Bonjour {user.first_name},</p>
@@ -225,10 +225,10 @@ L'équipe HYPERVISIA
             <p>Connectez-vous pour voir la réponse complète et continuer la discussion.</p>
             
             <p>Cordialement,<br>
-            L'équipe HYPERVISIA</p>
+            L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association HYPERVISIA - Loi 1901</p>
+            <p>Association OPCP - Loi 1901</p>
         </div>
     </div>
 </body>
@@ -318,7 +318,7 @@ L'équipe HYPERVISIA
             body_text = f"""
 Bonjour {user.first_name},
 
-Un événement HYPERVISIA a été {action}.
+Un événement OPCP a été {action}.
 
 Titre: {event_title}
 Date: {event_date}
@@ -328,7 +328,7 @@ Description: {event_description}
 Connectez-vous pour plus de détails et pour vous inscrire.
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
 """
             
             body_html = f"""
@@ -348,11 +348,11 @@ L'équipe HYPERVISIA
 <body>
     <div class="container">
         <div class="header">
-            <h1>HYPERVISIA Événements</h1>
+            <h1>OPCP Événements</h1>
         </div>
         <div class="content">
             <p>Bonjour {user.first_name},</p>
-            <p>Un événement HYPERVISIA a été <strong>{action}</strong>.</p>
+            <p>Un événement OPCP a été <strong>{action}</strong>.</p>
             
             <div class="event">
                 <h3>{event_title}</h3>
@@ -364,10 +364,10 @@ L'équipe HYPERVISIA
             <p>Connectez-vous pour plus de détails et pour vous inscrire.</p>
             
             <p>Cordialement,<br>
-            L'équipe HYPERVISIA</p>
+            L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association HYPERVISIA - Loi 1901</p>
+            <p>Association OPCP - Loi 1901</p>
         </div>
     </div>
 </body>
@@ -397,7 +397,7 @@ L'équipe HYPERVISIA
         db: Session,
         subject: str,
         content: str,
-        sender_name: str = "HYPERVISIA"
+        sender_name: str = "OPCP"
     ) -> int:
         """Send announcement to all active members with notifications enabled
         
@@ -409,7 +409,7 @@ L'équipe HYPERVISIA
             db: Database session
             subject: Announcement subject
             content: Announcement content
-            sender_name: Name of the sender (default: HYPERVISIA)
+            sender_name: Name of the sender (default: OPCP)
             
         Returns:
             Number of notifications sent successfully
@@ -447,7 +447,7 @@ Bonjour {user.first_name},
 {content}
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
 """
                     
                     body_html = f"""
@@ -467,7 +467,7 @@ L'équipe HYPERVISIA
 <body>
     <div class="container">
         <div class="header">
-            <h1>HYPERVISIA Annonce</h1>
+            <h1>OPCP Annonce</h1>
         </div>
         <div class="content">
             <p>Bonjour {user.first_name},</p>
@@ -479,10 +479,10 @@ L'équipe HYPERVISIA
             </div>
             
             <p>Cordialement,<br>
-            L'équipe HYPERVISIA</p>
+            L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association HYPERVISIA - Loi 1901</p>
+            <p>Association OPCP - Loi 1901</p>
         </div>
     </div>
 </body>
@@ -491,7 +491,7 @@ L'équipe HYPERVISIA
                     
                     success = self.email_service.send_email(
                         to_email=user.email,
-                        subject=f"[HYPERVISIA] {subject}",
+                        subject=f"[OPCP] {subject}",
                         body_text=body_text,
                         body_html=body_html
                     )

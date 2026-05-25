@@ -1,5 +1,5 @@
 """Tests for event listing endpoint
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 6.1, 6.5
 """
 import pytest

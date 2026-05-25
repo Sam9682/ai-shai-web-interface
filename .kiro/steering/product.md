@@ -4,7 +4,7 @@ inclusion: auto
 
 # Product Overview
 
-HYPERVISIA is a membership management platform for a French non-profit association (loi 1901). The system handles member authentication, forum discussions, membership payments, document management, event planning, and administrative functions while maintaining RGPD compliance.
+OPCP is a membership management platform for a French non-profit association (loi 1901). The system handles member authentication, forum discussions, membership payments, document management, event planning, and administrative functions while maintaining RGPD compliance.
 
 ## Core Features
 

@@ -1,5 +1,5 @@
 """Pydantic schemas for document management
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 5.1, 5.2, 5.4
 """
 from datetime import datetime

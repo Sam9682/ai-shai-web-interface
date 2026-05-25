@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# HYPERVISIA Restart Script
+# OPCP Restart Script
 # Restarts the application while preserving data
 
 set -e
 
-echo "=== Restarting HYPERVISIA Application ==="
+echo "=== Restarting OPCP Application ==="
 echo ""
 
 # Stop the application

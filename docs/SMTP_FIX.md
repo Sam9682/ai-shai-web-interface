@@ -19,16 +19,16 @@ The SMTP password in `.env` is set to the placeholder `your-email-password` inst
 2. **Generate App Password**
    - Navigate to: **Email** → **Your mailbox** → **Settings** → **App passwords**
    - Click "Create a new app password"
-   - Give it a name (e.g., "HYPERVISIA Website")
+   - Give it a name (e.g., "OPCP Website")
    - Copy the generated password
 
 3. **Update .env file**
    ```bash
    SMTP_HOST=mail.gandi.net
    SMTP_PORT=587
-   SMTP_USER=admin@hypervisia.fr
+   SMTP_USER=admin@opcp-psmc.com
    SMTP_PASSWORD=<paste-your-app-password-here>
-   SMTP_FROM=noreply@hypervisia.fr
+   SMTP_FROM=noreply@opcp-psmc.com
    ```
 
 4. **Restart the application**

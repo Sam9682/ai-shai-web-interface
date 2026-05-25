@@ -85,7 +85,7 @@ frontend/
 ```
 
 ### Environment Configuration
-- `VITE_API_BASE_URL`: Backend API URL (default: http://ai-hypervisia:8000/api)
+- `VITE_API_BASE_URL`: Backend API URL (default: http://ai-OPCP:8000/api)
 
 ## How to Use
 
@@ -110,7 +110,7 @@ npm run preview
 
 ## Integration with Backend
 
-The frontend is configured to connect to the FastAPI backend at `http://ai-hypervisia:8000/api`. 
+The frontend is configured to connect to the FastAPI backend at `http://ai-OPCP:8000/api`. 
 
 ### API Endpoints Used
 - `POST /api/auth/register` - User registration

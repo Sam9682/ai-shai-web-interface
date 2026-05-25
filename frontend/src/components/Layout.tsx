@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
-import hypervisiaLogo from '../assets/hypervisia.png';
+import OPCPLogo from '../assets/OPCP.png';
 
 interface LayoutProps {
   children: ReactNode;
@@ -30,7 +30,7 @@ export const Layout = ({ children }: LayoutProps) => {
           <div className="flex justify-between h-16">
             <div className="flex">
               <Link to="/" className="flex items-center text-xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent hover:from-primary-700 hover:to-purple-700 transition-all">
-                <img src={hypervisiaLogo} alt="HYPERVIS-IA" className="h-32 w-auto mr-2 object-contain" />
+                <img src={OPCPLogo} alt="HYPERVIS-IA" className="h-32 w-auto mr-2 object-contain" />
               </Link>
               {/* Desktop Menu */}
               <div className="hidden sm:ml-8 sm:flex sm:space-x-6">
@@ -213,8 +213,8 @@ export const Layout = ({ children }: LayoutProps) => {
       <footer className="bg-white/80 backdrop-blur-md border-t border-primary-100 mt-16">
         <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
           <div className="text-center text-gray-600">
-            <p className="text-sm">© 2026 HYPERVISIA - Association loi 1901 - N° W913016363</p>
-            <p className="text-xs mt-2">🤖 Développé et hébergé sur OVH par des agents virtuels IA - softfluid.fr</p>
+            <p className="text-sm">© 2026 OPCP - Association loi 1901 - N° W913016363</p>
+            <p className="text-xs mt-2">🤖 Développé et hébergé sur OVH par des agents virtuels IA - opcp-psmc.com</p>
           </div>
         </div>
       </footer>

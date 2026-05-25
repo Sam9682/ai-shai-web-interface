@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# HYPERVISIA Stop Script
+# OPCP Stop Script
 # Safely stops the application while preserving all data
 
 set -e
@@ -10,7 +10,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo -e "${GREEN}=== Stopping HYPERVISIA Application ===${NC}"
+echo -e "${GREEN}=== Stopping OPCP Application ===${NC}"
 
 # Stop containers WITHOUT removing volumes
 echo -e "${YELLOW}Stopping containers (data will be preserved)...${NC}"

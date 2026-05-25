@@ -74,7 +74,7 @@ def check_aws_credentials() -> bool:
         return False
 
 
-def check_s3_bucket(bucket: str = "ai-hypervisia") -> bool:
+def check_s3_bucket(bucket: str = "ai-OPCP") -> bool:
     """Vérifie si le bucket S3 existe et est accessible"""
     try:
         result = subprocess.run(
@@ -131,7 +131,7 @@ def check_database_connection() -> bool:
 
 def main():
     """Exécute tous les tests"""
-    print("🔍 Vérification de la configuration des sauvegardes Hypervisia")
+    print("🔍 Vérification de la configuration des sauvegardes OPCP")
     print("=" * 70)
     
     results = []

@@ -1,5 +1,5 @@
 """Pydantic schemas for payment endpoints
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.1, 4.7
 """
 from pydantic import BaseModel, Field, field_validator

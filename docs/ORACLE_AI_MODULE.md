@@ -152,7 +152,7 @@ Liste des fournisseurs d'IA disponibles
 
 ## Réutilisation dans d'autres applications
 
-Le module Oracle est conçu pour être facilement réutilisable dans d'autres applications softfluid.fr.
+Le module Oracle est conçu pour être facilement réutilisable dans d'autres applications opcp-psmc.com.
 
 ### Étapes de réutilisation
 
@@ -210,8 +210,8 @@ Le module Oracle est conçu pour être facilement réutilisable dans d'autres ap
 
 ## Support
 
-Pour toute question ou problème, contactez l'équipe de développement à contact@hypervisia.fr
+Pour toute question ou problème, contactez l'équipe de développement à contact@opcp-psmc.com
 
 ## Licence
 
-Ce module fait partie de l'application HYPERVISIA et est soumis aux mêmes conditions de licence.
+Ce module fait partie de l'application OPCP et est soumis aux mêmes conditions de licence.

@@ -1,6 +1,6 @@
 """Tests for rate limiting functionality.
 
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 2.4, 9.6
 """
 import pytest

@@ -1,5 +1,5 @@
 """Configuration for association information
-This file contains static information about the HYPERVISIA association.
+This file contains static information about the OPCP association.
 In a production environment, this could be stored in a database or CMS.
 """
 from datetime import date
@@ -13,30 +13,30 @@ from app.info.schemas import (
 
 # Association basic information (Requirements 1.1, 8.1, 8.2)
 ASSOCIATION_INFO = AssociationInfo(
-    name="HYPERVISIA",
+    name="OPCP",
     address="123 Rue de l'Association, 75001 Paris, France",
     siret="12345678900012",  # Example SIRET number
     board_members=[
         BoardMember(
             name="Jean Dupont",
             position="Président",
-            email="president@hypervisia.fr"
+            email="president@opcp-psmc.com"
         ),
         BoardMember(
             name="Marie Martin",
             position="Trésorière",
-            email="tresorier@hypervisia.fr"
+            email="tresorier@opcp-psmc.com"
         ),
         BoardMember(
             name="Pierre Durand",
             position="Secrétaire",
-            email="secretaire@hypervisia.fr"
+            email="secretaire@opcp-psmc.com"
         )
     ]
 )
 
 # Mission and activities (Requirements 1.2)
-MISSION = """HYPERVISIA est une association loi 1901 dédiée à la promotion et au développement 
+MISSION = """OPCP est une association loi 1901 dédiée à la promotion et au développement 
 des technologies de l'information et de la communication. Notre mission est de créer un espace 
 d'échange et de partage de connaissances pour tous les passionnés de technologie."""
 
@@ -49,21 +49,21 @@ ACTIVITIES = """Nos activités incluent :
 - Participation à des événements communautaires"""
 
 # Contact information (Requirement 1.4)
-CONTACT_EMAIL = "contact@hypervisia.fr"
+CONTACT_EMAIL = "contact@opcp-psmc.com"
 CONTACT_PHONE = "+33 1 23 45 67 89"
 
 # Legal documents (Requirements 8.2, 8.3)
 STATUTES = LegalDocument(
-    title="Statuts de l'Association HYPERVISIA",
+    title="Statuts de l'Association OPCP",
     description="Les statuts définissent l'objet, le fonctionnement et les règles de l'association conformément à la loi 1901.",
-    content="""STATUTS DE L'ASSOCIATION HYPERVISIA
+    content="""STATUTS DE L'ASSOCIATION OPCP
 
 Article 1 - Constitution et dénomination
 Il est fondé entre les adhérents aux présents statuts une association régie par la loi du 1er juillet 1901 
-et le décret du 16 août 1901, ayant pour dénomination : HYPERVISIA.
+et le décret du 16 août 1901, ayant pour dénomination : OPCP.
 
 Article 2 - Objet
-Cette association a pour objet la promotion et le développement des technologies de l'information 
+Ce site Web a pour objet la promotion et le développement des technologies de l'information 
 et de la communication à travers l'organisation d'événements, de formations et de projets collaboratifs.
 
 Article 3 - Siège social
@@ -92,9 +92,9 @@ L'assemblée générale ordinaire se réunit au moins une fois par an."""
 )
 
 REGULATIONS = LegalDocument(
-    title="Règlement Intérieur de l'Association HYPERVISIA",
+    title="Règlement Intérieur de l'Association OPCP",
     description="Le règlement intérieur précise les modalités d'application des statuts et les règles de fonctionnement quotidien.",
-    content="""RÈGLEMENT INTÉRIEUR DE L'ASSOCIATION HYPERVISIA
+    content="""RÈGLEMENT INTÉRIEUR DE L'ASSOCIATION OPCP
 
 Article 1 - Adhésion
 L'adhésion à l'association est valable pour l'année civile en cours. Le montant de la cotisation 

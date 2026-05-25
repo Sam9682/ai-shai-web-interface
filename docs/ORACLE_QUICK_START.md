@@ -200,4 +200,4 @@ Attendre quelques minutes avant de réessayer.
 
 - Documentation complète: `docs/ORACLE_AI_MODULE.md`
 - Guide d'intégration: `docs/ORACLE_INTEGRATION_GUIDE.md`
-- Contact: contact@hypervisia.fr
+- Contact: contact@opcp-psmc.com

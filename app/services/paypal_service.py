@@ -1,5 +1,5 @@
 """PayPal payment service for processing membership fees
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.1, 4.2
 """
 import paypalrestsdk

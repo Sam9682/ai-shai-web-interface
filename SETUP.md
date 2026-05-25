@@ -113,13 +113,13 @@ Before proceeding to Task 2 (Database Models), you need to:
 1. **Setup PostgreSQL Database**
    ```bash
    # Create database
-   createdb hypervisia_db
+   createdb OPCP_db
    
    # Create user
-   createuser hypervisia_user
+   createuser OPCP_user
    
    # Grant privileges (in psql)
-   GRANT ALL PRIVILEGES ON DATABASE hypervisia_db TO hypervisia_user;
+   GRANT ALL PRIVILEGES ON DATABASE OPCP_db TO OPCP_user;
    ```
 
 2. **Update .env file**

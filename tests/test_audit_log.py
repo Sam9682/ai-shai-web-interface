@@ -1,5 +1,5 @@
 """Tests for audit log endpoint
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 7.5
 """
 import pytest

@@ -1,4 +1,4 @@
-# HYPERVISIA - Guide de Démarrage Rapide
+# OPCP - Guide de Démarrage Rapide
 
 ## 🚀 Démarrage avec Docker Compose
 
@@ -16,9 +16,9 @@ docker-compose up -d
 docker-compose logs -f app
 
 # L'application sera disponible sur:
-# - Backend API: http://ai-hypervisia:8000
-# - Documentation API: http://hypervisia:8000/docs
-# - Frontend: http://hypervisia:5173
+# - Backend API: http://ai-OPCP:8000
+# - Documentation API: http://OPCP:8000/docs
+# - Frontend: http://OPCP:5173
 ```
 
 ### Arrêt
@@ -56,7 +56,7 @@ alembic upgrade head
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Backend disponible sur: http://ai-hypervisia:8000
+Backend disponible sur: http://ai-OPCP:8000
 
 ### Frontend
 
@@ -68,7 +68,7 @@ npm install
 
 # Configurer l'API
 cp .env.example .env
-# Vérifier que VITE_API_BASE_URL=http://ai-hypervisia:8000/api
+# Vérifier que VITE_API_BASE_URL=http://ai-OPCP:8000/api
 
 # Démarrer le serveur de développement
 npm run dev
@@ -84,7 +84,7 @@ Le fichier `.env` contient déjà des valeurs par défaut pour le développement
 
 ```env
 # Base de données (requis)
-DATABASE_URL=postgresql://user:password@postgres:5432/hypervisia_db
+DATABASE_URL=postgresql://user:password@postgres:5432/OPCP_db
 
 # Sécurité (requis)
 SECRET_KEY=your-secret-key-change-in-production
@@ -94,7 +94,7 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
-SMTP_FROM=noreply@hypervisia.org
+SMTP_FROM=noreply@OPCP.org
 
 # Paiements (optionnel en dev, requis en production)
 STRIPE_API_KEY=sk_test_your_key
@@ -154,8 +154,8 @@ pytest tests/test_auth.py -v
 
 Une fois le backend démarré, accédez à :
 
-- **Swagger UI** : http://ai-hypervisia:8000/docs
-- **ReDoc** : http://ai-hypervisia:8000/redoc
+- **Swagger UI** : http://ai-OPCP:8000/docs
+- **ReDoc** : http://ai-OPCP:8000/redoc
 
 ## 🔐 Compte Administrateur Initial
 
@@ -172,16 +172,16 @@ from app.auth.password import hash_password
 
 db = SessionLocal()
 admin = User(
-    email="admin@hypervisia.fr",
+    email="admin@opcp-psmc.com",
     password_hash=hash_password("Admin1234!"),
     first_name="Admin",
-    last_name="HYPERVISIA",
+    last_name="OPCP",
     role=UserRole.ADMINISTRATOR,
     is_email_verified=True
 )
 db.add(admin)
 db.commit()
-print("✅ Administrateur créé : admin@hypervisia.fr / Admin1234!")
+print("✅ Administrateur créé : admin@opcp-psmc.com / Admin1234!")
 ```
 
 ## 🐛 Dépannage
@@ -217,16 +217,16 @@ pip install -r requirements.txt
 **Solution** : Vérifier la configuration CORS et l'URL de l'API.
 ```bash
 # Dans frontend/.env
-VITE_API_BASE_URL=http://ai-hypervisia:8000/api
+VITE_API_BASE_URL=http://ai-OPCP:8000/api
 
 # Dans backend .env
-ALLOWED_ORIGINS=http://ai-hypervisia:5173,http://ai-hypervisia:3000
+ALLOWED_ORIGINS=http://ai-OPCP:5173,http://ai-OPCP:3000
 ```
 
 ## 📦 Structure du Projet
 
 ```
-ai-hypervisia/
+ai-OPCP/
 ├── app/                    # Code backend FastAPI
 │   ├── auth/              # Authentification
 │   ├── forum/             # Forum
@@ -251,9 +251,9 @@ ai-hypervisia/
 
 ## 🌐 URLs Importantes
 
-- **Backend API** : http://ai-hypervisia:8000
-- **API Docs (Swagger)** : http://ai-hypervisia:8000/docs
-- **API Docs (ReDoc)** : http://ai-hypervisia:8000/redoc
+- **Backend API** : http://ai-OPCP:8000
+- **API Docs (Swagger)** : http://ai-OPCP:8000/docs
+- **API Docs (ReDoc)** : http://ai-OPCP:8000/redoc
 - **Frontend** : http://frontend:5173
 - **Base de données** : ai-hypostgrespervisia:5432
 
@@ -266,4 +266,4 @@ Pour toute question ou problème :
 
 ---
 
-**Association HYPERVISIA** - Loi 1901
+**Association OPCP** - Loi 1901

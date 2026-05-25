@@ -4,7 +4,7 @@ Tests the document deletion functionality:
 - DELETE /api/documents/:id (delete document - admin only)
 
 Validates Requirements 5.7
-Feature: hypervisia-website
+Feature: OPCP-website
 """
 
 import pytest

@@ -46,7 +46,7 @@ Créer un module d'IA agentique réutilisable permettant d'interroger différent
 
 ### 7. Documentation
 - ✅ Guide complet du module
-- ✅ Guide d'intégration pour softfluid.fr
+- ✅ Guide d'intégration pour opcp-psmc.com
 - ✅ Guide de démarrage rapide
 - ✅ README technique
 - ✅ Fichier de configuration JSON
@@ -223,7 +223,7 @@ Le module enregistre:
 
 ## 🌐 Réutilisabilité
 
-Le module est conçu pour être facilement réutilisable dans toutes les applications softfluid.fr:
+Le module est conçu pour être facilement réutilisable dans toutes les applications opcp-psmc.com:
 
 1. **Architecture modulaire** - Composants indépendants
 2. **Configuration flexible** - Variables d'environnement
@@ -292,15 +292,15 @@ const analyzeData = async () => {
 
 ## 📞 Support
 
-- Email: contact@hypervisia.fr
+- Email: contact@opcp-psmc.com
 - Documentation: `docs/ORACLE_AI_MODULE.md`
 - Guide d'intégration: `docs/ORACLE_INTEGRATION_GUIDE.md`
 - Démarrage rapide: `docs/ORACLE_QUICK_START.md`
 
 ## 📄 Licence
 
-Ce module fait partie de l'application HYPERVISIA et est soumis aux mêmes conditions de licence.
+Ce module fait partie de l'application OPCP et est soumis aux mêmes conditions de licence.
 
 ---
 
-**Développé avec ❤️ par HYPERVISIA pour l'écosystème softfluid.fr**
+**Développé avec ❤️ par OPCP pour l'écosystème opcp-psmc.com**

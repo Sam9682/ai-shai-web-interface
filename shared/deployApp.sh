@@ -33,7 +33,7 @@ load_config
 COMMAND=${1:-help}
 USER_ID=${2:-0}
 USER_NAME=${3:-"admin"}
-USER_EMAIL=${4:-"admin@softfluid.fr"}
+USER_EMAIL=${4:-"admin@opcp-psmc.com"}
 DESCRIPTION=${5:-"Basic Admin User"}
 
 RANGE_START=6000
@@ -41,8 +41,8 @@ RANGE_RESERVED=100
 RANGE_PORTS_PER_APPLICATION=4
 
 # Configuration
-DOMAIN=${DOMAIN:-"softfluid.fr"}
-EMAIL=${EMAIL:-"admin@softfluid.fr"}
+DOMAIN=${DOMAIN:-"opcp-psmc.com"}
+EMAIL=${EMAIL:-"admin@opcp-psmc.com"}
 ENV_FILE=".env.prod"
 
 # Calculate ports (convert alphanumeric USER_ID to numeric for port calculation)

@@ -1,5 +1,5 @@
 """Membership expiry reminder service
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.6
 """
 import logging
@@ -71,36 +71,36 @@ class MembershipReminderService:
         expiry_date = user.membership_expires_at.strftime("%d/%m/%Y")
         user_name = f"{user.first_name} {user.last_name}"
         
-        subject = "Rappel de renouvellement - HYPERVISIA Membership Renewal Reminder"
+        subject = "Rappel de renouvellement - OPCP Membership Renewal Reminder"
         
         body_text = f"""
 Bonjour {user_name},
 
-Votre adhésion à l'association HYPERVISIA expire le {expiry_date}.
+Votre adhésion à l'association OPCP expire le {expiry_date}.
 
 Pour continuer à profiter de tous les avantages de votre adhésion, nous vous invitons à renouveler votre cotisation dès maintenant.
 
 Vous pouvez renouveler votre adhésion en vous connectant à votre espace membre et en effectuant un paiement en ligne.
 
-Merci de votre confiance et de votre soutien à HYPERVISIA.
+Merci de votre confiance et de votre soutien à OPCP.
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
 
 ---
 
 Hello {user_name},
 
-Your HYPERVISIA membership expires on {expiry_date}.
+Your OPCP membership expires on {expiry_date}.
 
 To continue enjoying all the benefits of your membership, we invite you to renew your subscription now.
 
 You can renew your membership by logging into your member area and making an online payment.
 
-Thank you for your trust and support of HYPERVISIA.
+Thank you for your trust and support of OPCP.
 
 Best regards,
-The HYPERVISIA Team
+The OPCP Team
 """
         
         body_html = f"""
@@ -122,7 +122,7 @@ The HYPERVISIA Team
 <body>
     <div class="container">
         <div class="header">
-            <h1>HYPERVISIA</h1>
+            <h1>OPCP</h1>
             <p>Rappel de renouvellement / Renewal Reminder</p>
         </div>
         <div class="content">
@@ -141,14 +141,14 @@ The HYPERVISIA Team
                 <p><strong>Connectez-vous pour renouveler / Log in to renew</strong></p>
             </div>
             
-            <p>Merci de votre confiance et de votre soutien à HYPERVISIA.</p>
-            <p>Thank you for your trust and support of HYPERVISIA.</p>
+            <p>Merci de votre confiance et de votre soutien à OPCP.</p>
+            <p>Thank you for your trust and support of OPCP.</p>
             
             <p>Cordialement / Best regards,<br>
-            L'équipe HYPERVISIA / The HYPERVISIA Team</p>
+            L'équipe OPCP / The OPCP Team</p>
         </div>
         <div class="footer">
-            <p>Association HYPERVISIA - Loi 1901</p>
+            <p>Association OPCP - Loi 1901</p>
         </div>
     </div>
 </body>

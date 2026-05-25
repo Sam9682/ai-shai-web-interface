@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script de sauvegarde de la base de données PostgreSQL Hypervisia
+Script de sauvegarde de la base de données PostgreSQL OPCP
 Sauvegarde locale et upload automatique vers S3
 """
 import os
@@ -25,7 +25,7 @@ def parse_database_url(database_url: str) -> dict:
     }
 
 
-def upload_to_s3(file_path: Path, bucket_name: str = "ai-hypervisia") -> bool:
+def upload_to_s3(file_path: Path, bucket_name: str = "ai-OPCP") -> bool:
     """
     Upload le fichier de sauvegarde vers S3
     
@@ -73,7 +73,7 @@ def upload_to_s3(file_path: Path, bucket_name: str = "ai-hypervisia") -> bool:
         return False
 
 
-def create_backup(backup_dir: str = "./backups", retention_days: int = 30, upload_s3: bool = True, s3_bucket: str = "ai-hypervisia") -> bool:
+def create_backup(backup_dir: str = "./backups", retention_days: int = 30, upload_s3: bool = True, s3_bucket: str = "ai-OPCP") -> bool:
     """
     Crée une sauvegarde de la base de données PostgreSQL
     
@@ -101,7 +101,7 @@ def create_backup(backup_dir: str = "./backups", retention_days: int = 30, uploa
     
     # Générer le nom du fichier de sauvegarde avec timestamp
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    backup_file = backup_path / f"hypervisia_backup_{timestamp}.sql"
+    backup_file = backup_path / f"OPCP_backup_{timestamp}.sql"
     
     print(f"🔄 Démarrage de la sauvegarde de la base de données '{db_config['database']}'...")
     print(f"📁 Fichier de sauvegarde: {backup_file}")
@@ -167,7 +167,7 @@ def cleanup_old_backups(backup_dir: Path, retention_days: int):
     
     print(f"\n🧹 Nettoyage des sauvegardes de plus de {retention_days} jours...")
     
-    for backup_file in backup_dir.glob("hypervisia_backup_*.sql"):
+    for backup_file in backup_dir.glob("OPCP_backup_*.sql"):
         file_time = datetime.fromtimestamp(backup_file.stat().st_mtime)
         if file_time < cutoff_date:
             try:
@@ -191,7 +191,7 @@ def list_backups(backup_dir: str = "./backups"):
         print(f"📁 Le répertoire {backup_dir} n'existe pas encore")
         return
     
-    backups = sorted(backup_path.glob("hypervisia_backup_*.sql"), reverse=True)
+    backups = sorted(backup_path.glob("OPCP_backup_*.sql"), reverse=True)
     
     if not backups:
         print(f"📁 Aucune sauvegarde trouvée dans {backup_dir}")
@@ -213,7 +213,7 @@ def list_backups(backup_dir: str = "./backups"):
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Sauvegarde de la base de données Hypervisia")
+    parser = argparse.ArgumentParser(description="Sauvegarde de la base de données OPCP")
     parser.add_argument(
         '--backup-dir',
         default='./backups',
@@ -232,8 +232,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         '--s3-bucket',
-        default='ai-hypervisia',
-        help='Nom du bucket S3 (défaut: ai-hypervisia)'
+        default='ai-OPCP',
+        help='Nom du bucket S3 (défaut: ai-OPCP)'
     )
     parser.add_argument(
         '--list',

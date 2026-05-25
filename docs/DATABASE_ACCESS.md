@@ -20,23 +20,23 @@ This script automatically reads your `.env` file and connects with the correct c
 
 ```bash
 # Interactive psql session
-docker-compose exec postgres psql -U hypervisia_user -d hypervisia_db
+docker-compose exec postgres psql -U OPCP_user -d OPCP_db
 
 # Run a single SQL command
-docker-compose exec postgres psql -U hypervisia_user -d hypervisia_db -c "SELECT * FROM users LIMIT 5;"
+docker-compose exec postgres psql -U OPCP_user -d OPCP_db -c "SELECT * FROM users LIMIT 5;"
 
 # Run SQL from a file
-docker-compose exec -T postgres psql -U hypervisia_user -d hypervisia_db < backup.sql
+docker-compose exec -T postgres psql -U OPCP_user -d OPCP_db < backup.sql
 ```
 
 ### Method 3: Direct Connection (if PostgreSQL client is installed)
 
 ```bash
 # Set password to avoid prompt
-export PGPASSWORD='hypervisia_password'
+export PGPASSWORD='OPCP_password'
 
 # Connect
-psql -h localhost -p 6002 -U hypervisia_user -d hypervisia_db
+psql -h localhost -p 6002 -U OPCP_user -d OPCP_db
 ```
 
 ## Database Credentials
@@ -44,14 +44,14 @@ psql -h localhost -p 6002 -U hypervisia_user -d hypervisia_db
 The database credentials are defined in your `.env` file:
 
 ```env
-DATABASE_URL=postgresql://hypervisia_user:hypervisia_password@postgres:5432/hypervisia_db
+DATABASE_URL=postgresql://OPCP_user:OPCP_password@postgres:5432/OPCP_db
 ```
 
-- **User**: `hypervisia_user`
-- **Password**: `hypervisia_password` (change in production!)
+- **User**: `OPCP_user`
+- **Password**: `OPCP_password` (change in production!)
 - **Host**: `postgres` (inside Docker network) or `localhost` (from host)
 - **Port**: `5432` (inside Docker) or `6002` (exposed to host)
-- **Database**: `hypervisia_db`
+- **Database**: `OPCP_db`
 
 ## Common Database Operations
 
@@ -62,7 +62,7 @@ DATABASE_URL=postgresql://hypervisia_user:hypervisia_password@postgres:5432/hype
 python3 scripts/backup_database_universal.py
 
 # Manual backup
-docker-compose exec postgres pg_dump -U hypervisia_user -d hypervisia_db -F c -f /tmp/backup.sql
+docker-compose exec postgres pg_dump -U OPCP_user -d OPCP_db -F c -f /tmp/backup.sql
 docker cp $(docker-compose ps -q postgres):/tmp/backup.sql ./backups/
 ```
 
@@ -74,7 +74,7 @@ python3 scripts/restore_database.py ./backups/backup.sql
 
 # Manual restore
 docker cp ./backups/backup.sql $(docker-compose ps -q postgres):/tmp/restore.sql
-docker-compose exec postgres pg_restore -U hypervisia_user -d hypervisia_db -c /tmp/restore.sql
+docker-compose exec postgres pg_restore -U OPCP_user -d OPCP_db -c /tmp/restore.sql
 ```
 
 ### View Database Logs
@@ -86,7 +86,7 @@ docker-compose logs -f postgres
 ### Check Database Status
 
 ```bash
-docker-compose exec postgres pg_isready -U hypervisia_user -d hypervisia_db
+docker-compose exec postgres pg_isready -U OPCP_user -d OPCP_db
 ```
 
 ## Troubleshooting
@@ -115,7 +115,7 @@ If you can't connect from the host machine:
 
 2. Use the exposed port when connecting from host:
    ```bash
-   psql -h localhost -p 6002 -U hypervisia_user -d hypervisia_db
+   psql -h localhost -p 6002 -U OPCP_user -d OPCP_db
    ```
 
 ### Permission Denied
@@ -124,8 +124,8 @@ If you get permission errors:
 
 1. Check that the user has proper privileges:
    ```sql
-   GRANT ALL PRIVILEGES ON DATABASE hypervisia_db TO hypervisia_user;
-   GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO hypervisia_user;
+   GRANT ALL PRIVILEGES ON DATABASE OPCP_db TO OPCP_user;
+   GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO OPCP_user;
    ```
 
 2. Ensure the password is correct in `.env`

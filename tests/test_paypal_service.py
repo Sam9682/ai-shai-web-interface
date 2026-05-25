@@ -1,5 +1,5 @@
 """Unit tests for PayPal payment service
-Feature: hypervisia-website
+Feature: OPCP-website
 Tests Requirements 4.1, 4.2
 """
 import pytest

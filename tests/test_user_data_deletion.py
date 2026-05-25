@@ -1,6 +1,6 @@
 """Tests for user data deletion endpoint
 
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirement 9.4:
 - DELETE /api/users/me (request account deletion)
 - Schedules data deletion within 30 days

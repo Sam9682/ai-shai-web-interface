@@ -1,5 +1,5 @@
 ================================================================================
-SYSTÈME DE SAUVEGARDE S3 POUR HYPERVISIA - RÉSUMÉ DE L'IMPLÉMENTATION
+SYSTÈME DE SAUVEGARDE S3 POUR OPCP - RÉSUMÉ DE L'IMPLÉMENTATION
 ================================================================================
 
 ✅ IMPLÉMENTATION COMPLÈTE
@@ -43,8 +43,8 @@ Configuration:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ Sauvegarde automatique vers S3
-   • Bucket: ai-hypervisia
-   • Organisation: s3://ai-hypervisia/YYYY/MM/DD/hypervisia_backup_YYYYMMDD_HHMMSS.sql
+   • Bucket: ai-OPCP
+   • Organisation: s3://ai-OPCP/YYYY/MM/DD/OPCP_backup_YYYYMMDD_HHMMSS.sql
    • Format: PostgreSQL custom (compressé)
    • Chiffrement: AES256 côté serveur
    • Stockage: STANDARD_IA (économique)
@@ -113,11 +113,11 @@ Lister:
   python scripts/restore_from_s3.py list --prefix 2026/02/  # Filtrer par date
 
 Restaurer:
-  python scripts/restore_from_s3.py restore 2026/02/20/hypervisia_backup_20260220_143000.sql
-  python scripts/restore_database.py backups/hypervisia_backup_20260220_143000.sql
+  python scripts/restore_from_s3.py restore 2026/02/20/OPCP_backup_20260220_143000.sql
+  python scripts/restore_database.py backups/OPCP_backup_20260220_143000.sql
 
 Automatisation (cron):
-  0 2 * * * cd /path/to/hypervisia && python3 scripts/backup_database.py >> /var/log/hypervisia_backup.log 2>&1
+  0 2 * * * cd /path/to/OPCP && python3 scripts/backup_database.py >> /var/log/OPCP_backup.log 2>&1
 
 💰 COÛTS ESTIMÉS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -130,14 +130,14 @@ Pour ~10 GB de sauvegardes:
 📊 STRUCTURE S3
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-s3://ai-hypervisia/
+s3://ai-OPCP/
 ├── 2026/
 │   ├── 02/
 │   │   ├── 20/
-│   │   │   ├── hypervisia_backup_20260220_020000.sql
-│   │   │   └── hypervisia_backup_20260220_143000.sql
+│   │   │   ├── OPCP_backup_20260220_020000.sql
+│   │   │   └── OPCP_backup_20260220_143000.sql
 │   │   └── 21/
-│   │       └── hypervisia_backup_20260221_020000.sql
+│   │       └── OPCP_backup_20260221_020000.sql
 │   └── 03/
 │       └── ...
 
@@ -173,13 +173,13 @@ Changelog:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Sauvegarde:
-  docker exec -it hypervisia-container python scripts/backup_database.py
+  docker exec -it OPCP-container python scripts/backup_database.py
 
 Lister:
-  docker exec -it hypervisia-container python scripts/restore_from_s3.py list
+  docker exec -it OPCP-container python scripts/restore_from_s3.py list
 
 Restaurer:
-  docker exec -it hypervisia-container python scripts/restore_from_s3.py restore <s3_key>
+  docker exec -it OPCP-container python scripts/restore_from_s3.py restore <s3_key>
 
 🔍 TESTS ET VÉRIFICATION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -189,7 +189,7 @@ Test complet de la configuration:
 
 Vérifications manuelles:
   aws sts get-caller-identity        # Vérifier les credentials AWS
-  aws s3 ls s3://ai-hypervisia/      # Vérifier l'accès au bucket
+  aws s3 ls s3://ai-OPCP/      # Vérifier l'accès au bucket
   pg_isready -h localhost -p 5432    # Vérifier la connexion DB
 
 🎉 STATUT: PRÊT POUR LA PRODUCTION
@@ -216,5 +216,5 @@ Vérifications manuelles:
 ================================================================================
 Date de création: 2026-02-20
 Version: 1.0.0
-Auteur: Système de sauvegarde Hypervisia
+Auteur: Système de sauvegarde OPCP
 ================================================================================

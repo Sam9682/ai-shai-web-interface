@@ -1,4 +1,4 @@
-# Système de Sauvegarde S3 pour Hypervisia
+# Système de Sauvegarde S3 pour OPCP
 
 ## Vue d'ensemble
 
@@ -6,8 +6,8 @@ Système complet de sauvegarde automatique de la base de données PostgreSQL ave
 
 ### Fonctionnalités
 
-✅ Sauvegarde automatique vers S3 (bucket: `ai-hypervisia`)  
-✅ Organisation par date : `s3://ai-hypervisia/YYYY/MM/DD/`  
+✅ Sauvegarde automatique vers S3 (bucket: `ai-OPCP`)  
+✅ Organisation par date : `s3://ai-OPCP/YYYY/MM/DD/`  
 ✅ Chiffrement AES256 côté serveur  
 ✅ Compression automatique (format PostgreSQL custom)  
 ✅ Rétention configurable (locale et S3)  
@@ -83,10 +83,10 @@ python scripts/restore_from_s3.py list --prefix 2026/02/
 ### Restaurer une sauvegarde
 ```bash
 # Depuis S3 (téléchargement + restauration automatique)
-python scripts/restore_from_s3.py restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3.py restore 2026/02/20/OPCP_backup_20260220_143000.sql
 
 # Depuis un fichier local
-python scripts/restore_database.py backups/hypervisia_backup_20260220_143000.sql
+python scripts/restore_database.py backups/OPCP_backup_20260220_143000.sql
 ```
 
 ## Automatisation
@@ -99,13 +99,13 @@ crontab -e
 Ajouter :
 ```cron
 # Sauvegarde quotidienne à 2h du matin
-0 2 * * * cd /path/to/hypervisia && /usr/bin/python3 scripts/backup_database.py >> /var/log/hypervisia_backup.log 2>&1
+0 2 * * * cd /path/to/OPCP && /usr/bin/python3 scripts/backup_database.py >> /var/log/OPCP_backup.log 2>&1
 ```
 
 ### Intégration Docker
 ```bash
 # Depuis l'hôte
-docker exec -it hypervisia-container python scripts/backup_database.py
+docker exec -it OPCP-container python scripts/backup_database.py
 
 # Ou ajouter au Dockerfile
 RUN echo "0 2 * * * python /app/scripts/backup_database.py" | crontab -
@@ -114,14 +114,14 @@ RUN echo "0 2 * * * python /app/scripts/backup_database.py" | crontab -
 ## Structure S3
 
 ```
-s3://ai-hypervisia/
+s3://ai-OPCP/
 ├── 2026/
 │   ├── 02/
 │   │   ├── 20/
-│   │   │   ├── hypervisia_backup_20260220_020000.sql
-│   │   │   └── hypervisia_backup_20260220_143000.sql
+│   │   │   ├── OPCP_backup_20260220_020000.sql
+│   │   │   └── OPCP_backup_20260220_143000.sql
 │   │   └── 21/
-│   │       └── hypervisia_backup_20260221_020000.sql
+│   │       └── OPCP_backup_20260221_020000.sql
 │   └── 03/
 │       └── ...
 ```
@@ -184,7 +184,7 @@ python scripts/test_backup_setup.py
 Pour toute question :
 1. Consultez `scripts/README_BACKUP.md`
 2. Exécutez `python scripts/test_backup_setup.py`
-3. Vérifiez les logs : `/var/log/hypervisia_backup.log`
+3. Vérifiez les logs : `/var/log/OPCP_backup.log`
 
 ---
 

@@ -4,7 +4,7 @@ Tests the document upload functionality:
 - POST /api/documents/upload (upload document - admin only)
 
 Validates Requirements 5.2, 5.6
-Feature: hypervisia-website
+Feature: OPCP-website
 """
 
 import pytest

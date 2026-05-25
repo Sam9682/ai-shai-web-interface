@@ -1,4 +1,4 @@
-"""Database models for HYPERVISIA application"""
+"""Database models for OPCP application"""
 from app.models.user import User, UserRole
 from app.models.forum import Topic, Post
 from app.models.payment import Payment, PaymentMethod, PaymentStatus

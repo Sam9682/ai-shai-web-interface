@@ -1,5 +1,5 @@
-"""Background task scheduler for HYPERVISIA application
-Feature: hypervisia-website
+"""Background task scheduler for OPCP application
+Feature: OPCP-website
 Validates Requirements 4.6, 6.4, 9.4
 """
 import logging

@@ -1,5 +1,5 @@
 """Tests for announcement endpoint
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirement 10.5
 """
 import pytest
@@ -117,7 +117,7 @@ def test_send_announcement_success(
         json={
             "subject": "Important Announcement",
             "content": "This is an important announcement for all members.",
-            "sender_name": "HYPERVISIA"
+            "sender_name": "OPCP"
         },
         headers=admin_headers
     )
@@ -182,7 +182,7 @@ def test_send_announcement_respects_preferences(
         json={
             "subject": "Test Announcement",
             "content": "Testing preferences",
-            "sender_name": "HYPERVISIA"
+            "sender_name": "OPCP"
         },
         headers=admin_headers
     )
@@ -211,7 +211,7 @@ def test_send_announcement_non_admin_forbidden(
         json={
             "subject": "Unauthorized Announcement",
             "content": "This should not be sent",
-            "sender_name": "HYPERVISIA"
+            "sender_name": "OPCP"
         },
         headers=member_headers
     )
@@ -237,7 +237,7 @@ def test_send_announcement_unauthenticated_denied(
         json={
             "subject": "Unauthorized Announcement",
             "content": "This should not be sent",
-            "sender_name": "HYPERVISIA"
+            "sender_name": "OPCP"
         }
     )
     
@@ -261,7 +261,7 @@ def test_send_announcement_validation_errors(
         json={
             "subject": "",
             "content": "Valid content",
-            "sender_name": "HYPERVISIA"
+            "sender_name": "OPCP"
         },
         headers=admin_headers
     )
@@ -274,7 +274,7 @@ def test_send_announcement_validation_errors(
         json={
             "subject": "Valid subject",
             "content": "",
-            "sender_name": "HYPERVISIA"
+            "sender_name": "OPCP"
         },
         headers=admin_headers
     )
@@ -339,7 +339,7 @@ def test_send_announcement_only_to_verified_members(
         json={
             "subject": "Test Announcement",
             "content": "Testing verification",
-            "sender_name": "HYPERVISIA"
+            "sender_name": "OPCP"
         },
         headers=admin_headers
     )
@@ -423,4 +423,4 @@ def test_send_announcement_default_sender_name(
     ).first()
     
     assert audit_entry is not None
-    assert audit_entry.details["sender_name"] == "HYPERVISIA"
+    assert audit_entry.details["sender_name"] == "OPCP"

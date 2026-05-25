@@ -16,7 +16,7 @@ from app.logging_config import logger
 def test_smtp_connection():
     """Teste la connexion SMTP et affiche la configuration"""
     print("=" * 70)
-    print("🧪 TEST SMTP HYPERVISIA")
+    print("🧪 TEST SMTP OPCP")
     print("=" * 70)
     print()
     
@@ -53,15 +53,15 @@ def send_test_email(to_email: str):
     print(f"📧 Envoi d'un email de test à: {to_email}")
     print()
     
-    subject = "Test SMTP HYPERVISIA"
+    subject = "Test SMTP OPCP"
     
     html_body = f"""
     <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
             <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #6366f1;">🎉 Test SMTP HYPERVISIA</h2>
+                <h2 style="color: #6366f1;">🎉 Test SMTP OPCP</h2>
                 <p>Bonjour,</p>
-                <p>Ceci est un email de test pour vérifier la configuration SMTP de HYPERVISIA.</p>
+                <p>Ceci est un email de test pour vérifier la configuration SMTP de OPCP.</p>
                 <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">
                     <p style="margin: 0; color: #166534;">
                         ✅ <strong>Si vous recevez cet email, la configuration SMTP fonctionne correctement !</strong>
@@ -76,7 +76,7 @@ def send_test_email(to_email: str):
                 </ul>
                 <p style="margin-top: 30px; color: #666; font-size: 14px;">
                     Cordialement,<br>
-                    <strong>L'équipe HYPERVISIA</strong>
+                    <strong>L'équipe OPCP</strong>
                 </p>
             </div>
         </body>
@@ -86,7 +86,7 @@ def send_test_email(to_email: str):
     text_body = f"""
 Bonjour,
 
-Ceci est un email de test pour vérifier la configuration SMTP de HYPERVISIA.
+Ceci est un email de test pour vérifier la configuration SMTP de OPCP.
 
 ✅ Si vous recevez cet email, la configuration SMTP fonctionne correctement !
 
@@ -97,7 +97,7 @@ Configuration utilisée:
 - Expéditeur: {settings.SMTP_FROM}
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
     """
     
     print("🔄 Envoi en cours...")

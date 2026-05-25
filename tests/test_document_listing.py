@@ -4,7 +4,7 @@ Tests the document listing functionality:
 - GET /api/documents (list documents with access control)
 
 Validates Requirements 5.1, 5.4
-Feature: hypervisia-website
+Feature: OPCP-website
 """
 
 import pytest

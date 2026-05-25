@@ -1,5 +1,5 @@
 """Event reminder service
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 6.4
 """
 import logging
@@ -96,12 +96,12 @@ class EventReminderService:
         end_date_str = event.end_date.strftime("%d/%m/%Y à %H:%M")
         user_name = f"{user.first_name} {user.last_name}"
         
-        subject = f"Rappel : {event.title} - HYPERVISIA Event Reminder"
+        subject = f"Rappel : {event.title} - OPCP Event Reminder"
         
         body_text = f"""
 Bonjour {user_name},
 
-Ceci est un rappel pour l'événement HYPERVISIA auquel vous êtes inscrit(e) :
+Ceci est un rappel pour l'événement OPCP auquel vous êtes inscrit(e) :
 
 Titre : {event.title}
 Date de début : {start_date_str}
@@ -115,13 +115,13 @@ L'événement aura lieu dans {self.reminder_days_before} jours. Nous avons hâte
 Si vous ne pouvez plus participer, pensez à vous désinscrire depuis votre espace membre.
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
 
 ---
 
 Hello {user_name},
 
-This is a reminder for the HYPERVISIA event you are registered for:
+This is a reminder for the OPCP event you are registered for:
 
 Title: {event.title}
 Start date: {start_date_str}
@@ -135,7 +135,7 @@ The event will take place in {self.reminder_days_before} days. We look forward t
 If you can no longer attend, please unregister from your member area.
 
 Best regards,
-The HYPERVISIA Team
+The OPCP Team
 """
         
         body_html = f"""
@@ -156,7 +156,7 @@ The HYPERVISIA Team
 <body>
     <div class="container">
         <div class="header">
-            <h1>HYPERVISIA</h1>
+            <h1>OPCP</h1>
             <h2>Rappel d'événement / Event Reminder</h2>
         </div>
         <div class="content">
@@ -166,8 +166,8 @@ The HYPERVISIA Team
                 📅 Dans {self.reminder_days_before} jours / In {self.reminder_days_before} days
             </div>
             
-            <p>Ceci est un rappel pour l'événement HYPERVISIA auquel vous êtes inscrit(e) :</p>
-            <p>This is a reminder for the HYPERVISIA event you are registered for:</p>
+            <p>Ceci est un rappel pour l'événement OPCP auquel vous êtes inscrit(e) :</p>
+            <p>This is a reminder for the OPCP event you are registered for:</p>
             
             <div class="event-details">
                 <h3>{event.title}</h3>
@@ -184,10 +184,10 @@ The HYPERVISIA Team
             <p><em>If you can no longer attend, please unregister from your member area.</em></p>
             
             <p>Cordialement / Best regards,<br>
-            L'équipe HYPERVISIA / The HYPERVISIA Team</p>
+            L'équipe OPCP / The OPCP Team</p>
         </div>
         <div class="footer">
-            <p>Association HYPERVISIA - Loi 1901</p>
+            <p>Association OPCP - Loi 1901</p>
         </div>
     </div>
 </body>

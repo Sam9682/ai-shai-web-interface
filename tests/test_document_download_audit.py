@@ -3,7 +3,7 @@
 Tests that document downloads are properly logged in the audit log.
 
 Validates Requirements 5.3
-Feature: hypervisia-website
+Feature: OPCP-website
 """
 
 import pytest

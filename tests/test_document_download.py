@@ -4,7 +4,7 @@ Tests the document download functionality:
 - GET /api/documents/{document_id}/download
 
 Validates Requirements 5.3
-Feature: hypervisia-website
+Feature: OPCP-website
 """
 
 import pytest

@@ -1,5 +1,5 @@
 """Tests for event cancellation endpoint
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 6.6
 """
 import pytest

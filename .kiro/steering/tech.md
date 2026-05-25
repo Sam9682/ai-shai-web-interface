@@ -95,7 +95,7 @@ docker-compose down
 docker-compose up -d --build
 
 # Access database
-docker exec -it ai-hypervisia-postgres-1-5432 psql -U hypervisia_user -d hypervisia_db
+docker exec -it ai-OPCP-postgres-1-5432 psql -U OPCP_user -d OPCP_db
 ```
 
 ## API Documentation

@@ -10,9 +10,9 @@ import sys
 # Configuration SMTP Gandi
 SMTP_HOST = "mail.gandi.net"
 SMTP_PORT = 587
-SMTP_USER = "sam@hypervisia.fr"
+SMTP_USER = "sam@opcp-psmc.com"
 SMTP_PASSWORD = "Asbaasba1234!"  # ⚠️ REMPLACER PAR LE VRAI MOT DE PASSE
-SMTP_FROM = "noreply@hypervisia.fr"
+SMTP_FROM = "noreply@opcp-psmc.com"
 
 # Destinataire
 TO_EMAIL = "lepetre@yahoo.fr"
@@ -26,7 +26,7 @@ def send_test_email():
         
         # Créer le message
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = "Test SMTP HYPERVISIA"
+        msg['Subject'] = "Test SMTP OPCP"
         msg['From'] = SMTP_FROM
         msg['To'] = TO_EMAIL
         
@@ -34,17 +34,17 @@ def send_test_email():
         text_body = """
 Bonjour,
 
-Ceci est un email de test pour vérifier la configuration SMTP de HYPERVISIA.
+Ceci est un email de test pour vérifier la configuration SMTP de OPCP.
 
 Si vous recevez cet email, la configuration SMTP fonctionne correctement !
 
 Configuration utilisée:
 - Serveur: mail.gandi.net
 - Port: 587
-- Utilisateur: admin@hypervisia.fr
+- Utilisateur: admin@opcp-psmc.com
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
         """
         
         # Corps du message en HTML
@@ -52,9 +52,9 @@ L'équipe HYPERVISIA
 <html>
     <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-            <h2 style="color: #6366f1;">🎉 Test SMTP HYPERVISIA</h2>
+            <h2 style="color: #6366f1;">🎉 Test SMTP OPCP</h2>
             <p>Bonjour,</p>
-            <p>Ceci est un email de test pour vérifier la configuration SMTP de HYPERVISIA.</p>
+            <p>Ceci est un email de test pour vérifier la configuration SMTP de OPCP.</p>
             <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0;">
                 <p style="margin: 0; color: #166534;">
                     ✅ <strong>Si vous recevez cet email, la configuration SMTP fonctionne correctement !</strong>
@@ -64,12 +64,12 @@ L'équipe HYPERVISIA
             <ul style="background-color: #f8fafc; padding: 15px; border-radius: 5px;">
                 <li><strong>Serveur:</strong> mail.gandi.net</li>
                 <li><strong>Port:</strong> 587 (TLS)</li>
-                <li><strong>Utilisateur:</strong> admin@hypervisia.fr</li>
-                <li><strong>Expéditeur:</strong> noreply@hypervisia.fr</li>
+                <li><strong>Utilisateur:</strong> admin@opcp-psmc.com</li>
+                <li><strong>Expéditeur:</strong> noreply@opcp-psmc.com</li>
             </ul>
             <p style="margin-top: 30px; color: #666; font-size: 14px;">
                 Cordialement,<br>
-                <strong>L'équipe HYPERVISIA</strong>
+                <strong>L'équipe OPCP</strong>
             </p>
         </div>
     </body>
@@ -103,7 +103,7 @@ L'équipe HYPERVISIA
         print(f"   Détails: {str(e)}")
         print("\n💡 Vérifications à faire:")
         print("   1. Le mot de passe est-il correct ?")
-        print("   2. Le compte admin@hypervisia.fr existe-t-il sur Gandi ?")
+        print("   2. Le compte admin@opcp-psmc.com existe-t-il sur Gandi ?")
         print("   3. L'authentification SMTP est-elle activée ?")
         return False
         
@@ -130,7 +130,7 @@ L'équipe HYPERVISIA
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("🧪 TEST SMTP HYPERVISIA - Configuration Gandi")
+    print("🧪 TEST SMTP OPCP - Configuration Gandi")
     print("=" * 60)
     print()
     

@@ -1,14 +1,14 @@
 # AI-SwAutoMorph Compliance Remediation Report
 
-**Application:** ai-hypervisia  
-**Location:** /home/ubuntu/deployments/admin/ai-hypervisia  
+**Application:** ai-OPCP  
+**Location:** /home/ubuntu/deployments/admin/ai-OPCP  
 **Branch:** compliance-swautomorph-20260216-134822  
 **Commit:** 7396663  
 **Date:** 2026-02-16 13:48 UTC
 
 ## Summary
 
-The ai-hypervisia application has been successfully made compliant with the ai-swautomorph platform architecture. All required infrastructure files have been created, and the application is now ready for deployment using the standardized deployApp.sh script.
+The ai-OPCP application has been successfully made compliant with the ai-swautomorph platform architecture. All required infrastructure files have been created, and the application is now ready for deployment using the standardized deployApp.sh script.
 
 ## Changes Made
 
@@ -33,7 +33,7 @@ The ai-hypervisia application has been successfully made compliant with the ai-s
 
 ### 3. Configuration Files
 - **conf/deploy.ini**: Application deployment configuration
-  - NAME_OF_APPLICATION=ai-hypervisia
+  - NAME_OF_APPLICATION=ai-OPCP
   - RANGE_START=6000
   - APPLICATION_IDENTITY_NUMBER=10
   - RANGE_PORTS_PER_APPLICATION=4
@@ -85,33 +85,33 @@ The ai-hypervisia application has been successfully made compliant with the ai-s
 
 ### Services
 1. **PostgreSQL Database**
-   - Container: ai-hypervisia-postgres-${USER_ID}
+   - Container: ai-OPCP-postgres-${USER_ID}
    - Port: HTTP_PORT2 (internal 5432)
-   - Database: hypervisia_db
-   - User: hypervisia_user
+   - Database: OPCP_db
+   - User: OPCP_user
 
 2. **FastAPI Application**
-   - Container: ai-hypervisia-app-${USER_ID}
+   - Container: ai-OPCP-app-${USER_ID}
    - Port: HTTP_PORT (internal 8000)
    - Auto-runs Alembic migrations
    - Health check: /health endpoint
 
 3. **Nginx Reverse Proxy**
-   - Container: ai-hypervisia-nginx-${USER_ID}
+   - Container: ai-OPCP-nginx-${USER_ID}
    - Port: HTTPS_PORT (internal 443)
    - SSL termination
    - Proxy to FastAPI backend
 
 ### Container Naming Convention
-- Pattern: `ai-hypervisia-{service}-${USER_ID}`
-- Network: `hypervisia-network-${USER_ID}`
+- Pattern: `ai-OPCP-{service}-${USER_ID}`
+- Network: `OPCP-network-${USER_ID}`
 - Volumes: `postgres_data`, `app_data`
 
 ## Testing Instructions
 
 ### 1. Start Deployment (USER_ID=0)
 ```bash
-cd /home/ubuntu/deployments/admin/ai-hypervisia
+cd /home/ubuntu/deployments/admin/ai-OPCP
 ./deployApp.sh start 0 testuser test@example.com "Test deployment"
 ```
 
@@ -121,17 +121,17 @@ cd /home/ubuntu/deployments/admin/ai-hypervisia
 ```
 
 Expected containers:
-- ai-hypervisia-postgres-0 (running)
-- ai-hypervisia-app-0 (running)
-- ai-hypervisia-nginx-0 (running)
+- ai-OPCP-postgres-0 (running)
+- ai-OPCP-app-0 (running)
+- ai-OPCP-nginx-0 (running)
 
 ### 3. Test Application
 ```bash
 # Health check
-curl -k https://ai-hypervisia:6041/health
+curl -k https://ai-OPCP:6041/health
 
 # API documentation
-curl -k https://ai-hypervisia:6041/docs
+curl -k https://ai-OPCP:6041/docs
 ```
 
 ### 4. View Logs
@@ -197,8 +197,8 @@ netstat -tulpn | grep -E ':(6040|6041|6042)'
 ### Container Issues
 ```bash
 # View container logs
-docker logs ai-hypervisia-app-0
-docker logs ai-hypervisia-postgres-0
+docker logs ai-OPCP-app-0
+docker logs ai-OPCP-postgres-0
 
 # Restart containers
 ./deployApp.sh restart 0
@@ -207,12 +207,12 @@ docker logs ai-hypervisia-postgres-0
 ### Database Connection Issues
 ```bash
 # Check PostgreSQL is running
-docker exec ai-hypervisia-postgres-0 pg_isready -U hypervisia_user
+docker exec ai-OPCP-postgres-0 pg_isready -U OPCP_user
 
 # View database logs
-docker logs ai-hypervisia-postgres-0
+docker logs ai-OPCP-postgres-0
 ```
 
 ## Conclusion
 
-The ai-hypervisia application is now fully compliant with the ai-swautomorph platform architecture. All infrastructure components are in place, and the application can be deployed using the standardized deployment workflow. The application's business logic and functionality remain unchanged, with only deployment infrastructure added.
+The ai-OPCP application is now fully compliant with the ai-swautomorph platform architecture. All infrastructure components are in place, and the application can be deployed using the standardized deployment workflow. The application's business logic and functionality remain unchanged, with only deployment infrastructure added.

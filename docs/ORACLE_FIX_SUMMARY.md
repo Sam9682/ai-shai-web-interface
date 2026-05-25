@@ -3,7 +3,7 @@
 ## Problème
 L'Oracle AI était configuré pour utiliser "kiro" comme fournisseur d'IA par défaut, mais `kiro-cli` n'était pas installé dans le container Docker, causant l'erreur:
 ```
-2026-02-19 10:42:49 - hypervisia - ERROR - Kiro CLI error: /bin/sh: 1: kiro-cli: not found
+2026-02-19 10:42:49 - OPCP - ERROR - Kiro CLI error: /bin/sh: 1: kiro-cli: not found
 ```
 
 ## Solution appliquée

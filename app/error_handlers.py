@@ -15,7 +15,7 @@ from fastapi.exceptions import RequestValidationError, HTTPException
 from pydantic import ValidationError as PydanticValidationError
 
 from app.exceptions import (
-    HypervisiaException,
+    OPCPException,
     ValidationError,
     AuthenticationError,
     AuthorizationError,
@@ -61,11 +61,11 @@ def create_error_response(
     )
 
 
-async def hypervisia_exception_handler(
+async def OPCP_exception_handler(
     request: Request,
-    exc: HypervisiaException
+    exc: OPCPException
 ) -> JSONResponse:
-    """Handle custom HYPERVISIA exceptions.
+    """Handle custom OPCP exceptions.
     
     Args:
         request: The FastAPI request object
@@ -76,7 +76,7 @@ async def hypervisia_exception_handler(
     """
     # Log the error
     logger.warning(
-        f"HYPERVISIA exception: {exc.code} - {exc.message}",
+        f"OPCP exception: {exc.code} - {exc.message}",
         extra={
             "code": exc.code,
             "status_code": exc.status_code,
@@ -207,13 +207,13 @@ def register_exception_handlers(app):
     app.add_exception_handler(HTTPException, http_exception_handler)
     
     # Register custom exception handlers
-    app.add_exception_handler(HypervisiaException, hypervisia_exception_handler)
-    app.add_exception_handler(ValidationError, hypervisia_exception_handler)
-    app.add_exception_handler(AuthenticationError, hypervisia_exception_handler)
-    app.add_exception_handler(AuthorizationError, hypervisia_exception_handler)
-    app.add_exception_handler(NotFoundError, hypervisia_exception_handler)
-    app.add_exception_handler(ConflictError, hypervisia_exception_handler)
-    app.add_exception_handler(ServerError, hypervisia_exception_handler)
+    app.add_exception_handler(OPCPException, OPCP_exception_handler)
+    app.add_exception_handler(ValidationError, OPCP_exception_handler)
+    app.add_exception_handler(AuthenticationError, OPCP_exception_handler)
+    app.add_exception_handler(AuthorizationError, OPCP_exception_handler)
+    app.add_exception_handler(NotFoundError, OPCP_exception_handler)
+    app.add_exception_handler(ConflictError, OPCP_exception_handler)
+    app.add_exception_handler(ServerError, OPCP_exception_handler)
     
     # Register Pydantic validation error handler
     app.add_exception_handler(RequestValidationError, validation_exception_handler)

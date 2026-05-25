@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script de restauration de la base de données PostgreSQL Hypervisia
+Script de restauration de la base de données PostgreSQL OPCP
 """
 import os
 import subprocess
@@ -100,7 +100,7 @@ def restore_backup(backup_file: str) -> bool:
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Restauration de la base de données Hypervisia")
+    parser = argparse.ArgumentParser(description="Restauration de la base de données OPCP")
     parser.add_argument(
         'backup_file',
         help='Chemin vers le fichier de sauvegarde à restaurer'

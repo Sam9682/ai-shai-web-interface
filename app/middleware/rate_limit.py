@@ -1,4 +1,4 @@
-"""Rate limiting middleware for the HYPERVISIA website.
+"""Rate limiting middleware for the OPCP website.
 
 This module provides rate limiting functionality using slowapi to prevent
 abuse and brute-force attacks on sensitive endpoints.

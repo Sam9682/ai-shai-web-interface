@@ -1,17 +1,17 @@
 1) STATUTS DE L’ASSOCIATION (Loi 1901)
 STATUTS
 
-Association : HYPERVISIA
+Association : OPCP
 Association régie par la loi du 1er juillet 1901 et le décret du 16 août 1901.
 
 Article 1 — Dénomination
 
 Il est fondé entre les adhérents aux présents statuts une association ayant pour titre :
-HYPERVISIA, ci-après dénommée « l’Association ».
+OPCP, ci-après dénommée « l’Association ».
 
 Article 2 — Objet
 
-L’Association a pour objet de promouvoir la compréhension, l’usage, la recherche appliquée et le développement de l’intelligence artificielle, notamment par :
+Ce site Web a pour objet de promouvoir la compréhension, l’usage, la recherche appliquée et le développement de l’intelligence artificielle, notamment par :
 
 des actions de sensibilisation et de vulgarisation,
 
@@ -23,7 +23,7 @@ l’accompagnement de projets et d’expérimentations,
 
 la mise en réseau d’acteurs (citoyens, étudiants, professionnels, entreprises, institutions),
 
-l’accès à des outils, plateformes ou ressources, dont notamment la plateforme Softfluid.fr, selon les conditions définies par l’Association.
+l’accès à des outils, plateformes ou ressources, dont notamment la plateforme opcp-psmc.com, selon les conditions définies par l’Association.
 
 Article 3 — Moyens d’action
 

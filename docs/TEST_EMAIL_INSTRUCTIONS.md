@@ -6,9 +6,9 @@ Vous avez fourni la configuration suivante :
 ```env
 SMTP_HOST=mail.gandi.net
 SMTP_PORT=587
-SMTP_USER=admin@hypervisia.fr
+SMTP_USER=admin@opcp-psmc.com
 SMTP_PASSWORD=your-email-password
-SMTP_FROM=noreply@hypervisia.fr
+SMTP_FROM=noreply@opcp-psmc.com
 ```
 
 ## Étape 1 : Mettre à jour le fichier .env
@@ -18,9 +18,9 @@ SMTP_FROM=noreply@hypervisia.fr
 ```env
 SMTP_HOST=mail.gandi.net
 SMTP_PORT=587
-SMTP_USER=admin@hypervisia.fr
+SMTP_USER=admin@opcp-psmc.com
 SMTP_PASSWORD=VOTRE_VRAI_MOT_DE_PASSE_ICI
-SMTP_FROM=noreply@hypervisia.fr
+SMTP_FROM=noreply@opcp-psmc.com
 ```
 
 ⚠️ **Important** : Remplacez `VOTRE_VRAI_MOT_DE_PASSE_ICI` par le vrai mot de passe du compte email.
@@ -78,7 +78,7 @@ Une fois le fichier `.env` configuré, testez l'inscription :
 ### 1. Vérifier que le compte email existe
 
 Connectez-vous à votre panneau Gandi et vérifiez que :
-- Le compte `admin@hypervisia.fr` existe
+- Le compte `admin@opcp-psmc.com` existe
 - Le mot de passe est correct
 - L'accès SMTP est activé
 
@@ -146,14 +146,14 @@ Gandi peut avoir des limites d'envoi. Vérifiez :
 
 ## Alternative : Utiliser un alias
 
-Si `noreply@hypervisia.fr` n'existe pas, vous pouvez :
+Si `noreply@opcp-psmc.com` n'existe pas, vous pouvez :
 
 1. **Option 1** : Créer l'alias dans Gandi
-   - Créez un alias `noreply@hypervisia.fr` → `admin@hypervisia.fr`
+   - Créez un alias `noreply@opcp-psmc.com` → `admin@opcp-psmc.com`
 
-2. **Option 2** : Utiliser directement admin@hypervisia.fr
+2. **Option 2** : Utiliser directement admin@opcp-psmc.com
    ```env
-   SMTP_FROM=admin@hypervisia.fr
+   SMTP_FROM=admin@opcp-psmc.com
    ```
 
 ## Test rapide avec curl
@@ -162,11 +162,11 @@ Pour tester rapidement la connexion SMTP :
 
 ```bash
 curl -v --url 'smtp://mail.gandi.net:587' \
-  --mail-from 'admin@hypervisia.fr' \
+  --mail-from 'admin@opcp-psmc.com' \
   --mail-rcpt 'lepetre@yahoo.fr' \
-  --user 'admin@hypervisia.fr:VOTRE_MOT_DE_PASSE' \
+  --user 'admin@opcp-psmc.com:VOTRE_MOT_DE_PASSE' \
   --upload-file - << EOF
-From: noreply@hypervisia.fr
+From: noreply@opcp-psmc.com
 To: lepetre@yahoo.fr
 Subject: Test SMTP
 

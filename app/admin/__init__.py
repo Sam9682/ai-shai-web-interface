@@ -1,1 +1,1 @@
-"""Administration module for HYPERVISIA website"""
+"""Administration module for OPCP website"""

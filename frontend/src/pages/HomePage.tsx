@@ -5,7 +5,7 @@ import { authService } from '../services/authService';
 import { infoService, type Stats } from '../services/infoService';
 import sampng from '../assets/Sam.png';
 import ninipng from '../assets/Nini.png';
-import hypervisiapng from '/hypervisia.png';
+import OPCPpng from '/OPCP.png';
 
 export const HomePage = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -69,23 +69,23 @@ export const HomePage = () => {
           <span className="text-6xl animate-bounce inline-block">🔮</span>
         </div>
         <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-          Bienvenue à HYPERVISIA
+          Bienvenue à AI Shai Web Interface
         </h1>
         <div className="flex justify-center mb-6">
           <img 
-            src={hypervisiapng} 
+            src={OPCPpng} 
             alt="Différences entre l'Homme et l'IA" 
             className="max-w-2xl w-full h-auto rounded-2xl shadow-2xl border-4 border-primary-200 hover:scale-105 transition-transform duration-300"
           />
         </div>
         <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-          L'Association a pour objet de promouvoir la compréhension, l'usage, la recherche appliquée et le développement de l'intelligence artificielle, notamment par :
+          Ce site Web a pour objet de promouvoir la compréhension, l'usage, la recherche appliquée et le développement de l'intelligence artificielle, notamment par :
         </p>
         <ul className="text-lg text-gray-600 max-w-3xl mx-auto mt-4 space-y-2 list-disc list-inside">
           <li>la compréhension de l'impact majeur sur l'évolution de la société,</li>
           <li>des actions de sensibilisation et de vulgarisation,</li>
           <li>des événements (conférences, rencontres, hackathons),</li>
-          <li>l'accès à des outils, dont la plateforme <a href="https://softfluid.fr" target="_blank" rel="noopener noreferrer" className="bg-yellow-200 text-primary-600 hover:text-primary-700 underline transition-colors px-1 rounded">softfluid.fr</a></li>
+          <li>l'accès à des outils, dont la plateforme <a href="https://opcp-psmc.com" target="_blank" rel="noopener noreferrer" className="bg-yellow-200 text-primary-600 hover:text-primary-700 underline transition-colors px-1 rounded">opcp-psmc.com</a></li>
         </ul>
         <p className="text-xl text-gray-700 max-w-3xl mx-auto mt-4">✨</p>
         <div className="mt-8 flex justify-center gap-4">
@@ -121,8 +121,8 @@ export const HomePage = () => {
           </h2>
           <p className="text-gray-600 leading-relaxed">
             Utilisation d'une plateforme de test pour du 
-            déploiement d'application web par des agents IA <a href="https://softfluid.fr" target="_blank" rel="noopener noreferrer" className="bg-yellow-200 text-primary-600 hover:text-primary-700 underline transition-colors px-1 rounded">softfluid.fr</a> 🎪
-            Suppression des développeurs, testeurs, intégrateurs, SSII ... 😱Ce site est deployé par des IA sur Softfluid.fr
+            déploiement d'application web par des agents IA <a href="https://opcp-psmc.com" target="_blank" rel="noopener noreferrer" className="bg-yellow-200 text-primary-600 hover:text-primary-700 underline transition-colors px-1 rounded">opcp-psmc.com</a> 🎪
+            Suppression des développeurs, testeurs, intégrateurs, SSII ... 😱Ce site est deployé par des IA sur opcp-psmc.com
           </p>
         </div>
         
@@ -266,7 +266,7 @@ export const HomePage = () => {
                       </div>
                       {!isAuthenticated && (
                         <a
-                          href={`https://hypervisia.fr/api/forum/topics/${topic.id}/publichtml`}
+                          href={`https://opcp-psmc.com/api/forum/topics/${topic.id}/publichtml`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-lg text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-sm hover:shadow-md transition-all duration-300"
@@ -296,29 +296,26 @@ export const HomePage = () => {
               <span className="text-2xl mr-3">📍</span>
               <div>
                 <p className="font-semibold text-gray-900">Adresse</p>
-                <p className="text-gray-600">2 square des coquelicots 91370 VERRIERES LE BUISSON</p>
+                <p className="text-gray-600">OVH Paris</p>
               </div>
             </div>
             <div className="flex items-start">
               <span className="text-2xl mr-3">✉️</span>
               <div>
                 <p className="font-semibold text-gray-900">Email</p>
-                <a href="mailto:contact@hypervisia.fr" className="text-primary-600 hover:text-primary-700 transition-colors">
-                  contact@hypervisia.fr
+                <a href="mailto:contact@opcp-psmc.com" className="text-primary-600 hover:text-primary-700 transition-colors">
+                  contact@opcp-psmc.com
                 </a>
               </div>
             </div>
           </div>
           <div className="bg-gradient-to-br from-primary-50 to-purple-50 p-6 rounded-xl">
-            <h3 className="font-semibold text-gray-900 mb-3">💡 Les membres du bureau ?</h3>
+            <h3 className="font-semibold text-gray-900 mb-3">💡 Les membres de la Team PSMC OVH ?</h3>
             <p className="text-gray-600 text-sm leading-relaxed">
               - Samuel LEPETRE, Président, ancien ingénieur informatique chez AWS, 35 ans d'expérience, Informaticien depuis l'Oric 1, IA depuis 2023 et depuis, tous les jours<br />
-              - Nael LEPETRE, Secrétaire, étudiant en master de Math. et Centrale Lyon, 1ière génération de Maths par l'IA<br />
-              - Thibaud BRUNEL, Trésorier, 25 ans d'expérience en informatique
             </p>
             <div className="flex items-center mt-4">
               <img src={sampng} alt="Président" className="h-32 w-auto mr-2 object-contain" />
-              <img src={ninipng} alt="Secrétaire" className="h-32 w-auto object-contain" />
             </div>
           </div>
         </div>

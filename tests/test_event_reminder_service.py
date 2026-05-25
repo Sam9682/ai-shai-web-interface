@@ -1,5 +1,5 @@
 """Tests for event reminder service
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 6.4
 """
 import pytest

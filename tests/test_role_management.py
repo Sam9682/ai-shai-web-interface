@@ -1,5 +1,5 @@
 """Tests for role management endpoints
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 7.1, 7.2, 7.5
 """
 import pytest

@@ -25,7 +25,7 @@ logging.basicConfig(
 )
 
 # Create logger for the application
-logger = logging.getLogger("hypervisia")
+logger = logging.getLogger("OPCP")
 logger.setLevel(logging.INFO)
 
 # Reduce noise from third-party libraries
@@ -35,4 +35,4 @@ logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 
 def get_logger(name: str) -> logging.Logger:
     """Get a logger instance for a specific module"""
-    return logging.getLogger(f"hypervisia.{name}")
+    return logging.getLogger(f"OPCP.{name}")

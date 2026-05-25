@@ -2,21 +2,21 @@
 
 ## Summary
 
-Added a complete password reset flow to the HYPERVISIA website, allowing users who have forgotten their password to reset it via email.
+Added a complete password reset flow to the OPCP website, allowing users who have forgotten their password to reset it via email.
 
 ## Changes Made
 
 ### 1. Frontend Pages Created
 
 #### `/frontend/src/pages/ForgotPasswordPage.tsx`
-- New page accessible at `https://hypervisia.fr/forgot-password`
+- New page accessible at `https://opcp-psmc.com/forgot-password`
 - User enters their email address
 - Sends password reset request to backend
 - Shows success message after submission
 - Includes link back to login page
 
 #### `/frontend/src/pages/ResetPasswordPage.tsx`
-- New page accessible at `https://hypervisia.fr/reset-password?token=...`
+- New page accessible at `https://opcp-psmc.com/reset-password?token=...`
 - User receives this link via email
 - Allows user to enter new password with confirmation
 - Validates password requirements:
@@ -65,7 +65,7 @@ The backend already had the necessary endpoints:
 ### Email Service
 - `send_password_reset_email()` method already implemented
 - Sends French language email with reset link
-- Link format: `https://hypervisia.fr/reset-password?token={reset_token}`
+- Link format: `https://opcp-psmc.com/reset-password?token={reset_token}`
 
 ## User Flow
 
@@ -91,7 +91,7 @@ The backend already had the necessary endpoints:
 
 To test the feature:
 
-1. Navigate to `https://hypervisia.fr/login`
+1. Navigate to `https://opcp-psmc.com/login`
 2. Click "🔑 Mot de passe oublié ?"
 3. Enter a registered email address
 4. Check email inbox for reset link

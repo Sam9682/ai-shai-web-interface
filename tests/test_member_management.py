@@ -1,5 +1,5 @@
 """Tests for member management endpoints
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 7.3, 7.4
 """
 import pytest

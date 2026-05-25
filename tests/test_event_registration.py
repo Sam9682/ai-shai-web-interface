@@ -1,5 +1,5 @@
 """Tests for event registration endpoints
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 6.3
 """
 import pytest

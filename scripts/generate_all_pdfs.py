@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script pour générer tous les PDFs des documents officiels de l'association HYPERVISIA
+Script pour générer tous les PDFs des documents officiels de l'association OPCP
 """
 
 from reportlab.lib.pagesizes import A4
@@ -101,7 +101,7 @@ def generate_pv_pdf(output_filename="docs/PROCES_VERBAL_ASSEMBLEE_CONSTITUTIVE.p
     # Déroulé
     story.append(Paragraph("Déroulé", styles['heading']))
     story.append(Paragraph(
-        "Les participants décident de créer l'association HYPERVISIA.",
+        "Les participants décident de créer l'association OPCP.",
         styles['normal']
     ))
     story.append(Paragraph(
@@ -163,7 +163,7 @@ def generate_pv_pdf(output_filename="docs/PROCES_VERBAL_ASSEMBLEE_CONSTITUTIVE.p
     print(f"✅ PDF généré : {output_filename}")
 
 
-def generate_statuts_pdf(output_filename="docs/STATUTS_ASSOCIATION_HYPERVISIA.pdf"):
+def generate_statuts_pdf(output_filename="docs/STATUTS_ASSOCIATION_OPCP.pdf"):
     """Génère le PDF des statuts de l'association"""
     
     doc = SimpleDocTemplate(
@@ -179,7 +179,7 @@ def generate_statuts_pdf(output_filename="docs/STATUTS_ASSOCIATION_HYPERVISIA.pd
     story = []
     
     # En-tête
-    story.append(Paragraph("ASSOCIATION HYPERVISIA", styles['title']))
+    story.append(Paragraph("ASSOCIATION OPCP", styles['title']))
     story.append(Paragraph("Loi 1901", styles['center']))
     story.append(Spacer(1, 0.5*cm))
     story.append(Paragraph("STATUTS DE L'ASSOCIATION", styles['title']))
@@ -189,14 +189,14 @@ def generate_statuts_pdf(output_filename="docs/STATUTS_ASSOCIATION_HYPERVISIA.pd
     story.append(Paragraph("Article 1 — Dénomination", styles['heading']))
     story.append(Paragraph(
         "Il est fondé entre les adhérents aux présents statuts une association ayant pour titre : "
-        "<b>HYPERVISIA</b>, ci-après dénommée « l'Association ».",
+        "<b>OPCP</b>, ci-après dénommée « l'Association ».",
         styles['normal']
     ))
     
     # Article 2
     story.append(Paragraph("Article 2 — Objet", styles['heading']))
     story.append(Paragraph(
-        "L'Association a pour objet de promouvoir la compréhension, l'usage, la recherche appliquée "
+        "Ce site Web a pour objet de promouvoir la compréhension, l'usage, la recherche appliquée "
         "et le développement de l'intelligence artificielle, notamment par :",
         styles['normal']
     ))
@@ -205,7 +205,7 @@ def generate_statuts_pdf(output_filename="docs/STATUTS_ASSOCIATION_HYPERVISIA.pd
     story.append(Paragraph("• des événements (conférences, rencontres, hackathons),", styles['normal']))
     story.append(Paragraph("• l'accompagnement de projets et d'expérimentations,", styles['normal']))
     story.append(Paragraph("• la mise en réseau d'acteurs (citoyens, étudiants, professionnels, entreprises, institutions),", styles['normal']))
-    story.append(Paragraph("• l'accès à des outils, plateformes ou ressources, dont notamment la plateforme Softfluid.fr, selon les conditions définies par l'Association.", styles['normal']))
+    story.append(Paragraph("• l'accès à des outils, plateformes ou ressources, dont notamment la plateforme opcp-psmc.com, selon les conditions définies par l'Association.", styles['normal']))
     
     # Article 3
     story.append(Paragraph("Article 3 — Moyens d'action", styles['heading']))
@@ -386,7 +386,7 @@ def generate_reglement_pdf(output_filename="docs/REGLEMENT_INTERIEUR.pdf"):
     story = []
     
     # En-tête
-    story.append(Paragraph("ASSOCIATION HYPERVISIA", styles['title']))
+    story.append(Paragraph("ASSOCIATION OPCP", styles['title']))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph("RÈGLEMENT INTÉRIEUR", styles['title']))
     story.append(Spacer(1, 0.5*cm))
@@ -422,7 +422,7 @@ def generate_reglement_pdf(output_filename="docs/REGLEMENT_INTERIEUR.pdf"):
     ))
     story.append(Paragraph("• participation à certains événements ;", styles['normal']))
     story.append(Paragraph("• accès à certains services ou formations ;", styles['normal']))
-    story.append(Paragraph("• usage professionnel de ressources numériques, notamment Softfluid.fr, dans le cadre d'une convention.", styles['normal']))
+    story.append(Paragraph("• usage professionnel de ressources numériques, notamment opcp-psmc.com, dans le cadre d'une convention.", styles['normal']))
     
     # Article 4
     story.append(Paragraph("Article 4 — Bureau", styles['heading']))
@@ -460,9 +460,9 @@ def generate_reglement_pdf(output_filename="docs/REGLEMENT_INTERIEUR.pdf"):
     ))
     
     # Article 7
-    story.append(Paragraph("Article 7 — Usage de la plateforme Softfluid.fr", styles['heading']))
+    story.append(Paragraph("Article 7 — Usage de la plateforme opcp-psmc.com", styles['heading']))
     story.append(Paragraph(
-        "La plateforme Softfluid.fr peut être utilisée par l'Association comme outil pédagogique, de "
+        "La plateforme opcp-psmc.com peut être utilisée par l'Association comme outil pédagogique, de "
         "démonstration ou d'expérimentation.",
         styles['normal']
     ))
@@ -476,7 +476,7 @@ def generate_reglement_pdf(output_filename="docs/REGLEMENT_INTERIEUR.pdf"):
     # Article 8
     story.append(Paragraph("Article 8 — Communication et image", styles['heading']))
     story.append(Paragraph(
-        "Les supports de communication de l'Association (site web Hypervisia.fr, réseaux sociaux, documents) "
+        "Les supports de communication de l'Association (site web opcp-psmc.com, réseaux sociaux, documents) "
         "doivent respecter l'objet de l'Association et la neutralité de l'organisation.",
         styles['normal']
     ))
@@ -541,13 +541,13 @@ def generate_dirigeants_pdf(output_filename="docs/LISTE_DES_DIRIGEANTS.pdf"):
     story = []
     
     # En-tête
-    story.append(Paragraph("ASSOCIATION HYPERVISIA", styles['title']))
+    story.append(Paragraph("ASSOCIATION OPCP", styles['title']))
     story.append(Spacer(1, 0.3*cm))
     story.append(Paragraph("LISTE DES DIRIGEANTS", styles['title']))
     story.append(Spacer(1, 1*cm))
     
     # Informations association
-    story.append(Paragraph("<b>Association :</b> HYPERVISIA", styles['normal']))
+    story.append(Paragraph("<b>Association :</b> OPCP", styles['normal']))
     story.append(Paragraph(
         "<b>Siège :</b> 2 square des coquelicots 91370 VERRIERES LE BUISSON",
         styles['normal']
@@ -618,7 +618,7 @@ def generate_dirigeants_pdf(output_filename="docs/LISTE_DES_DIRIGEANTS.pdf"):
 
 
 if __name__ == "__main__":
-    print("Génération des PDFs des documents officiels HYPERVISIA...\n")
+    print("Génération des PDFs des documents officiels OPCP...\n")
     generate_pv_pdf()
     generate_statuts_pdf()
     generate_reglement_pdf()

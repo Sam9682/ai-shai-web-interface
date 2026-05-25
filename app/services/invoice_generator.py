@@ -1,5 +1,5 @@
 """Invoice generation service for payment receipts
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.3, 4.4
 """
 import os
@@ -138,12 +138,10 @@ class InvoiceGenerator:
             story.append(Spacer(1, 10*mm))
             
             # Association information
-            story.append(Paragraph("Association HYPERVISIA", heading_style))
+            story.append(Paragraph("Association OPCP", heading_style))
             association_info = """
-            Association loi 1901 - N° W913016363 <br/>
-            2 square des coquelicots<br/>
-            91370 VERRIERES LE BUISSON<br/>
-            Email: contact@hypervisia.fr
+            OVH PSMC Team <br/>
+            Email: contact@opcp-psmc.com
             """
             story.append(Paragraph(association_info, normal_style))
             story.append(Spacer(1, 10*mm))
@@ -175,7 +173,7 @@ class InvoiceGenerator:
             payment_data = [
                 ["Description", "Quantité / Qty", "Prix unitaire / Unit Price", "Total"],
                 [
-                    "Cotisation annuelle HYPERVISIA\nAnnual Membership Fee",
+                    "Cotisation annuelle OPCP\nAnnual Membership Fee",
                     "1",
                     f"{float(amount):.2f} {currency}",
                     f"{float(amount):.2f} {currency}"
@@ -236,7 +234,7 @@ class InvoiceGenerator:
             footer_text = """
             Merci pour votre paiement / Thank you for your payment<br/>
             Cette facture est générée automatiquement / This invoice is automatically generated<br/>
-            Association HYPERVISIA - Loi 1901
+            Association OPCP - Loi 1901
             """
             story.append(Paragraph(footer_text, footer_style))
             

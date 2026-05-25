@@ -1,8 +1,8 @@
-# Compatibilité Multi-Cloud pour les Sauvegardes Hypervisia
+# Compatibilité Multi-Cloud pour les Sauvegardes OPCP
 
 ## Vue d'ensemble
 
-Le système de sauvegarde Hypervisia est maintenant compatible avec plusieurs fournisseurs de stockage cloud :
+Le système de sauvegarde OPCP est maintenant compatible avec plusieurs fournisseurs de stockage cloud :
 
 ✅ **AWS S3** (Amazon Web Services)  
 ✅ **OVH Object Storage** (compatible S3)  
@@ -53,7 +53,7 @@ AWS_DEFAULT_REGION=eu-west-3
 
 1. Connectez-vous à l'espace client OVH
 2. Allez dans `Public Cloud` > `Object Storage`
-3. Créez un conteneur S3 (ex: `hypervisia-backups`)
+3. Créez un conteneur S3 (ex: `OPCP-backups`)
 4. Créez un utilisateur S3 et notez :
    - Access Key ID
    - Secret Access Key
@@ -102,7 +102,7 @@ python scripts/backup_database_universal.py
 
 #### Avec OVH Object Storage
 ```bash
-python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups
+python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups
 ```
 
 #### Options disponibles
@@ -131,7 +131,7 @@ python scripts/restore_from_s3_universal.py --provider aws list
 
 OVH Object Storage :
 ```bash
-python scripts/restore_from_s3_universal.py --provider ovh --bucket hypervisia-backups list
+python scripts/restore_from_s3_universal.py --provider ovh --bucket OPCP-backups list
 ```
 
 Filtrer par date :
@@ -143,20 +143,20 @@ python scripts/restore_from_s3_universal.py --provider ovh list --prefix 2026/02
 
 ```bash
 # Depuis OVH
-python scripts/restore_from_s3_universal.py --provider ovh download 2026/02/28/hypervisia_backup_20260228_143000.sql
+python scripts/restore_from_s3_universal.py --provider ovh download 2026/02/28/OPCP_backup_20260228_143000.sql
 
 # Depuis AWS
-python scripts/restore_from_s3_universal.py --provider aws download 2026/02/28/hypervisia_backup_20260228_143000.sql
+python scripts/restore_from_s3_universal.py --provider aws download 2026/02/28/OPCP_backup_20260228_143000.sql
 ```
 
 #### Restaurer la base de données
 
 ```bash
 # Depuis OVH (téléchargement + restauration automatique)
-python scripts/restore_from_s3_universal.py --provider ovh --bucket hypervisia-backups restore 2026/02/28/hypervisia_backup_20260228_143000.sql
+python scripts/restore_from_s3_universal.py --provider ovh --bucket OPCP-backups restore 2026/02/28/OPCP_backup_20260228_143000.sql
 
 # Depuis AWS
-python scripts/restore_from_s3_universal.py --provider aws restore 2026/02/28/hypervisia_backup_20260228_143000.sql
+python scripts/restore_from_s3_universal.py --provider aws restore 2026/02/28/OPCP_backup_20260228_143000.sql
 ```
 
 ## Automatisation avec Cron
@@ -170,7 +170,7 @@ crontab -e
 Ajouter :
 ```cron
 # Sauvegarde quotidienne à 2h du matin vers OVH
-0 2 * * * cd /path/to/hypervisia && /usr/bin/python3 scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups >> /var/log/hypervisia_backup.log 2>&1
+0 2 * * * cd /path/to/OPCP && /usr/bin/python3 scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups >> /var/log/OPCP_backup.log 2>&1
 ```
 
 ### Sauvegarde vers plusieurs clouds (redondance)
@@ -180,15 +180,15 @@ Ajouter :
 # backup_multi_cloud.sh
 
 # Sauvegarde vers AWS
-python scripts/backup_database_universal.py --s3-provider aws --s3-bucket ai-hypervisia
+python scripts/backup_database_universal.py --s3-provider aws --s3-bucket ai-OPCP
 
 # Sauvegarde vers OVH
-python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups
+python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups
 ```
 
 Cron :
 ```cron
-0 2 * * * /path/to/backup_multi_cloud.sh >> /var/log/hypervisia_backup.log 2>&1
+0 2 * * * /path/to/backup_multi_cloud.sh >> /var/log/OPCP_backup.log 2>&1
 ```
 
 ## Comparaison des Fournisseurs
@@ -282,11 +282,11 @@ Les deux fournisseurs supportent :
 python scripts/restore_from_s3_universal.py --provider aws list
 
 # 2. Télécharger une sauvegarde
-python scripts/restore_from_s3_universal.py --provider aws download 2026/02/28/hypervisia_backup_20260228_143000.sql
+python scripts/restore_from_s3_universal.py --provider aws download 2026/02/28/OPCP_backup_20260228_143000.sql
 
 # 3. Uploader vers OVH (utiliser AWS CLI ou script personnalisé)
 # Ou simplement créer une nouvelle sauvegarde vers OVH
-python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket hypervisia-backups
+python scripts/backup_database_universal.py --s3-provider ovh --s3-bucket OPCP-backups
 ```
 
 ### Synchronisation entre clouds
@@ -332,7 +332,7 @@ curl -I https://s3.gra.io.cloud.ovh.net
 
 ```bash
 # Créer le bucket via l'interface OVH ou AWS CLI
-aws s3 mb s3://hypervisia-backups --endpoint-url https://s3.gra.io.cloud.ovh.net
+aws s3 mb s3://OPCP-backups --endpoint-url https://s3.gra.io.cloud.ovh.net
 ```
 
 ### Tester la configuration
@@ -358,7 +358,7 @@ python scripts/test_backup_setup.py --provider ovh
 
 ## Conclusion
 
-Le système de sauvegarde Hypervisia est maintenant **multi-cloud** et offre :
+Le système de sauvegarde OPCP est maintenant **multi-cloud** et offre :
 
 ✅ Flexibilité de choix du fournisseur  
 ✅ Compatibilité avec tout service S3  

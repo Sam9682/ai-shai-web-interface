@@ -33,9 +33,9 @@ echo "  SHAI_API_URL: $(grep '^SHAI_API_URL=' .env)"
 
 echo ""
 echo "Step 4: Rebuilding backend container with updated configuration..."
-docker-compose stop ai-hypervisia
-docker-compose build ai-hypervisia
-docker-compose up -d ai-hypervisia
+docker-compose stop ai-OPCP
+docker-compose build ai-OPCP
+docker-compose up -d ai-OPCP
 
 echo ""
 echo "Step 5: Waiting for container to start..."
@@ -44,15 +44,15 @@ sleep 5
 echo ""
 echo "Step 6: Verifying environment variables in container..."
 echo "  SHAI_API_KEY in container:"
-docker-compose exec ai-hypervisia printenv SHAI_API_KEY | head -c 50
+docker-compose exec ai-OPCP printenv SHAI_API_KEY | head -c 50
 echo "..."
 echo ""
 echo "  SHAI_API_URL in container:"
-docker-compose exec ai-hypervisia printenv SHAI_API_URL
+docker-compose exec ai-OPCP printenv SHAI_API_URL
 
 echo ""
 echo "Step 7: Testing Python config loading..."
-docker-compose exec ai-hypervisia python -c "from app.config import settings; print(f'SHAI_API_KEY loaded: {bool(settings.SHAI_API_KEY)}'); print(f'SHAI_API_URL: {settings.SHAI_API_URL}')"
+docker-compose exec ai-OPCP python -c "from app.config import settings; print(f'SHAI_API_KEY loaded: {bool(settings.SHAI_API_KEY)}'); print(f'SHAI_API_URL: {settings.SHAI_API_URL}')"
 
 echo ""
 echo "=== Configuration Complete ==="
@@ -64,4 +64,4 @@ echo ""
 echo "You can now use Shai AI provider in L'Oracle page!"
 echo ""
 echo "Checking logs..."
-docker-compose logs --tail=20 ai-hypervisia
+docker-compose logs --tail=20 ai-OPCP

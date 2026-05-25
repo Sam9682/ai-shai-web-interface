@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Script pour générer un PDF du Procès-Verbal d'Assemblée Constitutive
-Association HYPERVISIA - Loi 1901
+Association OPCP - Loi 1901
 """
 
 from reportlab.lib.pagesizes import A4
@@ -75,7 +75,7 @@ def generate_pv_pdf(output_filename="docs/PROCES_VERBAL_ASSEMBLEE_CONSTITUTIVE.p
     story = []
     
     # En-tête avec logo/nom association
-    story.append(Paragraph("ASSOCIATION HYPERVISIA", title_style))
+    story.append(Paragraph("ASSOCIATION OPCP", title_style))
     story.append(Paragraph("Loi 1901", center_style))
     story.append(Spacer(1, 0.5*cm))
     
@@ -111,7 +111,7 @@ def generate_pv_pdf(output_filename="docs/PROCES_VERBAL_ASSEMBLEE_CONSTITUTIVE.p
     # 1. Création
     story.append(Paragraph("<b>1. Création de l'association</b>", normal_style))
     story.append(Paragraph(
-        "Les participants décident à l'unanimité de créer l'association dénommée <b>HYPERVISIA</b>.",
+        "Les participants décident à l'unanimité de créer l'association dénommée <b>OPCP</b>.",
         normal_style
     ))
     story.append(Spacer(1, 0.3*cm))
@@ -218,7 +218,7 @@ def generate_pv_pdf(output_filename="docs/PROCES_VERBAL_ASSEMBLEE_CONSTITUTIVE.p
     # Pied de page
     story.append(Spacer(1, 1*cm))
     story.append(Paragraph(
-        "<i>Association HYPERVISIA - Siège social : 2 square des coquelicots, 91370 Verrières-le-Buisson</i>",
+        "<i>Association OPCP - Siège social : 2 square des coquelicots, 91370 Verrières-le-Buisson</i>",
         ParagraphStyle(
             'Footer',
             parent=styles['Normal'],

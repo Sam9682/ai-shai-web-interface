@@ -4,15 +4,15 @@ echo "=== Rebuilding Backend Container with Quote Fix ==="
 echo ""
 
 echo "Step 1: Stopping the backend container..."
-docker-compose stop ai-hypervisia
+docker-compose stop ai-OPCP
 
 echo ""
 echo "Step 2: Rebuilding the container with updated code..."
-docker-compose build ai-hypervisia
+docker-compose build ai-OPCP
 
 echo ""
 echo "Step 3: Starting the container..."
-docker-compose up -d ai-hypervisia
+docker-compose up -d ai-OPCP
 
 echo ""
 echo "Step 4: Waiting for container to start..."
@@ -20,11 +20,11 @@ sleep 5
 
 echo ""
 echo "Step 5: Checking container status..."
-docker-compose ps ai-hypervisia
+docker-compose ps ai-OPCP
 
 echo ""
 echo "Step 6: Checking logs..."
-docker-compose logs --tail=30 ai-hypervisia
+docker-compose logs --tail=30 ai-OPCP
 
 echo ""
 echo "=== Rebuild Complete ==="

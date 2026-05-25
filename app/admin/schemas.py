@@ -196,8 +196,8 @@ class AnnouncementRequest(BaseModel):
         description="Announcement content"
     )
     sender_name: Optional[str] = Field(
-        default="HYPERVISIA",
-        description="Name of the sender (defaults to HYPERVISIA)"
+        default="OPCP",
+        description="Name of the sender (defaults to OPCP)"
     )
 
 

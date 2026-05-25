@@ -1,5 +1,5 @@
 """Tests for iCal export endpoint
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 6.7
 """
 import pytest
@@ -123,13 +123,13 @@ def test_ical_export_returns_valid_ical(client, db_session, test_events, auth_he
     assert response.status_code == 200
     assert response.headers["content-type"] == "text/calendar; charset=utf-8"
     assert "attachment" in response.headers["content-disposition"]
-    assert "hypervisia_events.ics" in response.headers["content-disposition"]
+    assert "OPCP_events.ics" in response.headers["content-disposition"]
     
     # Parse the iCal content to verify it's valid
     cal = Calendar.from_ical(response.content)
     
     # Verify calendar properties
-    assert cal.get('prodid') == '-//HYPERVISIA Association//Events Calendar//FR'
+    assert cal.get('prodid') == '-//OPCP Association//Events Calendar//FR'
     assert cal.get('version') == '2.0'
     assert cal.get('calscale') == 'GREGORIAN'
     assert cal.get('method') == 'PUBLISH'
@@ -161,7 +161,7 @@ def test_ical_export_includes_all_event_details(client, db_session, test_events,
     assert event1.get('location') == "Test Location 1"
     assert event1.get('status') == 'CONFIRMED'
     assert event1.get('uid') is not None
-    assert '@hypervisia.org' in str(event1.get('uid'))
+    assert '@OPCP.org' in str(event1.get('uid'))
     
     # Verify event with no description
     event3 = ical_events[2]

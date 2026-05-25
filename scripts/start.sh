@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# HYPERVISIA Start Script
+# OPCP Start Script
 # Starts the application with existing data
 
 set -e
@@ -11,7 +11,7 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-echo -e "${GREEN}=== Starting HYPERVISIA Application ===${NC}"
+echo -e "${GREEN}=== Starting OPCP Application ===${NC}"
 
 # Check if .env file exists
 if [ ! -f .env ]; then
@@ -29,7 +29,7 @@ echo -e "${GREEN}Waiting for database to be ready...${NC}"
 sleep 5
 
 for i in {1..30}; do
-    if docker-compose exec -T postgres pg_isready -U hypervisia_user -d hypervisia_db > /dev/null 2>&1; then
+    if docker-compose exec -T postgres pg_isready -U OPCP_user -d OPCP_db > /dev/null 2>&1; then
         echo -e "${GREEN}Database is ready!${NC}"
         break
     fi

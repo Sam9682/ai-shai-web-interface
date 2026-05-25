@@ -9,9 +9,9 @@
 ```env
 SMTP_HOST=mail.gandi.net
 SMTP_PORT=587
-SMTP_USER=admin@hypervisia.fr
+SMTP_USER=admin@opcp-psmc.com
 SMTP_PASSWORD=VOTRE_VRAI_MOT_DE_PASSE
-SMTP_FROM=noreply@hypervisia.fr
+SMTP_FROM=noreply@opcp-psmc.com
 ```
 
 ⚠️ Remplacez `VOTRE_VRAI_MOT_DE_PASSE` par le vrai mot de passe !
@@ -46,7 +46,7 @@ Vérifiez la boîte email `lepetre@yahoo.fr` :
 
 Avant de tester, vérifiez que :
 
-- [ ] Le compte `admin@hypervisia.fr` existe sur Gandi
+- [ ] Le compte `admin@opcp-psmc.com` existe sur Gandi
 - [ ] Le mot de passe est correct
 - [ ] L'accès SMTP est activé sur Gandi
 - [ ] Le port 587 n'est pas bloqué par un pare-feu
@@ -101,7 +101,7 @@ docker-compose logs -f backend | grep -i email
 → Vérifiez le dossier spam de Yahoo
 
 ### "Relay access denied"
-→ Vérifiez que `admin@hypervisia.fr` existe sur Gandi
+→ Vérifiez que `admin@opcp-psmc.com` existe sur Gandi
 
 ## 📚 Documentation complète
 

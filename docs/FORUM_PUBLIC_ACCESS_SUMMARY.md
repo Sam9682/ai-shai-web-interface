@@ -259,10 +259,10 @@ try {
 ## 📞 Support
 
 Pour toute question ou problème:
-- Email: contact@hypervisia.fr
+- Email: contact@opcp-psmc.com
 - Documentation: Ce fichier
 
 ---
 
 **Implémenté le:** 2026-02-18
-**Par:** HYPERVISIA Development Team
+**Par:** OPCP Development Team

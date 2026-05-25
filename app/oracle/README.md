@@ -1,6 +1,6 @@
 # Oracle AI Module
 
-Module d'IA agentique pour HYPERVISIA et applications softfluid.fr
+Module d'IA agentique pour OPCP et applications opcp-psmc.com
 
 ## Structure
 

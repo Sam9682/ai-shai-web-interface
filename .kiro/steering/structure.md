@@ -7,7 +7,7 @@ inclusion: auto
 ## Repository Layout
 
 ```
-hypervisia-website/
+OPCP-website/
 ├── app/                    # Backend application code
 ├── frontend/               # React frontend application
 ├── alembic/               # Database migration scripts

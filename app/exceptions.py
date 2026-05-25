@@ -1,4 +1,4 @@
-"""Custom exception classes for the HYPERVISIA application.
+"""Custom exception classes for the OPCP application.
 
 This module defines custom exceptions for consistent error handling across the application.
 Validates Requirements: All requirements (error handling)
@@ -7,8 +7,8 @@ Validates Requirements: All requirements (error handling)
 from typing import Optional, Dict, Any
 
 
-class HypervisiaException(Exception):
-    """Base exception class for all HYPERVISIA exceptions."""
+class OPCPException(Exception):
+    """Base exception class for all OPCP exceptions."""
     
     def __init__(
         self,
@@ -32,7 +32,7 @@ class HypervisiaException(Exception):
         super().__init__(self.message)
 
 
-class ValidationError(HypervisiaException):
+class ValidationError(OPCPException):
     """Exception raised for validation errors (400 Bad Request)."""
     
     def __init__(
@@ -44,7 +44,7 @@ class ValidationError(HypervisiaException):
         super().__init__(message, code, 400, details)
 
 
-class AuthenticationError(HypervisiaException):
+class AuthenticationError(OPCPException):
     """Exception raised for authentication errors (401 Unauthorized)."""
     
     def __init__(
@@ -56,7 +56,7 @@ class AuthenticationError(HypervisiaException):
         super().__init__(message, code, 401, details)
 
 
-class AuthorizationError(HypervisiaException):
+class AuthorizationError(OPCPException):
     """Exception raised for authorization errors (403 Forbidden)."""
     
     def __init__(
@@ -68,7 +68,7 @@ class AuthorizationError(HypervisiaException):
         super().__init__(message, code, 403, details)
 
 
-class NotFoundError(HypervisiaException):
+class NotFoundError(OPCPException):
     """Exception raised when a resource is not found (404 Not Found)."""
     
     def __init__(
@@ -80,7 +80,7 @@ class NotFoundError(HypervisiaException):
         super().__init__(message, code, 404, details)
 
 
-class ConflictError(HypervisiaException):
+class ConflictError(OPCPException):
     """Exception raised for conflict errors (409 Conflict)."""
     
     def __init__(
@@ -92,7 +92,7 @@ class ConflictError(HypervisiaException):
         super().__init__(message, code, 409, details)
 
 
-class ServerError(HypervisiaException):
+class ServerError(OPCPException):
     """Exception raised for internal server errors (500 Internal Server Error)."""
     
     def __init__(

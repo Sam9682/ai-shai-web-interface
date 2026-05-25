@@ -1,5 +1,5 @@
 """Unit tests for invoice generation
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.3, 4.4
 """
 import os

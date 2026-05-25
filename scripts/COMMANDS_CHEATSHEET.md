@@ -53,29 +53,29 @@ python scripts/restore_from_s3.py list --prefix 2026/02/20/
 
 ```bash
 # Restaurer depuis S3 (automatique)
-python scripts/restore_from_s3.py restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3.py restore 2026/02/20/OPCP_backup_20260220_143000.sql
 
 # Télécharger depuis S3 (sans restaurer)
-python scripts/restore_from_s3.py download 2026/02/20/hypervisia_backup_20260220_143000.sql
+python scripts/restore_from_s3.py download 2026/02/20/OPCP_backup_20260220_143000.sql
 
 # Restaurer depuis un fichier local
-python scripts/restore_database.py backups/hypervisia_backup_20260220_143000.sql
+python scripts/restore_database.py backups/OPCP_backup_20260220_143000.sql
 ```
 
 ## Gestion S3
 
 ```bash
 # Lister le contenu du bucket
-aws s3 ls s3://ai-hypervisia/ --recursive
+aws s3 ls s3://ai-OPCP/ --recursive
 
 # Télécharger manuellement un fichier
-aws s3 cp s3://ai-hypervisia/2026/02/20/hypervisia_backup_20260220_143000.sql ./
+aws s3 cp s3://ai-OPCP/2026/02/20/OPCP_backup_20260220_143000.sql ./
 
 # Supprimer un fichier
-aws s3 rm s3://ai-hypervisia/2026/02/20/hypervisia_backup_20260220_143000.sql
+aws s3 rm s3://ai-OPCP/2026/02/20/OPCP_backup_20260220_143000.sql
 
 # Synchroniser toutes les sauvegardes localement
-aws s3 sync s3://ai-hypervisia/ ./backups-s3/
+aws s3 sync s3://ai-OPCP/ ./backups-s3/
 ```
 
 ## Automatisation
@@ -87,32 +87,32 @@ crontab -e
 # Exemples de tâches cron:
 
 # Sauvegarde quotidienne à 2h du matin
-0 2 * * * cd /path/to/hypervisia && python3 scripts/backup_database.py >> /var/log/hypervisia_backup.log 2>&1
+0 2 * * * cd /path/to/OPCP && python3 scripts/backup_database.py >> /var/log/OPCP_backup.log 2>&1
 
 # Sauvegarde toutes les 6 heures
-0 */6 * * * cd /path/to/hypervisia && python3 scripts/backup_database.py >> /var/log/hypervisia_backup.log 2>&1
+0 */6 * * * cd /path/to/OPCP && python3 scripts/backup_database.py >> /var/log/OPCP_backup.log 2>&1
 
 # Sauvegarde hebdomadaire (dimanche à 3h)
-0 3 * * 0 cd /path/to/hypervisia && python3 scripts/backup_database.py >> /var/log/hypervisia_backup.log 2>&1
+0 3 * * 0 cd /path/to/OPCP && python3 scripts/backup_database.py >> /var/log/OPCP_backup.log 2>&1
 
 # Voir les logs
-tail -f /var/log/hypervisia_backup.log
+tail -f /var/log/OPCP_backup.log
 ```
 
 ## Docker
 
 ```bash
 # Sauvegarde depuis le conteneur
-docker exec -it hypervisia-container python scripts/backup_database.py
+docker exec -it OPCP-container python scripts/backup_database.py
 
 # Restaurer depuis le conteneur
-docker exec -it hypervisia-container python scripts/restore_from_s3.py restore 2026/02/20/hypervisia_backup_20260220_143000.sql
+docker exec -it OPCP-container python scripts/restore_from_s3.py restore 2026/02/20/OPCP_backup_20260220_143000.sql
 
 # Lister les sauvegardes depuis le conteneur
-docker exec -it hypervisia-container python scripts/restore_from_s3.py list
+docker exec -it OPCP-container python scripts/restore_from_s3.py list
 
 # Copier un fichier de sauvegarde depuis le conteneur
-docker cp hypervisia-container:/app/backups/hypervisia_backup_20260220_143000.sql ./
+docker cp OPCP-container:/app/backups/OPCP_backup_20260220_143000.sql ./
 ```
 
 ## Dépannage
@@ -122,19 +122,19 @@ docker cp hypervisia-container:/app/backups/hypervisia_backup_20260220_143000.sq
 python scripts/test_backup_setup.py
 
 # Vérifier la connexion à la base de données
-pg_isready -h localhost -p 5432 -U hypervisia_user -d hypervisia_db
+pg_isready -h localhost -p 5432 -U OPCP_user -d OPCP_db
 
 # Vérifier les credentials AWS
 aws sts get-caller-identity
 
 # Vérifier l'accès au bucket
-aws s3 ls s3://ai-hypervisia/
+aws s3 ls s3://ai-OPCP/
 
 # Tester pg_dump manuellement
-pg_dump -h localhost -p 5432 -U hypervisia_user -d hypervisia_db -F c -f test_backup.sql
+pg_dump -h localhost -p 5432 -U OPCP_user -d OPCP_db -F c -f test_backup.sql
 
 # Voir les logs PostgreSQL
-docker logs hypervisia-postgres
+docker logs OPCP-postgres
 ```
 
 ## Variables d'Environnement
@@ -154,32 +154,32 @@ export $(cat .env | xargs)
 
 ```bash
 # Nettoyer les sauvegardes locales de plus de 30 jours
-find ./backups -name "hypervisia_backup_*.sql" -mtime +30 -delete
+find ./backups -name "OPCP_backup_*.sql" -mtime +30 -delete
 
 # Calculer l'espace utilisé par les sauvegardes locales
 du -sh ./backups
 
 # Calculer l'espace utilisé dans S3
-aws s3 ls s3://ai-hypervisia/ --recursive --summarize | grep "Total Size"
+aws s3 ls s3://ai-OPCP/ --recursive --summarize | grep "Total Size"
 
 # Compter le nombre de sauvegardes dans S3
-aws s3 ls s3://ai-hypervisia/ --recursive | grep ".sql" | wc -l
+aws s3 ls s3://ai-OPCP/ --recursive | grep ".sql" | wc -l
 ```
 
 ## Sécurité
 
 ```bash
 # Chiffrer une sauvegarde locale avec GPG
-gpg --symmetric --cipher-algo AES256 backups/hypervisia_backup_20260220_143000.sql
+gpg --symmetric --cipher-algo AES256 backups/OPCP_backup_20260220_143000.sql
 
 # Déchiffrer
-gpg --decrypt backups/hypervisia_backup_20260220_143000.sql.gpg > backup.sql
+gpg --decrypt backups/OPCP_backup_20260220_143000.sql.gpg > backup.sql
 
 # Vérifier les permissions du bucket S3
-aws s3api get-bucket-acl --bucket ai-hypervisia
+aws s3api get-bucket-acl --bucket ai-OPCP
 
 # Activer le versioning S3
-aws s3api put-bucket-versioning --bucket ai-hypervisia --versioning-configuration Status=Enabled
+aws s3api put-bucket-versioning --bucket ai-OPCP --versioning-configuration Status=Enabled
 ```
 
 ## Monitoring
@@ -189,8 +189,8 @@ aws s3api put-bucket-versioning --bucket ai-hypervisia --versioning-configuratio
 ls -lth ./backups | head -n 2
 
 # Vérifier la dernière sauvegarde S3
-aws s3 ls s3://ai-hypervisia/ --recursive | sort | tail -n 1
+aws s3 ls s3://ai-OPCP/ --recursive | sort | tail -n 1
 
 # Alertes par email (exemple avec sendmail)
-python scripts/backup_database.py && echo "Backup OK" | mail -s "Hypervisia Backup Success" admin@hypervisia.fr || echo "Backup FAILED" | mail -s "Hypervisia Backup FAILED" admin@hypervisia.fr
+python scripts/backup_database.py && echo "Backup OK" | mail -s "OPCP Backup Success" admin@opcp-psmc.com || echo "Backup FAILED" | mail -s "OPCP Backup FAILED" admin@opcp-psmc.com
 ```

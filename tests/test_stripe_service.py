@@ -1,5 +1,5 @@
 """Tests for Stripe payment service
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 4.1, 4.2
 """
 import pytest

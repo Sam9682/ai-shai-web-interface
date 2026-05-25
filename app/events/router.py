@@ -1,5 +1,5 @@
 """Event management API endpoints
-Feature: hypervisia-website
+Feature: OPCP-website
 Validates Requirements 6.1, 6.2, 6.5, 6.7, 10.3
 """
 import uuid
@@ -96,12 +96,12 @@ async def create_event(
             end_date_str = new_event.end_date.strftime("%d/%m/%Y à %H:%M")
             
             # Prepare email content
-            subject = f"Nouvel événement HYPERVISIA : {new_event.title}"
+            subject = f"Nouvel événement OPCP : {new_event.title}"
             
             body_text = f"""
 Bonjour {member.first_name},
 
-Un nouvel événement a été créé sur HYPERVISIA :
+Un nouvel événement a été créé sur OPCP :
 
 Titre : {new_event.title}
 Date de début : {start_date_str}
@@ -110,10 +110,10 @@ Lieu : {new_event.location or 'Non spécifié'}
 
 {new_event.description or ''}
 
-Connectez-vous à votre compte HYPERVISIA pour vous inscrire à cet événement.
+Connectez-vous à votre compte OPCP pour vous inscrire à cet événement.
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
 """
             
             body_html = f"""
@@ -133,12 +133,12 @@ L'équipe HYPERVISIA
 <body>
     <div class="container">
         <div class="header">
-            <h1>HYPERVISIA</h1>
+            <h1>OPCP</h1>
             <h2>Nouvel Événement</h2>
         </div>
         <div class="content">
             <p>Bonjour {member.first_name},</p>
-            <p>Un nouvel événement a été créé sur HYPERVISIA :</p>
+            <p>Un nouvel événement a été créé sur OPCP :</p>
             
             <div class="event-details">
                 <h3>{new_event.title}</h3>
@@ -148,13 +148,13 @@ L'équipe HYPERVISIA
                 {f'<p><strong>Description :</strong></p><p>{new_event.description}</p>' if new_event.description else ''}
             </div>
             
-            <p>Connectez-vous à votre compte HYPERVISIA pour vous inscrire à cet événement.</p>
+            <p>Connectez-vous à votre compte OPCP pour vous inscrire à cet événement.</p>
             
             <p>Cordialement,<br>
-            L'équipe HYPERVISIA</p>
+            L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association HYPERVISIA - Loi 1901</p>
+            <p>Association OPCP - Loi 1901</p>
         </div>
     </div>
 </body>
@@ -715,7 +715,7 @@ async def cancel_event(
             end_date_str = event.end_date.strftime("%d/%m/%Y à %H:%M")
             
             # Prepare email content
-            subject = f"Annulation d'événement HYPERVISIA : {event.title}"
+            subject = f"Annulation d'événement OPCP : {event.title}"
             
             body_text = f"""
 Bonjour {participant.first_name},
@@ -732,7 +732,7 @@ Lieu : {event.location or 'Non spécifié'}
 Nous nous excusons pour tout inconvénient que cela pourrait causer.
 
 Cordialement,
-L'équipe HYPERVISIA
+L'équipe OPCP
 """
             
             body_html = f"""
@@ -753,7 +753,7 @@ L'équipe HYPERVISIA
 <body>
     <div class="container">
         <div class="header">
-            <h1>HYPERVISIA</h1>
+            <h1>OPCP</h1>
             <h2 class="cancelled">Événement Annulé</h2>
         </div>
         <div class="content">
@@ -771,10 +771,10 @@ L'équipe HYPERVISIA
             <p>Nous nous excusons pour tout inconvénient que cela pourrait causer.</p>
             
             <p>Cordialement,<br>
-            L'équipe HYPERVISIA</p>
+            L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association HYPERVISIA - Loi 1901</p>
+            <p>Association OPCP - Loi 1901</p>
         </div>
     </div>
 </body>
@@ -880,20 +880,20 @@ async def export_events_ical(
         
         # Create calendar
         cal = Calendar()
-        cal.add('prodid', '-//HYPERVISIA Association//Events Calendar//FR')
+        cal.add('prodid', '-//OPCP Association//Events Calendar//FR')
         cal.add('version', '2.0')
         cal.add('calscale', 'GREGORIAN')
         cal.add('method', 'PUBLISH')
-        cal.add('x-wr-calname', 'HYPERVISIA Events')
+        cal.add('x-wr-calname', 'OPCP Events')
         cal.add('x-wr-timezone', 'Europe/Paris')
-        cal.add('x-wr-caldesc', 'Événements de l\'association HYPERVISIA')
+        cal.add('x-wr-caldesc', 'Événements de l\'association OPCP')
         
         # Add each event to the calendar
         for event in events:
             ical_event = ICalEvent()
             
             # Required fields
-            ical_event.add('uid', f'{event.id}@hypervisia.org')
+            ical_event.add('uid', f'{event.id}@OPCP.org')
             ical_event.add('dtstamp', datetime.now(timezone.utc))
             ical_event.add('dtstart', event.start_date)
             ical_event.add('dtend', event.end_date)
@@ -914,7 +914,7 @@ async def export_events_ical(
             ical_event.add('last-modified', event.updated_at)
             
             # Add organizer (association)
-            ical_event.add('organizer', 'HYPERVISIA Association')
+            ical_event.add('organizer', 'OPCP Association')
             
             # Add to calendar
             cal.add_component(ical_event)
@@ -932,7 +932,7 @@ async def export_events_ical(
             content=ical_content,
             media_type="text/calendar",
             headers={
-                "Content-Disposition": "attachment; filename=hypervisia_events.ics"
+                "Content-Disposition": "attachment; filename=OPCP_events.ics"
             }
         )
     
