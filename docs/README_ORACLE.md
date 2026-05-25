@@ -353,7 +353,7 @@ Ce module fait partie de l'application OPCP et est distribué sous licence MIT.
 
 ## 🙏 Remerciements
 
-- OPCP - Association loi 1901
+- OPCP - Produit OVH
 - opcp-psmc.com - Plateforme de déploiement
 - Communauté open source
 

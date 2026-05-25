@@ -83,8 +83,7 @@ def generate_pv_pdf(output_filename="docs/PROCES_VERBAL_ASSEMBLEE_CONSTITUTIVE.p
     
     # Introduction
     story.append(Paragraph(
-        "Le 16 février 2026 à 20h, les membres fondateurs se sont réunis 2 square des coquelicots, "
-        "91370 VERRIERES LE BUISSON, afin de constituer une association loi 1901.",
+        "Le 16 février 2026 à 20h, les membres fondateurs se sont réunis 2 square des coquelicots. "
         styles['normal']
     ))
     story.append(Spacer(1, 0.5*cm))

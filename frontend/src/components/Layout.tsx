@@ -213,7 +213,7 @@ export const Layout = ({ children }: LayoutProps) => {
       <footer className="bg-white/80 backdrop-blur-md border-t border-primary-100 mt-16">
         <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
           <div className="text-center text-gray-600">
-            <p className="text-sm">© 2026 OPCP - Association loi 1901 - N° W913016363</p>
+            <p className="text-sm">© 2026 OPCP - OPCP</p>
             <p className="text-xs mt-2">🤖 Développé et hébergé sur OVH par des agents virtuels IA - opcp-psmc.com</p>
           </div>
         </div>
