@@ -19,7 +19,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - shai-network-${USER_ID:-1}
+      - shai-network
 
   # SHAI Web Interface Application (Backend API)
   ai-shai-web-interface:
@@ -51,7 +51,7 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - shai-network-${USER_ID:-1}
+      - shai-network
 
   # Frontend Application
   frontend:
@@ -65,7 +65,7 @@ services:
       - VITE_API_URL=/api
     restart: unless-stopped
     networks:
-      - shai-network-${USER_ID:-1}
+      - shai-network
 
   # Nginx Reverse Proxy
   nginx:
@@ -84,7 +84,7 @@ services:
       - HTTP_PORT=${HTTP_PORT:-6000}
       - HTTPS_PORT=${HTTPS_PORT:-6001}
     networks:
-      - shai-network-${USER_ID:-1}
+      - shai-network
 
 volumes:
   postgres_data:
@@ -93,4 +93,4 @@ volumes:
 networks:
   shai-network:
     driver: bridge
-    name: shai-network-${USER_ID:-1}
+    name: shai-network
