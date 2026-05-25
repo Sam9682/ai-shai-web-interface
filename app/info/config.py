@@ -36,7 +36,7 @@ ASSOCIATION_INFO = AssociationInfo(
 )
 
 # Mission and activities (Requirements 1.2)
-MISSION = """OPCP est une association loi 1901 dédiée à la promotion et au développement 
+MISSION = """OPCP est produit OVH dédiée à la promotion et au développement 
 des technologies de l'information et de la communication. Notre mission est de créer un espace 
 d'échange et de partage de connaissances pour tous les passionnés de technologie."""
 
