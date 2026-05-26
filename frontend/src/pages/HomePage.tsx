@@ -5,7 +5,6 @@ import { authService } from '../services/authService';
 import { infoService, type Stats } from '../services/infoService';
 import sampng from '../assets/Sam.png';
 import OPCPpng from '../assets/OPCP.png';
-import iconepng from '../assets/react.svg';
 
 export const HomePage = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -315,7 +314,7 @@ export const HomePage = () => {
               - Samuel LEPETRE, Cloud Architect OPCP PSMC<br />
             </p>
             <div className="flex items-center mt-4">
-              <img src={sampng} alt="Developer" className="h-32 w-auto mr-2 object-contain" />
+              <img src={iconepng} alt="Developer" className="h-32 w-auto mr-2 object-contain" />
             </div>
           </div>
         </div>
