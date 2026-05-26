@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
-import OPCPLogo from '../assets/OPCP.png';
+import OPCPLogo from '../assets/react.svg';
 
 interface LayoutProps {
   children: ReactNode;
