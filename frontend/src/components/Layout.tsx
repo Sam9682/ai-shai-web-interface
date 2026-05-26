@@ -30,7 +30,7 @@ export const Layout = ({ children }: LayoutProps) => {
           <div className="flex justify-between h-16">
             <div className="flex">
               <Link to="/" className="flex items-center text-xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent hover:from-primary-700 hover:to-purple-700 transition-all">
-                <img src={OPCPLogo} alt="HYPERVIS-IA" className="h-32 w-auto mr-2 object-contain" />
+                <img src={OPCPLogo} alt="AI-SHAI-OPCP-PSMC-IA" className="h-32 w-auto mr-2 object-contain" />
               </Link>
               {/* Desktop Menu */}
               <div className="hidden sm:ml-8 sm:flex sm:space-x-6">
