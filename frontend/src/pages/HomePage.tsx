@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { forumService, type Topic } from '../services/forumService';
 import { authService } from '../services/authService';
 import { infoService, type Stats } from '../services/infoService';
-import sampng from '../assets/Sam.png';
 import OPCPpng from '../assets/OPCP.png';
+import iconepng from '../assets/react.svg'
 
 export const HomePage = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
