@@ -311,10 +311,10 @@ export const HomePage = () => {
           <div className="bg-gradient-to-br from-primary-50 to-purple-50 p-6 rounded-xl">
             <h3 className="font-semibold text-gray-900 mb-3">💡 Les membres de la Team PSMC OVH ?</h3>
             <p className="text-gray-600 text-sm leading-relaxed">
-              - Samuel LEPETRE, Président, ancien ingénieur informatique chez AWS, 35 ans d'expérience, Informaticien depuis l'Oric 1, IA depuis 2023 et depuis, tous les jours<br />
+              - Samuel LEPETRE, Cloud Architect OPCP PSMC<br />
             </p>
             <div className="flex items-center mt-4">
-              <img src={sampng} alt="Président" className="h-32 w-auto mr-2 object-contain" />
+              <img src={sampng} alt="Developer" className="h-32 w-auto mr-2 object-contain" />
             </div>
           </div>
         </div>
