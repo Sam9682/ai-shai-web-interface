@@ -90,35 +90,35 @@ export const AdminEventsPage = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Chargement...</div>;
+    return <div className="text-center py-8 text-gray-500">Chargement...</div>;
   }
 
   return (
-    <div className="px-4">
+    <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Gestion des événements</h1>
+        <h1 className="text-2xl font-bold text-[#000E9C]">Gestion des événements</h1>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+          className="px-4 py-2 text-sm font-medium bg-[#000E9C] text-white rounded hover:bg-[#4949FF] transition-colors"
         >
-          ➕ Nouvel événement
+          Nouvel événement
         </button>
       </div>
 
       <div className="grid gap-4">
         {events.map((event) => (
-          <div key={event.id} className="bg-white rounded-lg shadow p-6">
+          <div key={event.id} className="card p-5">
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h3 className="text-xl font-bold mb-2">{event.title}</h3>
-                <p className="text-gray-600 mb-2">{event.description}</p>
-                <div className="text-sm text-gray-500 space-y-1">
-                  <p>📅 Début: {new Date(event.start_date).toLocaleString('fr-FR')}</p>
-                  <p>📅 Fin: {new Date(event.end_date).toLocaleString('fr-FR')}</p>
-                  {event.location && <p>📍 {event.location}</p>}
-                  <p>👥 Participants: {event.participant_count}{event.max_participants ? `/${event.max_participants}` : ''}</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">{event.title}</h3>
+                {event.description && <p className="text-sm text-gray-600 mb-2">{event.description}</p>}
+                <div className="text-xs text-gray-500 space-y-0.5">
+                  <p>Début : {new Date(event.start_date).toLocaleString('fr-FR')}</p>
+                  <p>Fin : {new Date(event.end_date).toLocaleString('fr-FR')}</p>
+                  {event.location && <p>Lieu : {event.location}</p>}
+                  <p>Participants : {event.participant_count}{event.max_participants ? `/${event.max_participants}` : ''}</p>
                   <p>
-                    <span className={`px-2 py-1 rounded ${
+                    <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-medium ${
                       event.status === 'scheduled' ? 'bg-green-100 text-green-800' :
                       event.status === 'cancelled' ? 'bg-red-100 text-red-800' :
                       'bg-gray-100 text-gray-800'
@@ -128,18 +128,18 @@ export const AdminEventsPage = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex space-x-2">
+              <div className="flex gap-2 ml-4">
                 <button
                   onClick={() => handleEdit(event)}
-                  className="px-3 py-1 text-blue-600 hover:text-blue-800"
+                  className="text-xs font-medium text-[#4949FF] hover:underline"
                 >
-                  ✏️ Modifier
+                  Modifier
                 </button>
                 <button
                   onClick={() => handleDelete(event.id)}
-                  className="px-3 py-1 text-red-600 hover:text-red-800"
+                  className="text-xs font-medium text-red-600 hover:underline"
                 >
-                  🗑️ Annuler
+                  Annuler
                 </button>
               </div>
             </div>
@@ -149,77 +149,41 @@ export const AdminEventsPage = () => {
 
       {/* Edit Modal */}
       {editingEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Modifier l'événement</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg font-bold text-[#000E9C] mb-4">Modifier l'événement</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Titre</label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
+                <input type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  rows={3}
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" rows={3} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Date de début</label>
-                  <input
-                    type="datetime-local"
-                    value={formData.start_date}
-                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                  <input type="datetime-local" value={formData.start_date} onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Date de fin</label>
-                  <input
-                    type="datetime-local"
-                    value={formData.end_date}
-                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                  <input type="datetime-local" value={formData.end_date} onChange={(e) => setFormData({ ...formData, end_date: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Lieu</label>
-                <input
-                  type="text"
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Lieu</label>
+                <input type="text" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Nombre max de participants</label>
-                <input
-                  type="number"
-                  value={formData.max_participants}
-                  onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre max de participants</label>
+                <input type="number" value={formData.max_participants} onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => setEditingEvent(null)}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
+              <div className="flex justify-end gap-2 pt-2">
+                <button onClick={() => setEditingEvent(null)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                   Annuler
                 </button>
-                <button
-                  onClick={handleSave}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-                >
+                <button onClick={handleSave} className="px-4 py-2 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors">
                   Enregistrer
                 </button>
               </div>
@@ -230,77 +194,41 @@ export const AdminEventsPage = () => {
 
       {/* Create Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Nouvel événement</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg font-bold text-[#000E9C] mb-4">Nouvel événement</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Titre</label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
+                <input type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  rows={3}
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" rows={3} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Date de début</label>
-                  <input
-                    type="datetime-local"
-                    value={formData.start_date}
-                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                  <input type="datetime-local" value={formData.start_date} onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Date de fin</label>
-                  <input
-                    type="datetime-local"
-                    value={formData.end_date}
-                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                  <input type="datetime-local" value={formData.end_date} onChange={(e) => setFormData({ ...formData, end_date: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Lieu</label>
-                <input
-                  type="text"
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Lieu</label>
+                <input type="text" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Nombre max de participants</label>
-                <input
-                  type="number"
-                  value={formData.max_participants}
-                  onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre max de participants</label>
+                <input type="number" value={formData.max_participants} onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
+              <div className="flex justify-end gap-2 pt-2">
+                <button onClick={() => setShowCreateModal(false)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                   Annuler
                 </button>
-                <button
-                  onClick={handleCreate}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-                >
+                <button onClick={handleCreate} className="px-4 py-2 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors">
                   Créer
                 </button>
               </div>

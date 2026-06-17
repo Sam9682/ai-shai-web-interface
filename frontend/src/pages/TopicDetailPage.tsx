@@ -19,7 +19,6 @@ export const TopicDetailPage = () => {
   const isAuthenticated = authService.isAuthenticated();
 
   useEffect(() => {
-    // Get current user ID and role from localStorage
     const userStr = localStorage.getItem('user');
     if (userStr) {
       try {
@@ -38,11 +37,9 @@ export const TopicDetailPage = () => {
 
   const loadTopic = async () => {
     if (!topicId) return;
-
     try {
       setLoading(true);
       setError(null);
-      // Utiliser l'endpoint public si l'utilisateur n'est pas connecté
       const data = isAuthenticated 
         ? await forumService.getTopic(topicId)
         : await forumService.getTopicPublic(topicId);
@@ -57,7 +54,6 @@ export const TopicDetailPage = () => {
   const handleSubmitReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!topicId || !replyContent.trim()) return;
-
     try {
       setSubmitting(true);
       setSubmitError(null);
@@ -83,7 +79,6 @@ export const TopicDetailPage = () => {
 
   const handleSaveEdit = async (postId: string) => {
     if (!editContent.trim()) return;
-
     try {
       await forumService.updatePost(postId, { content: editContent });
       setEditingPostId(null);
@@ -95,10 +90,7 @@ export const TopicDetailPage = () => {
   };
 
   const handleDeletePost = async (postId: string) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.')) {
-      return;
-    }
-
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) return;
     try {
       await forumService.deletePost(postId);
       await loadTopic();
@@ -127,138 +119,107 @@ export const TopicDetailPage = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div className="text-center">
-          <span className="text-5xl animate-spin inline-block">⏳</span>
-          <p className="mt-4 text-gray-600 font-medium">Chargement...</p>
-        </div>
-      </div>
-    );
+    return <div className="text-center py-12 text-gray-500">Chargement...</div>;
   }
 
   if (error || !topic) {
     return (
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-4">
-          <div className="flex items-center">
-            <span className="text-2xl mr-3">⚠️</span>
-            <p className="text-red-700 font-medium">{error || 'Sujet introuvable'}</p>
-          </div>
+      <div>
+        <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-3 rounded">
+          <p className="text-sm text-red-700">{error || 'Sujet introuvable'}</p>
         </div>
-        <Link to="/forum" className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
-          <span className="mr-2">←</span> Retour au forum
+        <Link to="/forum" className="text-sm font-medium text-[#4949FF] hover:underline">
+          ← Retour au forum
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="mb-6">
-        <Link to="/forum" className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors">
-          <span className="mr-2">←</span> Retour au forum
+    <div>
+      <div className="mb-5">
+        <Link to="/forum" className="text-sm font-medium text-[#4949FF] hover:underline">
+          ← Retour au forum
         </Link>
       </div>
 
       {/* Topic Header */}
-      <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl overflow-hidden border border-primary-100 mb-6">
-        <div className="px-6 py-6">
-          <div className="flex items-center space-x-3 mb-4">
-            <span className="text-4xl">💭</span>
-            <h1 className="text-3xl font-extrabold text-gray-900">{topic.title}</h1>
-            {topic.is_pinned && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 text-white shadow-sm">
-                📌 Épinglé
-              </span>
-            )}
-            {topic.is_locked && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-700">
-                🔒 Verrouillé
-              </span>
-            )}
-          </div>
-          <div className="flex items-center text-sm text-gray-600">
-            <span className="mr-2">👤</span>
-            <span className="font-medium">{topic.author_name}</span>
-            <span className="mx-3">•</span>
-            <span className="mr-2">📅</span>
-            <span>{formatDate(topic.created_at)}</span>
-          </div>
+      <div className="card p-5 mb-5">
+        <div className="flex items-center gap-2 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900">{topic.title}</h1>
+          {topic.is_pinned && (
+            <span className="text-xs font-medium px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded">Épinglé</span>
+          )}
+          {topic.is_locked && (
+            <span className="text-xs font-medium px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">Verrouillé</span>
+          )}
+        </div>
+        <div className="text-xs text-gray-500">
+          {topic.author_name} · {formatDate(topic.created_at)}
         </div>
       </div>
 
       {/* Posts */}
-      <div className="space-y-4 mb-6">
+      <div className="space-y-3 mb-5">
         {topic.posts.map((post) => (
-          <div key={post.id} className="bg-white/80 backdrop-blur-sm shadow-lg rounded-2xl overflow-hidden border border-gray-100">
-            <div className="px-6 py-5">
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-r from-primary-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                    {post.author_name.charAt(0).toUpperCase()}
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">{post.author_name}</p>
-                      <p className="text-xs text-gray-500">{formatDate(post.created_at)}</p>
-                      {post.updated_at !== post.created_at && (
-                        <p className="text-xs text-gray-400 italic">Modifié le {formatDate(post.updated_at)}</p>
-                      )}
-                    </div>
-                    {isAuthenticated && editingPostId !== post.id && (
-                      <div className="flex gap-2">
-                        {canEditPost(post) && (
-                          <button
-                            onClick={() => handleEditPost(post)}
-                            className="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors"
-                          >
-                            ✏️ Modifier
-                          </button>
-                        )}
-                        {canDeletePost() && (
-                          <button
-                            onClick={() => handleDeletePost(post.id)}
-                            className="text-sm text-red-600 hover:text-red-700 font-medium transition-colors"
-                          >
-                            🗑️ Supprimer
-                          </button>
-                        )}
-                      </div>
+          <div key={post.id} className="card p-5">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 h-9 w-9 rounded-full bg-[#000E9C] flex items-center justify-center text-white font-semibold text-sm">
+                {post.author_name.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-2">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{post.author_name}</p>
+                    <p className="text-xs text-gray-500">{formatDate(post.created_at)}</p>
+                    {post.updated_at !== post.created_at && (
+                      <p className="text-xs text-gray-400 italic">Modifié le {formatDate(post.updated_at)}</p>
                     )}
                   </div>
-                  
-                  {editingPostId === post.id ? (
-                    <div className="space-y-3">
-                      <RichTextEditor
-                        value={editContent}
-                        onChange={setEditContent}
-                        placeholder="Modifiez votre message..."
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleSaveEdit(post.id)}
-                          className="px-4 py-2 text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
-                        >
-                          💾 Enregistrer
+                  {isAuthenticated && editingPostId !== post.id && (
+                    <div className="flex gap-3">
+                      {canEditPost(post) && (
+                        <button onClick={() => handleEditPost(post)} className="text-xs text-[#4949FF] hover:underline font-medium">
+                          Modifier
                         </button>
-                        <button
-                          onClick={handleCancelEdit}
-                          className="px-4 py-2 text-sm font-semibold rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
-                        >
-                          ❌ Annuler
+                      )}
+                      {canDeletePost() && (
+                        <button onClick={() => handleDeletePost(post.id)} className="text-xs text-red-600 hover:underline font-medium">
+                          Supprimer
                         </button>
-                      </div>
+                      )}
                     </div>
-                  ) : (
-                    <div 
-                      className="mt-2 text-gray-700 prose prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{ __html: post.content }}
-                    />
                   )}
                 </div>
+                
+                {editingPostId === post.id ? (
+                  <div className="space-y-3">
+                    <RichTextEditor
+                      value={editContent}
+                      onChange={setEditContent}
+                      placeholder="Modifiez votre message..."
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSaveEdit(post.id)}
+                        className="px-3 py-1.5 text-xs font-medium rounded text-white bg-[#000E9C] hover:bg-[#4949FF] transition-colors"
+                      >
+                        Enregistrer
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        className="px-3 py-1.5 text-xs font-medium rounded text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div 
+                    className="text-sm text-gray-700 prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -267,55 +228,36 @@ export const TopicDetailPage = () => {
 
       {/* Reply Form */}
       {!topic.is_locked && (
-        <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl overflow-hidden border border-primary-100">
-          <div className="px-6 py-6">
-            <div className="flex items-center mb-4">
-              <span className="text-2xl mr-3">✍️</span>
-              <h3 className="text-xl font-bold text-gray-900">Répondre</h3>
-            </div>
-            <form onSubmit={handleSubmitReply}>
-              {submitError && (
-                <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
-                  <div className="flex items-center">
-                    <span className="text-2xl mr-3">⚠️</span>
-                    <p className="text-red-700 font-medium">{submitError}</p>
-                  </div>
-                </div>
-              )}
-              <RichTextEditor
-                value={replyContent}
-                onChange={setReplyContent}
-                placeholder="Écrivez votre réponse... Utilisez la barre d'outils pour formater votre texte, ajouter des emojis ou des images 🎨"
-                disabled={submitting}
-              />
-              <div className="mt-4 flex justify-end">
-                <button
-                  type="submit"
-                  disabled={submitting || !replyContent.trim()}
-                  className="inline-flex items-center px-6 py-3 text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {submitting ? (
-                    <>
-                      <span className="mr-2 animate-spin">⏳</span> Envoi...
-                    </>
-                  ) : (
-                    <>
-                      <span className="mr-2">🚀</span> Envoyer
-                    </>
-                  )}
-                </button>
+        <div className="card p-5">
+          <h3 className="text-base font-semibold text-gray-900 mb-3">Répondre</h3>
+          <form onSubmit={handleSubmitReply}>
+            {submitError && (
+              <div className="mb-3 bg-red-50 border-l-4 border-red-500 p-3 rounded">
+                <p className="text-sm text-red-700">{submitError}</p>
               </div>
-            </form>
-          </div>
+            )}
+            <RichTextEditor
+              value={replyContent}
+              onChange={setReplyContent}
+              placeholder="Écrivez votre réponse..."
+              disabled={submitting}
+            />
+            <div className="mt-3 flex justify-end">
+              <button
+                type="submit"
+                disabled={submitting || !replyContent.trim()}
+                className="px-5 py-2 text-sm font-medium rounded text-white bg-[#000E9C] hover:bg-[#4949FF] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {submitting ? 'Envoi...' : 'Envoyer'}
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
       {topic.is_locked && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
-          <div className="flex items-center">
-            <span className="text-2xl mr-3">🔒</span>
-            <p className="text-yellow-800 font-medium">Ce sujet est verrouillé. Vous ne pouvez plus y répondre.</p>
-          </div>
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded">
+          <p className="text-sm text-yellow-800">Ce sujet est verrouillé. Vous ne pouvez plus y répondre.</p>
         </div>
       )}
     </div>

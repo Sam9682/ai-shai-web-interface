@@ -24,61 +24,59 @@ export const NewTopicPage = () => {
   };
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="mb-4">
-        <Link to="/forum" className="text-blue-600 hover:text-blue-800">
+    <div>
+      <div className="mb-5">
+        <Link to="/forum" className="text-sm font-medium text-[#4949FF] hover:underline">
           ← Retour au forum
         </Link>
       </div>
 
-      <div className="bg-white shadow sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Nouveau sujet</h1>
+      <div className="card p-6">
+        <h1 className="text-2xl font-bold text-[#000E9C] mb-5">Nouveau sujet</h1>
 
-          <form onSubmit={handleSubmit}>
-            {error && (
-              <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-                {error}
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                Titre du sujet
-              </label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="mt-1 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                placeholder="Entrez le titre de votre sujet"
-                disabled={submitting}
-                required
-                maxLength={255}
-              />
-              <p className="mt-2 text-sm text-gray-500">
-                Choisissez un titre clair et descriptif pour votre sujet
-              </p>
+        <form onSubmit={handleSubmit}>
+          {error && (
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
+              {error}
             </div>
+          )}
 
-            <div className="mt-6 flex justify-end space-x-3">
-              <Link
-                to="/forum"
-                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-              >
-                Annuler
-              </Link>
-              <button
-                type="submit"
-                disabled={submitting || !title.trim()}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {submitting ? 'Création...' : 'Créer le sujet'}
-              </button>
-            </div>
-          </form>
-        </div>
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+              Titre du sujet
+            </label>
+            <input
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent"
+              placeholder="Entrez le titre de votre sujet"
+              disabled={submitting}
+              required
+              maxLength={255}
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Choisissez un titre clair et descriptif
+            </p>
+          </div>
+
+          <div className="mt-5 flex justify-end gap-3">
+            <Link
+              to="/forum"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+            >
+              Annuler
+            </Link>
+            <button
+              type="submit"
+              disabled={submitting || !title.trim()}
+              className="px-4 py-2 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {submitting ? 'Création...' : 'Créer le sujet'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

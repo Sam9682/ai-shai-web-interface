@@ -58,7 +58,6 @@ export const ResetPasswordPage = () => {
       setSuccess(true);
       setTimeout(() => navigate('/login'), 3000);
     } catch (err: any) {
-      console.error('Password reset error:', err);
       const errorMessage = err.response?.data?.error?.message 
         || err.response?.data?.detail 
         || 'Échec de la réinitialisation. Le lien a peut-être expiré.';
@@ -69,52 +68,41 @@ export const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="inline-block mb-4">
-            <span className="text-6xl">🔐</span>
-          </div>
-          <h2 className="text-4xl font-extrabold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
-            Nouveau mot de passe
-          </h2>
-          <p className="mt-2 text-gray-600">Créez votre nouveau mot de passe</p>
+    <div className="min-h-[70vh] flex items-center justify-center py-12 px-4">
+      <div className="max-w-md w-full">
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-bold text-[#000E9C]">Nouveau mot de passe</h2>
+          <p className="mt-1 text-sm text-gray-600">Créez votre nouveau mot de passe</p>
         </div>
-        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-primary-100">
+        <div className="card p-8">
           {success ? (
-            <div className="text-center space-y-4">
-              <div className="rounded-lg bg-green-50 border border-green-200 p-4">
-                <div className="flex items-center justify-center mb-2">
-                  <span className="text-4xl">✅</span>
-                </div>
+            <div className="text-center">
+              <div className="rounded bg-green-50 border border-green-200 p-4">
                 <p className="text-sm text-green-800">
                   Votre mot de passe a été réinitialisé avec succès !
                 </p>
-                <p className="text-sm text-green-700 mt-2">
+                <p className="text-sm text-green-700 mt-1">
                   Redirection vers la page de connexion...
                 </p>
               </div>
             </div>
           ) : (
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-5" onSubmit={handleSubmit}>
               {error && (
-                <div className="rounded-lg bg-red-50 border border-red-200 p-4">
-                  <div className="flex items-center">
-                    <span className="text-2xl mr-2">⚠️</span>
-                    <p className="text-sm text-red-800">{error}</p>
-                  </div>
+                <div className="rounded bg-red-50 border border-red-200 p-3">
+                  <p className="text-sm text-red-800">{error}</p>
                 </div>
               )}
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
-                  <span className="mr-1">🔑</span> Nouveau mot de passe
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Nouveau mot de passe
                 </label>
                 <input
                   id="password"
                   name="password"
                   type="password"
                   required
-                  className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2.5 border border-gray-300 text-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-[#4949FF] focus:border-transparent transition-all text-sm"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -124,44 +112,31 @@ export const ResetPasswordPage = () => {
                 </p>
               </div>
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
-                  <span className="mr-1">🔑</span> Confirmer le mot de passe
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirmer le mot de passe
                 </label>
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
                   required
-                  className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2.5 border border-gray-300 text-gray-900 rounded focus:outline-none focus:ring-2 focus:ring-[#4949FF] focus:border-transparent transition-all text-sm"
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </div>
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={loading || !token}
-                  className="w-full flex justify-center items-center py-3 px-4 text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  {loading ? (
-                    <>
-                      <span className="mr-2">⏳</span> Réinitialisation...
-                    </>
-                  ) : (
-                    <>
-                      <span className="mr-2">🔐</span> Réinitialiser le mot de passe
-                    </>
-                  )}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={loading || !token}
+                className="w-full py-2.5 text-sm font-semibold rounded text-white bg-[#000E9C] hover:bg-[#4949FF] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4949FF] disabled:opacity-50 transition-colors"
+              >
+                {loading ? 'Réinitialisation...' : 'Réinitialiser le mot de passe'}
+              </button>
 
               <div className="text-center">
-                <a
-                  href="/login"
-                  className="text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
-                >
+                <a href="/login" className="text-sm font-medium text-[#4949FF] hover:underline">
                   ← Retour à la connexion
                 </a>
               </div>
