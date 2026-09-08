@@ -12,6 +12,9 @@ import { NewTopicPage } from './pages/NewTopicPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
 import { AdminEventsPage } from './pages/AdminEventsPage';
 import { OraclePage } from './pages/OraclePage';
+import { OPCPCorePage } from './pages/OPCPCorePage';
+import { CloudStorePage } from './pages/CloudStorePage';
+import { LandingZonePage } from './pages/LandingZonePage';
 
 function App() {
   return (
@@ -72,6 +75,30 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <OraclePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/prerequisites/opcp-core"
+                  element={
+                    <ProtectedRoute>
+                      <OPCPCorePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/prerequisites/cloudstore"
+                  element={
+                    <ProtectedRoute>
+                      <CloudStorePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/prerequisites/landingzone"
+                  element={
+                    <ProtectedRoute>
+                      <LandingZonePage />
                     </ProtectedRoute>
                   }
                 />

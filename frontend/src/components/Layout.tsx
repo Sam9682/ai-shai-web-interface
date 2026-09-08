@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
+import { PREREQ_NAV_ITEMS } from './prerequisites/types';
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,6 +12,7 @@ export const Layout = ({ children }: LayoutProps) => {
   const isAuthenticated = authService.isAuthenticated();
   const isAdmin = authService.isAdmin();
   const [showEventsMenu, setShowEventsMenu] = useState(false);
+  const [showPrereqMenu, setShowPrereqMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -59,6 +61,20 @@ export const Layout = ({ children }: LayoutProps) => {
                   <Link to="/oracle" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
                     Oracle IA
                   </Link>
+                  <div className="relative" onMouseEnter={() => setShowPrereqMenu(true)} onMouseLeave={() => setShowPrereqMenu(false)}>
+                    <span className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors cursor-pointer">
+                      OPCP installation prerequisites <span className="ml-0.5 text-xs">▾</span>
+                    </span>
+                    {showPrereqMenu && (
+                      <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded shadow-lg border border-gray-200 py-1 z-50">
+                        {PREREQ_NAV_ITEMS.map((item) => (
+                          <Link key={item.route} to={item.route} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:no-underline">
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                   {isAdmin && (
                     <Link to="/admin/users" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
                       Utilisateurs
@@ -131,6 +147,17 @@ export const Layout = ({ children }: LayoutProps) => {
                 <Link to="/oracle" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
                   Oracle IA
                 </Link>
+                <div className="px-3 py-2 text-sm font-medium text-gray-700">OPCP installation prerequisites</div>
+                {PREREQ_NAV_ITEMS.map((item) => (
+                  <Link
+                    key={item.route}
+                    to={item.route}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 pl-6 text-sm text-gray-600 hover:bg-gray-50 rounded hover:no-underline"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
                 {isAdmin && (
                   <Link to="/admin/users" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
                     Utilisateurs

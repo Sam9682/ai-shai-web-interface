@@ -1,0 +1,394 @@
+{
+  "pbtResults": {
+    "5.2 Write property test that every parameter row renders all four fields": {
+      "status": "passed",
+      "lastRunTimestamp": 1788856673208
+    },
+    "5.3 Write property test that the status field offers exactly the four choices": {
+      "status": "passed",
+      "lastRunTimestamp": 1788856674554
+    }
+  },
+  "executionHistory": {
+    "1.1 Create shared types and status options in `frontend/src/components/prerequisites/types.ts`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855302871
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855313297
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855494133
+      }
+    ],
+    "1.2 Create shared navigation config `PREREQ_NAV_ITEMS` in `frontend/src/components/prerequisites/types.ts`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855303081
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855498077
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855546359
+      }
+    ],
+    "2.1 Create `cloudStoreConfig` with the seven reference sub-sections in `frontend/src/components/prerequisites/configs.ts`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855303290
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855551181
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855642571
+      }
+    ],
+    "2.2 Create placeholder `opcpCoreConfig` and `landingZoneConfig` in `frontend/src/components/prerequisites/configs.ts`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855303585
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855646414
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855694752
+      }
+    ],
+    "3.1 Implement `buildDefaults`, `isValidFormState`, and `usePersistentForm`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855303747
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855704421
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855782990
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855303855
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856546500
+      }
+    ],
+    "5.1 Implement `TrackingForm` rendering title, status legend, sub-sections and four-field rows": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855303969
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855980359
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856538492
+      }
+    ],
+    "6.1 Create `OPCPCorePage.tsx`, `CloudStorePage.tsx`, and `LandingZonePage.tsx`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855304092
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856548071
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856693587
+      }
+    ],
+    "7.1 Add three `ProtectedRoute`-wrapped routes inside the nested `<Routes>`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855304216
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856703381
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856778134
+      }
+    ],
+    "8.1 Add the desktop hover-dropdown mirroring the Événements pattern": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855304347
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856784748
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856935283
+      }
+    ],
+    "8.2 Add the mobile nested section from `PREREQ_NAV_ITEMS`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855304472
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856939736
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856988789
+      }
+    ],
+    "9. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855304603
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788857200476
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788857229685
+      }
+    ],
+    "1. Establish prerequisites module foundation (types, status options, nav config)": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855546506
+      }
+    ],
+    "2. Build the page configurations": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855694881
+      }
+    ],
+    "3. Implement the persistence hook `frontend/src/hooks/usePersistentForm.ts`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855783380
+      }
+    ],
+    "2.3 Write unit tests for configs": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855796466
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855964845
+      }
+    ],
+    "3.2 Write property test for persist-then-load round trip": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855970657
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856533362
+      }
+    ],
+    "3.3 Write property test for unparseable-storage fallback": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855971973
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856534222
+      }
+    ],
+    "3.4 Write property test for editing a field updating in-memory value": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855973399
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856535724
+      }
+    ],
+    "3.5 Write property test for per-page storage isolation": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788855974495
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856537146
+      }
+    ],
+    "5. Implement the shared `TrackingForm` component `frontend/src/components/prerequisites/TrackingForm.tsx`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856538759
+      }
+    ],
+    "5.2 Write property test that every parameter row renders all four fields": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856549404
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856694964
+      }
+    ],
+    "5.3 Write property test that the status field offers exactly the four choices": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856550821
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856696392
+      }
+    ],
+    "5.4 Write unit test for the status legend and French labels": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856552202
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856697648
+      }
+    ],
+    "6. Create the three page wrappers in `frontend/src/pages`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856693823
+      }
+    ],
+    "7. Register the protected routes in `frontend/src/App.tsx`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856778515
+      }
+    ],
+    "7.2 Write unit tests for route wiring and auth guard": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856785907
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856934132
+      }
+    ],
+    "8. Add prerequisites navigation to `frontend/src/components/Layout.tsx`": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856989111
+      }
+    ],
+    "8.3 Write property test that navigation entries map to their configured routes": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856990125
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788857193721
+      }
+    ],
+    "8.4 Write unit tests for auth-gated visibility of the menu": [
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788856991376
+      },
+      {
+        "executionId": "cafb35ba-c73d-4d1d-a12d-02cd27b85939",
+        "chatSessionId": "sess_cdafb795-c010-408c-b800-5e23ca3f3d21",
+        "timestamp": 1788857194821
+      }
+    ]
+  }
+}
