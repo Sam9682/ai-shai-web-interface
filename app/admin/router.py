@@ -201,6 +201,7 @@ async def update_membership_status(
     # Store old status for audit log
     old_expires_at = member.membership_expires_at
     old_status = member.membership_status
+    old_is_email_verified = member.is_email_verified
     
     # Update the member's membership expiration if provided
     if status_data.membership_expires_at is not None:
@@ -224,6 +225,12 @@ async def update_membership_status(
             membership_status = "active" if expires_at > now else "expired"
         member.membership_status = membership_status
     
+    # When an administrator activates a membership, force email verification
+    # so the member can log in immediately without waiting for the email
+    # confirmation link (prevents 'Login attempt with unverified email' errors).
+    if membership_status == 'active' and not member.is_email_verified:
+        member.is_email_verified = True
+    
     member.updated_at = datetime.now(timezone.utc)
     
     # Create audit log entry
@@ -237,6 +244,8 @@ async def update_membership_status(
             "new_membership_expires_at": member.membership_expires_at.isoformat() if member.membership_expires_at else None,
             "old_membership_status": old_status,
             "new_membership_status": membership_status,
+            "old_is_email_verified": old_is_email_verified,
+            "new_is_email_verified": member.is_email_verified,
             "member_email": member.email
         }
     )

@@ -1,9 +1,23 @@
 import { describe, it, expect } from 'vitest';
-import type { FormConfig } from './types';
-import { cloudStoreConfig, opcpCoreConfig, landingZoneConfig } from './configs';
+import fc from 'fast-check';
+import type { FormConfig, QuestionFormConfig } from './types';
+import {
+  cloudStoreConfig,
+  opcpCoreConfig,
+  landingZoneConfig,
+  networkChecklistConfig,
+  coreControlPlaneConfig,
+  cloudStoreQuestionConfig,
+  vcfConfig,
+} from './configs';
+
+// Both FormConfig and QuestionFormConfig expose row ids at
+// `sections[].rows[].id`, so a single union-typed helper can collect ids
+// from either shape in document order.
+type AnyRowConfig = FormConfig | QuestionFormConfig;
 
 // Collect every row id in a config, in document order.
-const allRowIds = (config: FormConfig): string[] =>
+const allRowIds = (config: AnyRowConfig): string[] =>
   config.sections.flatMap((section) => section.rows.map((row) => row.id));
 
 // Find a single row by id across all sections of a config.
@@ -105,16 +119,83 @@ describe('cloudStoreConfig', () => {
   });
 });
 
+// Feature: opcp-prerequisites-tabs, Property 12: Row ids are unique within each page.
 describe('row id uniqueness', () => {
   // Row ids must be unique within each page so persisted state keys never collide.
-  const configs: Array<{ name: string; config: FormConfig }> = [
+  // Covers the four new QuestionFormConfig pages plus the legacy FormConfig
+  // configs, which still exist in configs.ts and are harmless to keep here.
+  const configs: Array<{ name: string; config: AnyRowConfig }> = [
     { name: 'cloudStoreConfig', config: cloudStoreConfig },
     { name: 'opcpCoreConfig', config: opcpCoreConfig },
     { name: 'landingZoneConfig', config: landingZoneConfig },
+    { name: 'networkChecklistConfig', config: networkChecklistConfig },
+    { name: 'coreControlPlaneConfig', config: coreControlPlaneConfig },
+    { name: 'cloudStoreQuestionConfig', config: cloudStoreQuestionConfig },
+    { name: 'vcfConfig', config: vcfConfig },
   ];
 
   it.each(configs)('$name has unique row ids', ({ config }) => {
     const ids = allRowIds(config);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+// Feature: opcp-prerequisites-tabs, Property 12: Row ids are unique within each page.
+// fast-check formulation that quantifies over the config objects and asserts,
+// for every drawn config, that the set of row ids has the same size as the
+// full (document-order) list of row ids. This complements the deterministic
+// it.each above (kept for readable per-config diagnostics) with >= 100 runs.
+describe('row id uniqueness (property)', () => {
+  const allConfigs: AnyRowConfig[] = [
+    cloudStoreConfig,
+    opcpCoreConfig,
+    landingZoneConfig,
+    networkChecklistConfig,
+    coreControlPlaneConfig,
+    cloudStoreQuestionConfig,
+    vcfConfig,
+  ];
+
+  it('every page has row ids that are unique within that page', () => {
+    fc.assert(
+      fc.property(fc.constantFrom(...allConfigs), (config) => {
+        const ids = allRowIds(config);
+        expect(new Set(ids).size).toBe(ids.length);
+      }),
+      { numRuns: 100 },
+    );
+  });
+});
+
+// Unit tests for the four QuestionFormConfig scaffolds (task 2.3).
+// _Requirements: 7.1, 7.2_
+describe('question config scaffolding', () => {
+  const questionConfigs: Array<{ name: string; config: QuestionFormConfig }> = [
+    { name: 'networkChecklistConfig', config: networkChecklistConfig },
+    { name: 'coreControlPlaneConfig', config: coreControlPlaneConfig },
+    { name: 'cloudStoreQuestionConfig', config: cloudStoreQuestionConfig },
+    { name: 'vcfConfig', config: vcfConfig },
+  ];
+
+  it.each(questionConfigs)('$name exists and has at least one section', ({ config }) => {
+    expect(config).toBeDefined();
+    expect(config.sections.length).toBeGreaterThan(0);
+  });
+
+  it.each(questionConfigs)('$name has at least one row per section', ({ config }) => {
+    for (const section of config.sections) {
+      expect(section.rows.length, `section ${section.id} should have rows`).toBeGreaterThan(0);
+    }
+  });
+
+  it.each(questionConfigs)('$name rows all have non-empty id and questionPrimary', ({ config }) => {
+    const rows = config.sections.flatMap((section) => section.rows);
+    for (const row of rows) {
+      expect(row.id.trim().length, `row id "${row.id}" should be non-empty`).toBeGreaterThan(0);
+      expect(
+        row.questionPrimary.trim().length,
+        `row ${row.id} questionPrimary should be non-empty`,
+      ).toBeGreaterThan(0);
+    }
   });
 });

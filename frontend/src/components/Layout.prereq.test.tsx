@@ -37,7 +37,7 @@ beforeEach(() => {
 // Property 1: Navigation entries map to their configured routes.
 // For any entry in PREREQ_NAV_ITEMS, the rendered navigation link targets
 // exactly the route configured for that entry.
-// Validates: Requirements 1.5, 1.6, 1.7
+// Validates: Requirements 1.5, 1.6
 describe('Property 1: navigation entries map to their configured routes', () => {
   it('renders a desktop dropdown link whose href equals each configured route', () => {
     // Render the authenticated Layout once and reveal the desktop dropdown; the
@@ -104,6 +104,31 @@ describe('Property 1: navigation entries map to their configured routes', () => 
       }) as HTMLAnchorElement;
       expect(link.getAttribute('href')).toBe(item.route);
     }
+  });
+
+  it('renders a mobile menu link whose href equals each configured route', async () => {
+    // Mobile counterpart of the desktop property: open the mobile menu once for
+    // an authenticated user, then universally quantify over PREREQ_NAV_ITEMS to
+    // assert each entry's mobile link targets exactly its configured route.
+    const user = userEvent.setup();
+    authenticate();
+    renderLayout();
+
+    // Reveal the mobile navigation (the section + entry links render only once
+    // the mobile menu is open).
+    await user.click(screen.getByLabelText('Menu'));
+
+    fc.assert(
+      fc.property(fc.constantFrom(...PREREQ_NAV_ITEMS), (item) => {
+        // Every mobile link carrying this entry's label targets exactly its route.
+        const links = screen.getAllByRole('link', {
+          name: item.label,
+        }) as HTMLAnchorElement[];
+        expect(links.length).toBeGreaterThan(0);
+        expect(links.every((l) => l.getAttribute('href') === item.route)).toBe(true);
+      }),
+      { numRuns: NUM_RUNS },
+    );
   });
 });
 

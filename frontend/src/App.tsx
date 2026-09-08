@@ -12,9 +12,13 @@ import { NewTopicPage } from './pages/NewTopicPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
 import { AdminEventsPage } from './pages/AdminEventsPage';
 import { OraclePage } from './pages/OraclePage';
-import { OPCPCorePage } from './pages/OPCPCorePage';
+import { HowToUsePage } from './pages/HowToUsePage';
+import { BasicsPage } from './pages/BasicsPage';
+import { NetworkChecklistPage } from './pages/NetworkChecklistPage';
+import { CoreControlPlanePage } from './pages/CoreControlPlanePage';
 import { CloudStorePage } from './pages/CloudStorePage';
-import { LandingZonePage } from './pages/LandingZonePage';
+import { VcfPage } from './pages/VcfPage';
+import { NetworkFluxPage } from './pages/NetworkFluxPage';
 import { DocumentsPage } from './pages/DocumentsPage';
 
 function App() {
@@ -80,10 +84,34 @@ function App() {
                   }
                 />
                 <Route
-                  path="/prerequisites/opcp-core"
+                  path="/prerequisites/how-to-use"
                   element={
                     <ProtectedRoute>
-                      <OPCPCorePage />
+                      <HowToUsePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/prerequisites/basics"
+                  element={
+                    <ProtectedRoute>
+                      <BasicsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/prerequisites/network-checklist"
+                  element={
+                    <ProtectedRoute>
+                      <NetworkChecklistPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/prerequisites/core-control-plane"
+                  element={
+                    <ProtectedRoute>
+                      <CoreControlPlanePage />
                     </ProtectedRoute>
                   }
                 />
@@ -96,10 +124,18 @@ function App() {
                   }
                 />
                 <Route
-                  path="/prerequisites/landingzone"
+                  path="/prerequisites/vcf"
                   element={
                     <ProtectedRoute>
-                      <LandingZonePage />
+                      <VcfPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/prerequisites/network-flux"
+                  element={
+                    <ProtectedRoute>
+                      <NetworkFluxPage />
                     </ProtectedRoute>
                   }
                 />
