@@ -5,15 +5,23 @@ IMPORTANT :
 
 #### 1. Calculate HTTP Ports, which are the ports used by the docker containers of the application. Use the following command:
 
-source ./conf/deploy.ini
+source {{APPLICATION_FOLDER}}/conf/deploy.ini
 if ! [[ "$USER_ID" =~ ^[0-9]+$ ]]; then
     USER_ID=0
 fi
 export PORT_RANGE_BEGIN=$((RANGE_START+USER_ID*RANGE_RESERVED))
-export HTTP_PORT=$((PORT_RANGE_BEGIN+APPLICATION_IDENTITY_NUMBER*RANGE_PORTS_PER_APPLICATION))
-export HTTPS_PORT=$((HTTP_PORT+1))
-export HTTP_PORT2=$(($HTTPS_PORT+1))
-export HTTPS_PORT2=$(($HTTP_PORT2+1))
+export HTTPS_PORT=$((PORT_RANGE_BEGIN+APPLICATION_IDENTITY_NUMBER*RANGE_PORTS_PER_APPLICATION))
+export HTTP_PORT=$(($HTTPS_PORT+1))
+export HTTPS_PORT1=$(($HTTP_PORT+1))
+export HTTP_PORT1=$(($HTTPS_PORT1+1))
+export HTTPS_PORT2=$(($HTTP_PORT1+1))
+export HTTP_PORT2=$(($HTTPS_PORT2+1))
+export HTTPS_PORT3=$(($HTTP_PORT2+1))
+export HTTP_PORT3=$(($HTTPS_PORT3+1))
+export HTTPS_PORT4=$(($HTTP_PORT3+1))
+export HTTP_PORT4=$(($HTTPS_PORT4+1))
+export HTTPS_PORT5=$(($HTTP_PORT4+1))
+export HTTP_PORT5=$(($HTTPS_PORT5+1))
 
 
 #### 2. Stop the running application. Use the following commands to stop the application, based on the ports calculated during step 1:

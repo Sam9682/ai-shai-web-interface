@@ -18,7 +18,7 @@ command -v s3cmd || exit 1
 
 #### 2. Retrieve Database Configuration from docker-compose.yaml. Extract PostgreSQL connection details:
 
-source ./conf/deploy.ini
+source {{APPLICATION_FOLDER}}/conf/deploy.ini
 if ! [[ "$USER_ID" =~ ^[0-9]+$ ]]; then
     USER_ID=0
 fi
@@ -68,7 +68,7 @@ fi
 
 #### 6. Stop Application Services (to prevent database conflicts):
 
-HTTP_PORT=$HTTP_PORT HTTPS_PORT=$HTTPS_PORT HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT2=$HTTPS_PORT2 USER_ID=$USER_ID docker-compose -p "$NAME_OF_APPLICATION-$USER_ID-$HTTPS_PORT" -f docker-compose.yml --env-file .env.prod stop
+HTTPS_PORT=$HTTPS_PORT HTTP_PORT=$HTTP_PORT HTTPS_PORT1=$HTTPS_PORT1 HTTP_PORT1=$HTTP_PORT1 HTTPS_PORT2=$HTTPS_PORT2 HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT3=$HTTPS_PORT3 HTTP_PORT3=$HTTP_PORT3 HTTPS_PORT4=$HTTPS_PORT4 HTTP_PORT4=$HTTP_PORT4 HTTPS_PORT5=$HTTPS_PORT5 HTTP_PORT5=$HTTP_PORT5 USER_ID=$USER_ID docker-compose -p "$NAME_OF_APPLICATION-$USER_ID-$HTTPS_PORT" -f docker-compose.yml --env-file .env.prod stop
 
 #### 7. Create Backup of Current Database (safety measure):
 
@@ -97,7 +97,7 @@ fi
 
 #### 10. Restart Application Services:
 
-HTTP_PORT=$HTTP_PORT HTTPS_PORT=$HTTPS_PORT HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT2=$HTTPS_PORT2 USER_ID=$USER_ID docker-compose -p "$NAME_OF_APPLICATION-$USER_ID-$HTTPS_PORT" -f docker-compose.yml --env-file .env.prod up -d
+HTTPS_PORT=$HTTPS_PORT HTTP_PORT=$HTTP_PORT HTTPS_PORT1=$HTTPS_PORT1 HTTP_PORT1=$HTTP_PORT1 HTTPS_PORT2=$HTTPS_PORT2 HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT3=$HTTPS_PORT3 HTTP_PORT3=$HTTP_PORT3 HTTPS_PORT4=$HTTPS_PORT4 HTTP_PORT4=$HTTP_PORT4 HTTPS_PORT5=$HTTPS_PORT5 HTTP_PORT5=$HTTP_PORT5 USER_ID=$USER_ID docker-compose -p "$NAME_OF_APPLICATION-$USER_ID-$HTTPS_PORT" -f docker-compose.yml --env-file .env.prod up -d
 
 #### 11. Verify Database Connection:
 

@@ -20,6 +20,7 @@ from app.scheduler import task_scheduler
 from app.error_handlers import register_exception_handlers
 from app.middleware.rate_limit import limiter
 from app.startup import create_default_admin
+from app.services.document_seed_service import seed_docs_folder
 
 
 @asynccontextmanager
@@ -31,6 +32,9 @@ async def lifespan(app: FastAPI):
     
     # Create default admin user if no users exist
     create_default_admin()
+    
+    # Seed repository docs/ files into the document system (after admin exists)
+    seed_docs_folder()
     
     # Start background task scheduler
     task_scheduler.start()

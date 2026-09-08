@@ -19,5 +19,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
+    // Property-based tests render many React trees per case (>=100 runs). Under
+    // parallel worker load these can exceed the 5s default, so allow more room.
+    testTimeout: 30000,
   },
 })

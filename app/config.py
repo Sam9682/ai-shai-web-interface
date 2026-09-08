@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     # File Storage
     UPLOAD_DIR: str = "./storage/uploads"
     MAX_UPLOAD_SIZE: int = 10485760  # 10MB
+    DOCS_SEED_DIR: str = "./docs"  # repository docs/ folder, baked into the image (resolves to /app/docs in the container)
     
     # Membership
     ANNUAL_MEMBERSHIP_FEE: float = 50.00

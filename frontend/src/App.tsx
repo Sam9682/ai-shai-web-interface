@@ -15,6 +15,7 @@ import { OraclePage } from './pages/OraclePage';
 import { OPCPCorePage } from './pages/OPCPCorePage';
 import { CloudStorePage } from './pages/CloudStorePage';
 import { LandingZonePage } from './pages/LandingZonePage';
+import { DocumentsPage } from './pages/DocumentsPage';
 
 function App() {
   return (
@@ -99,6 +100,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <LandingZonePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/documents"
+                  element={
+                    <ProtectedRoute>
+                      <DocumentsPage />
                     </ProtectedRoute>
                   }
                 />

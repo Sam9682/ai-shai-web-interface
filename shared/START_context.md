@@ -13,15 +13,23 @@ command -v docker-compose || exit 1
 
 #### 2. Calculate HTTP Ports, which are the ports used by the docker containers of the application. Use the following command:
 
-source ./conf/deploy.ini
+source {{APPLICATION_FOLDER}}/conf/deploy.ini
 if ! [[ "$USER_ID" =~ ^[0-9]+$ ]]; then
     USER_ID=0
 fi
 export PORT_RANGE_BEGIN=$((RANGE_START+USER_ID*RANGE_RESERVED))
-export HTTP_PORT=$((PORT_RANGE_BEGIN+APPLICATION_IDENTITY_NUMBER*RANGE_PORTS_PER_APPLICATION))
-export HTTPS_PORT=$((HTTP_PORT+1))
-export HTTP_PORT2=$(($HTTPS_PORT+1))
-export HTTPS_PORT2=$(($HTTP_PORT2+1))
+export HTTPS_PORT=$((PORT_RANGE_BEGIN+APPLICATION_IDENTITY_NUMBER*RANGE_PORTS_PER_APPLICATION))
+export HTTP_PORT=$(($HTTPS_PORT+1))
+export HTTPS_PORT1=$(($HTTP_PORT+1))
+export HTTP_PORT1=$(($HTTPS_PORT1+1))
+export HTTPS_PORT2=$(($HTTP_PORT1+1))
+export HTTP_PORT2=$(($HTTPS_PORT2+1))
+export HTTPS_PORT3=$(($HTTP_PORT2+1))
+export HTTP_PORT3=$(($HTTPS_PORT3+1))
+export HTTPS_PORT4=$(($HTTP_PORT3+1))
+export HTTP_PORT4=$(($HTTPS_PORT4+1))
+export HTTPS_PORT5=$(($HTTP_PORT4+1))
+export HTTP_PORT5=$(($HTTPS_PORT5+1))
 export DOMAIN=$(($DOMAIN))
 
 #### 3. Generate Secrets (only if .env.prod doesn't exist)
@@ -39,25 +47,35 @@ chmod 600 .env.prod
 
 
 
-#### 4. Generate Nginx Configuration. If conf/nginx.conf.template file exists, then use nginx.conf.template to create nginx.conf. If the file does not exists, then go to next step. You can use the following command:
+#### 4. Generate Nginx Configuration. If {{APPLICATION_FOLDER}}/conf/nginx.conf.template file exists, then use nginx.conf.template to create nginx.conf. If the file does not exists, then go to next step. You can use the following command:
 
-sed "s/\$\U\S\E\R\_\I\D/{$USER_ID}/g" conf/nginx.conf.template > conf/nginx.conf
+sed "s/\$\U\S\E\R\_\I\D/{$USER_ID}/g" {{APPLICATION_FOLDER}}/conf/nginx.conf.template > {{APPLICATION_FOLDER}}/conf/nginx.conf
 
 
 #### 5. Start the docker services using following command:
 
-HTTP_PORT=$HTTP_PORT HTTPS_PORT=$HTTPS_PORT HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT2=$HTTPS_PORT2 USER_ID=$USER_ID docker-compose -p "$NAME_OF_APPLICATION-$USER_ID-$HTTPS_PORT" -f docker-compose.yml --env-file .env.prod up -d
+HTTPS_PORT=$HTTPS_PORT HTTP_PORT=$HTTP_PORT HTTPS_PORT1=$HTTPS_PORT1 HTTP_PORT1=$HTTP_PORT1 HTTPS_PORT2=$HTTPS_PORT2 HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT3=$HTTPS_PORT3 HTTP_PORT3=$HTTP_PORT3 HTTPS_PORT4=$HTTPS_PORT4 HTTP_PORT4=$HTTP_PORT4 HTTPS_PORT5=$HTTPS_PORT5 HTTP_PORT5=$HTTP_PORT5 USER_ID=$USER_ID docker-compose -p "$NAME_OF_APPLICATION-$USER_ID-$HTTPS_PORT" -f docker-compose.yml --env-file .env.prod up -d
 
 #### 6. Configure Firewall (UFW has to be available). Use the following commands to allow incoming socket flow for the service:
 
 if command -v ufw &> /dev/null; then
-    sudo ufw allow $HTTP_PORT/tcp
     sudo ufw allow $HTTPS_PORT/tcp
+    sudo ufw allow $HTTP_PORT/tcp
+    sudo ufw allow $HTTPS_PORT1/tcp
+    sudo ufw allow $HTTP_PORT1/tcp
+    sudo ufw allow $HTTPS_PORT2/tcp
+    sudo ufw allow $HTTP_PORT2/tcp
+    sudo ufw allow $HTTPS_PORT3/tcp
+    sudo ufw allow $HTTP_PORT3/tcp
+    sudo ufw allow $HTTPS_PORT4/tcp
+    sudo ufw allow $HTTP_PORT4/tcp
+    sudo ufw allow $HTTPS_PORT5/tcp
+    sudo ufw allow $HTTP_PORT5/tcp
     sudo ufw --force enable
 fi
 
 #### 7. Verify the docker service is up and running using the following command:
 
-curl -f -s "http://www.${DOMAIN}:${HTTP_PORT}" || true
+curl -f -s "http://www.${DOMAIN}:${HTTP_PORT1}" || true
 
 Finaly, display the link to the web site so the user can click on it to open the application: https://www.${DOMAIN}:${HTTPS_PORT}

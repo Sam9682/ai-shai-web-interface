@@ -20,15 +20,23 @@ The deployment script loads configuration from `./conf/deploy.ini` which should 
 - `RANGE_START`: Starting port range (default: 6000)
 - `RANGE_RESERVED`: Number of ports reserved per user (default: 100)
 - `APPLICATION_IDENTITY_NUMBER`: Application identifier for port calculation
-- `RANGE_PORTS_PER_APPLICATION`: Ports per application (default: 4)
+- `RANGE_PORTS_PER_APPLICATION`: Ports per application (default: 12)
 
 Port calculation formula:
 ```
 PORT_RANGE_BEGIN = RANGE_START + USER_ID * RANGE_RESERVED
-HTTP_PORT = PORT_RANGE_BEGIN + APPLICATION_IDENTITY_NUMBER * RANGE_PORTS_PER_APPLICATION
-HTTPS_PORT = HTTP_PORT + 1
-HTTP_PORT2 = HTTPS_PORT + 1
-HTTPS_PORT2 = HTTP_PORT2 + 1
+HTTPS_PORT = PORT_RANGE_BEGIN + APPLICATION_IDENTITY_NUMBER * RANGE_PORTS_PER_APPLICATION   # main web interface
+HTTP_PORT = HTTPS_PORT + 1
+HTTPS_PORT1 = HTTP_PORT + 1
+HTTP_PORT1 = HTTPS_PORT1 + 1
+HTTPS_PORT2 = HTTP_PORT1 + 1
+HTTP_PORT2 = HTTPS_PORT2 + 1
+HTTPS_PORT3 = HTTP_PORT2 + 1
+HTTP_PORT3 = HTTPS_PORT3 + 1
+HTTPS_PORT4 = HTTP_PORT3 + 1
+HTTP_PORT4 = HTTPS_PORT4 + 1
+HTTPS_PORT5 = HTTP_PORT4 + 1
+HTTP_PORT5 = HTTPS_PORT5 + 1
 ```
 
 ## Operation 1: Check Prerequisites
@@ -90,19 +98,19 @@ HTTPS_PORT2 = HTTP_PORT2 + 1
 **Steps**:
 1. Stop existing services:
    ```bash
-   HTTP_PORT=$HTTP_PORT HTTPS_PORT=$HTTPS_PORT HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT2=$HTTPS_PORT2 USER_ID=$USER_ID \
+   HTTPS_PORT=$HTTPS_PORT HTTP_PORT=$HTTP_PORT HTTPS_PORT1=$HTTPS_PORT1 HTTP_PORT1=$HTTP_PORT1 HTTPS_PORT2=$HTTPS_PORT2 HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT3=$HTTPS_PORT3 HTTP_PORT3=$HTTP_PORT3 HTTPS_PORT4=$HTTPS_PORT4 HTTP_PORT4=$HTTP_PORT4 HTTPS_PORT5=$HTTPS_PORT5 HTTP_PORT5=$HTTP_PORT5 USER_ID=$USER_ID \
    docker-compose -p "-$USER_ID-$HTTPS_PORT" -f docker-compose.yml down
    ```
 
 2. Build Docker images:
    ```bash
-   HTTP_PORT=$HTTP_PORT HTTPS_PORT=$HTTPS_PORT HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT2=$HTTPS_PORT2 USER_ID=$USER_ID \
+   HTTPS_PORT=$HTTPS_PORT HTTP_PORT=$HTTP_PORT HTTPS_PORT1=$HTTPS_PORT1 HTTP_PORT1=$HTTP_PORT1 HTTPS_PORT2=$HTTPS_PORT2 HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT3=$HTTPS_PORT3 HTTP_PORT3=$HTTP_PORT3 HTTPS_PORT4=$HTTPS_PORT4 HTTP_PORT4=$HTTP_PORT4 HTTPS_PORT5=$HTTPS_PORT5 HTTP_PORT5=$HTTP_PORT5 USER_ID=$USER_ID \
    docker-compose -p "-$USER_ID-$HTTPS_PORT" -f docker-compose.yml build --no-cache --build-arg PIP_UPGRADE=1
    ```
 
 3. Start services:
    ```bash
-   HTTP_PORT=$HTTP_PORT HTTPS_PORT=$HTTPS_PORT HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT2=$HTTPS_PORT2 USER_ID=$USER_ID \
+   HTTPS_PORT=$HTTPS_PORT HTTP_PORT=$HTTP_PORT HTTPS_PORT1=$HTTPS_PORT1 HTTP_PORT1=$HTTP_PORT1 HTTPS_PORT2=$HTTPS_PORT2 HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT3=$HTTPS_PORT3 HTTP_PORT3=$HTTP_PORT3 HTTPS_PORT4=$HTTPS_PORT4 HTTP_PORT4=$HTTP_PORT4 HTTPS_PORT5=$HTTPS_PORT5 HTTP_PORT5=$HTTP_PORT5 USER_ID=$USER_ID \
    docker-compose -p "-$USER_ID-$HTTPS_PORT" -f docker-compose.yml --env-file .env.prod up -d
    ```
 
@@ -129,7 +137,7 @@ HTTPS_PORT2 = HTTP_PORT2 + 1
 
 3. Test API health endpoint:
    ```bash
-   curl -f -s "https://www.opcp-psmc.com:${HTTPS_PORT}/"
+   curl -f -s "https://www.softfluid.fr:${HTTPS_PORT}/"
    ```
 
 4. Return success if services are running (health check is optional)
@@ -278,7 +286,7 @@ cd APPLICATION_FOLDER
 **Command**: `./deployApp.sh ps [USER_ID]`
 
 Returns JSON with:
-- Environment variables (USER_ID, USER_NAME, USER_EMAIL, HTTP_PORT, HTTPS_PORT, HTTP_PORT2, HTTPS_PORT2)
+- Environment variables (USER_ID, USER_NAME, USER_EMAIL, HTTPS_PORT, HTTP_PORT, HTTPS_PORT1, HTTP_PORT1, HTTPS_PORT2, HTTP_PORT2, HTTPS_PORT3, HTTP_PORT3, HTTPS_PORT4, HTTP_PORT4, HTTPS_PORT5, HTTP_PORT5)
 - Docker compose status (IS_RUNNING or IS_NOT_RUNNING)
 - Active ports (extracted from running containers)
 - Git remote URLs
@@ -329,10 +337,18 @@ Shows logs from all containers by:
 ## Firewall Configuration (Optional)
 
 If UFW is available, the deployment configures:
+- Allow HTTPS_PORT/tcp (main web interface)
 - Allow HTTP_PORT/tcp
-- Allow HTTPS_PORT/tcp
-- Allow HTTP_PORT2/tcp (if exists)
+- Allow HTTPS_PORT1/tcp (if exists)
+- Allow HTTP_PORT1/tcp (if exists)
 - Allow HTTPS_PORT2/tcp (if exists)
+- Allow HTTP_PORT2/tcp (if exists)
+- Allow HTTPS_PORT3/tcp (if exists)
+- Allow HTTP_PORT3/tcp (if exists)
+- Allow HTTPS_PORT4/tcp (if exists)
+- Allow HTTP_PORT4/tcp (if exists)
+- Allow HTTPS_PORT5/tcp (if exists)
+- Allow HTTP_PORT5/tcp (if exists)
 
 Note: The script no longer resets firewall rules or changes default policies to avoid disrupting existing configurations.
 
