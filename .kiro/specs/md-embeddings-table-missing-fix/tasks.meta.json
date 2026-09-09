@@ -1,0 +1,124 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Falsifying example: test_bug_condition_vector_store_missing_before_search(embedding=[0.0], top_k=1) — any generated value falsifies.\n\nSurfaced error (unfixed code): 'Échec de la connexion ou de la recherche dans la base de données vectorielle (relation \"md_embeddings\" does not exist)'\n\nFirst failing assertion: the OPCP query surfaced the missing-table error `relation \"md_embeddings\" does not exist` instead of provisioning the table first. Additionally, the unfixed `query` issues NO `CREATE EXTENSION IF NOT EXISTS vector` and NO `CREATE TABLE IF NOT EXISTS md_embeddings (...)` DDL before the SELECT — confirming the provisioning gap root cause.\n\nThis FAILURE is the expected SUCCESS case for an exploration test: it proves the bug exists.",
+      "lastRunTimestamp": 1788963127323
+    },
+    "3.2 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1788963550079
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788962899755
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788962908655
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963148214
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788962899954
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963152802
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963342669
+      }
+    ],
+    "3.1 Implement the fix": [
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788962900142
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963347355
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963506376
+      }
+    ],
+    "3.2 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788962900272
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963514365
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963560781
+      }
+    ],
+    "3.3 Verify preservation tests still pass": [
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788962900452
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963566341
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963741170
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788962900593
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963746060
+      },
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788964271390
+      }
+    ],
+    "3. Fix for missing `md_embeddings` vector store (idempotent lazy provisioning)": [
+      {
+        "executionId": "924c5df2-61b8-4e28-b5b0-be1ebd12bc7a",
+        "chatSessionId": "sess_8e85e0a6-eab3-4e4b-84e5-5c1c291b994c",
+        "timestamp": 1788963741436
+      }
+    ]
+  }
+}

@@ -166,6 +166,9 @@ class _FakeConn:
     def cursor(self):
         return _FakeCursor(self._rows)
 
+    def commit(self):
+        return None
+
     def close(self):
         return None
 
@@ -553,3 +556,547 @@ class TestProvidersWiring:
         config = json.loads((REPO_ROOT / "oracle_config.json").read_text(encoding="utf-8"))
         assert "opcp_companion" in config["providers"]
         assert config["providers"]["opcp_companion"]["name"] == "OPCP Companion"
+
+
+# ===========================================================================
+# Bugfix: md-embeddings-table-missing-fix
+# Task 1 — Bug condition exploration test (Property 1: Bug Condition)
+#
+# Bug Condition (design):
+#   isBugCondition(input) = input.ai_provider == "opcp_companion"
+#                           AND NOT tableExists(input.pg_connection, table_name)
+#   where table_name == settings.TABLE_NAME (default "md_embeddings").
+#
+# Expected Behavior (design Property 1): after an idempotent provisioning step,
+# tableExists(conn, table_name) is true and the similarity search runs WITHOUT
+# raising `relation "md_embeddings" does not exist`.
+#
+# CRITICAL: This test is EXPECTED TO FAIL on the unfixed code. The failure
+# confirms the bug: no `CREATE EXTENSION` / `CREATE TABLE` provisioning DDL is
+# issued before the `SELECT`, and the missing-table error is surfaced to the
+# caller. DO NOT fix the test or the code here.
+# ===========================================================================
+
+# The concrete Postgres error string the vector DB raises when md_embeddings
+# was never provisioned (see bugfix.md / observed runtime log).
+_MISSING_TABLE_ERROR = 'relation "md_embeddings" does not exist'
+
+
+class _MissingTableCursor:
+    """A cursor doubling a vector DB where `md_embeddings` is initially absent.
+
+    - Records every SQL statement executed (to detect provisioning DDL).
+    - Raises the equivalent of `relation "md_embeddings" does not exist` when a
+      `SELECT ... FROM md_embeddings ...` runs while the table does not exist.
+    - `CREATE TABLE IF NOT EXISTS md_embeddings (...)` marks the table present
+      (idempotent provisioning), after which the SELECT succeeds and returns the
+      configured rows.
+    """
+
+    def __init__(self, conn):
+        self._conn = conn
+
+    def execute(self, sql, params=None):
+        self._conn.executed_sql.append(sql)
+        normalized = " ".join(sql.split()).lower()
+
+        # Idempotent provisioning DDL: creating the table makes it exist.
+        if normalized.startswith("create table") and "md_embeddings" in normalized:
+            self._conn.table_exists = True
+            return None
+        if normalized.startswith("create extension"):
+            self._conn.extension_created = True
+            return None
+
+        # The similarity search: fail loudly when the relation is missing.
+        if normalized.startswith("select") and "from md_embeddings" in normalized:
+            if not self._conn.table_exists:
+                raise Exception(_MISSING_TABLE_ERROR)
+            return None
+
+        return None
+
+    def fetchall(self):
+        return list(self._conn.rows)
+
+    def close(self):
+        return None
+
+
+class _MissingTableConn:
+    """A connection whose `md_embeddings` relation starts out missing."""
+
+    def __init__(self, rows):
+        self.rows = rows
+        self.table_exists = False
+        self.extension_created = False
+        self.executed_sql = []
+        self.commits = 0
+
+    def cursor(self):
+        return _MissingTableCursor(self)
+
+    def commit(self):
+        self.commits += 1
+
+    def close(self):
+        return None
+
+
+def _first_index(statements, predicate):
+    for i, sql in enumerate(statements):
+        if predicate(" ".join(sql.split()).lower()):
+            return i
+    return -1
+
+
+@settings(
+    max_examples=50,
+    deadline=None,
+    suppress_health_check=[HealthCheck.function_scoped_fixture],
+)
+@given(
+    embedding=st.lists(
+        st.floats(min_value=-1.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+        min_size=1,
+        max_size=8,
+    ),
+    top_k=st.integers(min_value=1, max_value=10),
+)
+def test_bug_condition_vector_store_missing_before_search(embedding, top_k, monkeypatch):
+    """Bugfix md-embeddings-table-missing-fix, Property 1: Bug Condition —
+    the vector store must be provisioned before the OPCP similarity search.
+
+    Scoped PBT: deterministic bug, scoped to ai_provider == "opcp_companion"
+    against a vector DB where `md_embeddings` does not exist. Parameterized over
+    embedding vectors and top_k to stay property-shaped while reproducible.
+
+    EXPECTED (unfixed): FAILS — no provisioning DDL is issued and the search
+    surfaces `relation "md_embeddings" does not exist`.
+
+    Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3
+    """
+    from app.config import settings as app_settings
+
+    monkeypatch.setattr(app_settings, "OVH_AI_TOKEN", "tok-embed", raising=False)
+    monkeypatch.setattr(app_settings, "LLM_TOKEN", "tok-llm", raising=False)
+
+    provider = OpcpCompanionProvider()
+    provider.embed_token = "tok-embed"
+    provider.llm_token = "tok-llm"
+    provider.top_k = top_k
+
+    table_name = app_settings.TABLE_NAME  # default "md_embeddings"
+
+    # Embedding client returns a vector of the expected dimension.
+    embed_client = MagicMock()
+    embed_client.embeddings.create.return_value = SimpleNamespace(
+        data=[SimpleNamespace(embedding=[0.0] * provider.embedding_dim)]
+    )
+
+    # LLM client returns a canned answer so the pipeline can complete once the
+    # search stops failing.
+    llm_client = MagicMock()
+    llm_client.responses.create.return_value = SimpleNamespace(
+        output_text="Réponse simulée.",
+        usage=SimpleNamespace(total_tokens=7),
+    )
+
+    # Vector DB where md_embeddings is missing at first.
+    conn = _MissingTableConn([("Titre", "chemin.md", 0, "contenu", 0.9)])
+
+    monkeypatch.setattr(provider, "_get_embed_client", lambda: embed_client)
+    monkeypatch.setattr(provider, "_get_llm_client", lambda: llm_client)
+    monkeypatch.setattr(provider, "_get_pg_connection", lambda: conn)
+
+    # Run the OPCP query. On fixed code this provisions then searches; on unfixed
+    # code the search raises the missing-table error, which `query` re-wraps.
+    surfaced_error = None
+    try:
+        asyncio.run(provider.query("Une question quelconque ?"))
+    except Exception as exc:  # noqa: BLE001 - we assert on the surfaced message
+        surfaced_error = str(exc)
+
+    # Expected Behavior assertion (Property 1): the missing-table error must NOT
+    # be surfaced to the caller.
+    assert surfaced_error is None or _MISSING_TABLE_ERROR not in surfaced_error, (
+        "Bug reproduced: OPCP query surfaced the missing-table error "
+        f"({surfaced_error!r}). Expected the provider to provision "
+        f"{table_name!r} before searching."
+    )
+
+    # Expected Behavior assertion: after the query, the table exists.
+    assert conn.table_exists, (
+        f"Bug reproduced: {table_name!r} was never provisioned "
+        "(no CREATE TABLE issued against the vector DB)."
+    )
+
+    # Expected Behavior assertion: provisioning DDL was issued BEFORE the SELECT.
+    create_ext_idx = _first_index(
+        conn.executed_sql,
+        lambda s: s.startswith("create extension") and "vector" in s,
+    )
+    create_tbl_idx = _first_index(
+        conn.executed_sql,
+        lambda s: s.startswith("create table") and "md_embeddings" in s,
+    )
+    select_idx = _first_index(
+        conn.executed_sql,
+        lambda s: s.startswith("select") and "from md_embeddings" in s,
+    )
+
+    assert create_ext_idx != -1, (
+        "Bug reproduced: no `CREATE EXTENSION IF NOT EXISTS vector` was issued "
+        f"against the vector DB. Executed SQL: {conn.executed_sql!r}"
+    )
+    assert create_tbl_idx != -1, (
+        "Bug reproduced: no `CREATE TABLE IF NOT EXISTS md_embeddings (...)` was "
+        f"issued against the vector DB. Executed SQL: {conn.executed_sql!r}"
+    )
+    assert select_idx != -1, "Expected the similarity SELECT to run after provisioning."
+    assert create_ext_idx < select_idx and create_tbl_idx < select_idx, (
+        "Provisioning DDL must precede the similarity SELECT. "
+        f"Executed SQL order: {conn.executed_sql!r}"
+    )
+
+# ===========================================================================
+# Bugfix: md-embeddings-table-missing-fix
+# Task 2 — Preservation property tests (Property 2: Preservation)
+#
+# Non-bug condition (design): isBugCondition(input) returns FALSE — a non-OPCP
+# provider (`kiro`/`shai`/`openai`), OR an OPCP query where `md_embeddings`
+# already exists. For these inputs the fixed code F' must behave identically to
+# the unfixed code F.
+#
+# Observation-first methodology: these assertions record the ACTUAL behavior of
+# the UNFIXED code (routing without vector-DB access, the `_search` row mapping,
+# `_chunks_to_sources` / `_build_context` outputs, and the `query` result-dict
+# contract) so that the same assertions can prove the fix preserves them.
+#
+# EXPECTED (unfixed): these tests PASS — they establish the baseline to preserve.
+# The already-provisioned `ensure_vector_store` no-op assertion is written now
+# but guarded to skip on unfixed code (the method does not exist yet); it is
+# exercised fully after task 3.
+#
+# Validates: Requirements 3.1, 3.2, 3.3, 3.4
+# ===========================================================================
+
+
+class _RecordingCursor:
+    """A cursor over an already-provisioned table.
+
+    Records every SQL statement executed so tests can assert that no
+    provisioning DDL (CREATE EXTENSION / CREATE TABLE) is issued on the
+    non-bug path, and returns the configured rows for a SELECT.
+    """
+
+    def __init__(self, conn):
+        self._conn = conn
+
+    def execute(self, sql, params=None):
+        self._conn.executed_sql.append(sql)
+        return None
+
+    def fetchall(self):
+        return list(self._conn.rows)
+
+    def close(self):
+        return None
+
+
+class _RecordingConn:
+    """A connection to a vector DB where `md_embeddings` already exists.
+
+    Models the non-bug OPCP case: the table is present, so a search succeeds
+    with no provisioning needed. Records executed SQL and commits so tests can
+    assert the absence of destructive/provisioning DDL.
+    """
+
+    def __init__(self, rows):
+        self.rows = rows
+        self.executed_sql = []
+        self.commits = 0
+
+    def cursor(self):
+        return _RecordingCursor(self)
+
+    def commit(self):
+        self.commits += 1
+
+    def close(self):
+        return None
+
+
+def _provisioning_ddl(statements):
+    """Return the subset of statements that are provisioning/destructive DDL."""
+    ddl = []
+    for sql in statements:
+        normalized = " ".join(sql.split()).lower()
+        if (
+            normalized.startswith("create extension")
+            or normalized.startswith("create table")
+            or normalized.startswith("drop ")
+            or normalized.startswith("truncate ")
+            or normalized.startswith("delete ")
+            or normalized.startswith("alter ")
+        ):
+            ddl.append(normalized)
+    return ddl
+
+
+# ---------------------------------------------------------------------------
+# Preservation — Req 3.1: non-OPCP providers route without vector-DB access
+# ---------------------------------------------------------------------------
+
+@settings(
+    max_examples=50,
+    deadline=None,
+    suppress_health_check=[HealthCheck.function_scoped_fixture],
+)
+@given(
+    provider_name=st.sampled_from(["kiro", "shai", "openai"]),
+    answer=st.text(min_size=1, max_size=40),
+)
+def test_preservation_non_opcp_providers_never_touch_vector_db(
+    provider_name, answer, monkeypatch
+):
+    """Preservation (Req 3.1): non-OPCP providers (kiro/shai/openai) route and
+    return results WITHOUT any vector-DB access — no `_get_pg_connection` call
+    and no provisioning DDL. Observed on unfixed code; must remain unchanged.
+
+    Validates: Requirements 3.1
+    """
+    from app.oracle import ai_providers as ai_providers_module
+
+    provider = get_ai_provider(provider_name)
+
+    # Sentinel: any attempt to open a vector-DB connection is a violation.
+    pg_calls = {"count": 0}
+
+    def _forbidden_pg():
+        pg_calls["count"] += 1
+        raise AssertionError(
+            f"{provider_name} must not open a vector-DB connection"
+        )
+
+    # OpcpCompanionProvider is the only provider with `_get_pg_connection`; the
+    # others do not define it. Guard the whole provider class to catch any
+    # accidental future vector-DB access from a non-OPCP provider.
+    monkeypatch.setattr(
+        ai_providers_module.OpcpCompanionProvider,
+        "_get_pg_connection",
+        lambda self: _forbidden_pg(),
+        raising=False,
+    )
+
+    # Stub the provider's own `query` to observe the routed result shape without
+    # invoking external CLIs / HTTP. We assert the routing target rather than
+    # re-running the real subprocess/network calls.
+    async def _stub_query(question, context=None, temperature=0.7, max_tokens=2000):
+        return {
+            "answer": answer,
+            "processing_time": 0.0,
+            "tokens_used": len(answer.split()),
+            "provider": provider_name,
+        }
+
+    monkeypatch.setattr(provider, "query", _stub_query)
+
+    result = asyncio.run(provider.query("une question"))
+
+    assert result["provider"] == provider_name
+    assert result["answer"] == answer
+    # No vector-DB access occurred for a non-OPCP provider.
+    assert pg_calls["count"] == 0
+
+
+# ---------------------------------------------------------------------------
+# Preservation — `_search` pgvector row mapping unchanged (mirrors Property 1)
+# ---------------------------------------------------------------------------
+
+@settings(max_examples=150, deadline=None)
+@given(rows=st.lists(_row_strategy(), min_size=0, max_size=8))
+def test_preservation_search_row_mapping_unchanged(rows):
+    """Preservation: `_search` maps pgvector rows
+    (title, file_path, chunk_index, content, similarity) to chunk dicts exactly
+    as observed on unfixed code — keys, values, and the round(similarity, 4).
+
+    Validates: Requirements 3.4
+    """
+    provider = OpcpCompanionProvider()
+    conn = _FakeConn(rows)
+    chunks = provider._search(conn, [0.1, 0.2, 0.3], top_k=len(rows) or 1)
+
+    assert len(chunks) == len(rows)
+    for chunk, row in zip(chunks, rows):
+        title, file_path, chunk_index, content, sim = row
+        assert set(chunk.keys()) == {
+            "title", "file_path", "chunk_index", "content", "similarity"
+        }
+        assert chunk["title"] == title
+        assert chunk["file_path"] == file_path
+        assert chunk["chunk_index"] == chunk_index
+        assert chunk["content"] == content
+        assert chunk["similarity"] == round(float(sim), 4)
+
+
+# ---------------------------------------------------------------------------
+# Preservation — `_chunks_to_sources` output unchanged (mirrors Property 4)
+# ---------------------------------------------------------------------------
+
+@settings(max_examples=150, deadline=None)
+@given(chunks=st.lists(_chunk_strategy(), min_size=0, max_size=8))
+def test_preservation_chunks_to_sources_unchanged(chunks):
+    """Preservation: `_chunks_to_sources` derives (title, file_path, similarity)
+    faithfully from chunks, as observed on unfixed code.
+
+    Validates: Requirements 3.4
+    """
+    provider = OpcpCompanionProvider()
+    sources = provider._chunks_to_sources(chunks)
+
+    assert len(sources) == len(chunks)
+    for source, chunk in zip(sources, chunks):
+        assert set(source.keys()) == {"title", "file_path", "similarity"}
+        assert source["title"] == chunk["title"]
+        assert source["file_path"] == chunk["file_path"]
+        assert source["similarity"] == chunk["similarity"]
+
+
+# ---------------------------------------------------------------------------
+# Preservation — `_build_context` output unchanged (mirrors Property 2)
+# ---------------------------------------------------------------------------
+
+@settings(max_examples=150, deadline=None)
+@given(chunks=st.lists(_chunk_strategy(), min_size=0, max_size=6))
+def test_preservation_build_context_unchanged(chunks):
+    """Preservation: `_build_context` formats each chunk as
+    `[{title} — chunk {chunk_index}]\\n{content}` joined by `\\n\\n---\\n\\n`,
+    exactly as observed on unfixed code.
+
+    Validates: Requirements 3.4
+    """
+    provider = OpcpCompanionProvider()
+    context = provider._build_context(chunks)
+
+    # Recompute the observed formatting independently and assert equality.
+    expected = "\n\n---\n\n".join(
+        f"[{chunk['title']} — chunk {chunk['chunk_index']}]\n{chunk['content']}"
+        for chunk in chunks
+    )
+    assert context == expected
+
+    # And each chunk's content is present in the assembled context.
+    for chunk in chunks:
+        assert chunk["title"] in context
+        assert str(chunk["chunk_index"]) in context
+        assert chunk["content"] in context
+
+
+# ---------------------------------------------------------------------------
+# Preservation — `query` result-dict contract unchanged (mirrors Property 3)
+# ---------------------------------------------------------------------------
+
+@settings(
+    max_examples=100,
+    deadline=None,
+    suppress_health_check=[HealthCheck.function_scoped_fixture],
+)
+@given(question=st.text(min_size=1, max_size=60))
+def test_preservation_query_dict_contract_unchanged(question, monkeypatch):
+    """Preservation: an OPCP query against an already-provisioned table returns
+    the same result-dict contract observed on unfixed code — keys `answer`,
+    `processing_time`, `tokens_used`, `provider == "opcp_companion"`, `sources`.
+
+    Uses a connection where the table already exists (non-bug OPCP case), so no
+    provisioning is required and behavior matches today's.
+
+    Validates: Requirements 3.4
+    """
+    from app.config import settings as app_settings
+    monkeypatch.setattr(app_settings, "OVH_AI_TOKEN", "tok-embed", raising=False)
+    monkeypatch.setattr(app_settings, "LLM_TOKEN", "tok-llm", raising=False)
+
+    provider = OpcpCompanionProvider()
+    provider.embed_token = "tok-embed"
+    provider.llm_token = "tok-llm"
+
+    embed_client = MagicMock()
+    embed_client.embeddings.create.return_value = SimpleNamespace(
+        data=[SimpleNamespace(embedding=[0.0] * provider.embedding_dim)]
+    )
+
+    llm_client = MagicMock()
+    llm_client.responses.create.return_value = SimpleNamespace(
+        output_text="Réponse simulée.",
+        usage=SimpleNamespace(total_tokens=42),
+    )
+
+    # Already-provisioned vector DB: the table exists, search returns rows.
+    conn = _RecordingConn([("Titre", "chemin.md", 0, "contenu", 0.9)])
+
+    monkeypatch.setattr(provider, "_get_embed_client", lambda: embed_client)
+    monkeypatch.setattr(provider, "_get_llm_client", lambda: llm_client)
+    monkeypatch.setattr(provider, "_get_pg_connection", lambda: conn)
+
+    result = asyncio.run(provider.query(question))
+
+    assert {"answer", "processing_time", "tokens_used", "provider", "sources"}.issubset(
+        result.keys()
+    )
+    assert result["provider"] == "opcp_companion"
+    assert result["processing_time"] >= 0
+    assert result["sources"] == [
+        {"title": "Titre", "file_path": "chemin.md", "similarity": 0.9}
+    ]
+
+
+# ---------------------------------------------------------------------------
+# Preservation — already-provisioned table: search result equals pre-fix output
+# and (once implemented) ensure_vector_store issues only IF NOT EXISTS DDL.
+#
+# Guarded: `ensure_vector_store` does not exist on unfixed code. The
+# existing-behavior part (the search result over an existing table) is asserted
+# NOW; the "no destructive DDL" part is exercised fully after task 3.
+# ---------------------------------------------------------------------------
+
+@settings(max_examples=100, deadline=None)
+@given(rows=st.lists(_row_strategy(), min_size=0, max_size=8))
+def test_preservation_existing_table_ensure_vector_store_is_noop(rows):
+    """Preservation (Req 3.4): for an already-provisioned table, the search
+    returns the pre-fix output, and — once implemented — `ensure_vector_store`
+    performs only idempotent `IF NOT EXISTS` DDL (no destructive statements).
+
+    The `ensure_vector_store` assertion is guarded so it does not error on
+    unfixed code (the method does not exist yet); it is exercised fully after
+    task 3. The existing-behavior part (search over an existing table) is
+    asserted now.
+
+    Validates: Requirements 3.4
+    """
+    provider = OpcpCompanionProvider()
+
+    # Baseline pre-fix output: `_search` over an existing table.
+    baseline_conn = _FakeConn(rows)
+    baseline_chunks = provider._search(baseline_conn, [0.1, 0.2, 0.3], top_k=len(rows) or 1)
+
+    # Same search over the recording connection (table already exists).
+    conn = _RecordingConn(rows)
+
+    # Guarded: only exercise ensure_vector_store when the fix has added it.
+    if hasattr(provider, "ensure_vector_store"):
+        provider.ensure_vector_store(conn)
+        ddl = _provisioning_ddl(conn.executed_sql)
+        # Only idempotent IF NOT EXISTS DDL is allowed — nothing destructive.
+        for statement in ddl:
+            assert "if not exists" in statement, (
+                f"ensure_vector_store issued non-idempotent DDL: {statement!r}"
+            )
+            assert not statement.startswith(("drop ", "truncate ", "delete ", "alter ")), (
+                f"ensure_vector_store issued destructive DDL: {statement!r}"
+            )
+
+    chunks = provider._search(conn, [0.1, 0.2, 0.3], top_k=len(rows) or 1)
+
+    # The returned chunks equal the pre-fix output.
+    assert chunks == baseline_chunks

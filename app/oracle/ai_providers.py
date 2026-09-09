@@ -336,6 +336,38 @@ class OpcpCompanionProvider(AIProvider):
             password=settings.PG_PASSWORD,
         )
 
+    def ensure_vector_store(self, conn) -> None:
+        """Provisionne le magasin vectoriel de façon idempotente.
+
+        Sur une connexion psycopg2 déjà ouverte vers la base vectorielle, crée
+        l'extension pgvector et la table de recherche si elles sont absentes,
+        puis valide (commit) afin que le DDL soit durable avant la recherche.
+        L'opération est sans effet lorsque l'extension et la table existent déjà.
+
+        Le nom de table (self.table_name) et la dimension (self.embedding_dim)
+        proviennent exclusivement de la configuration (jamais d'une entrée
+        utilisateur), donc leur interpolation dans le SQL est sûre — même motif
+        que celui déjà employé par _search.
+        """
+        create_table_sql = (
+            f"CREATE TABLE IF NOT EXISTS {self.table_name} ("
+            "title text, "
+            "file_path text, "
+            "chunk_index integer, "
+            "content text, "
+            f"embedding vector({self.embedding_dim})"
+            ")"
+        )
+
+        cursor = conn.cursor()
+        try:
+            cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+            cursor.execute(create_table_sql)
+        finally:
+            cursor.close()
+
+        conn.commit()
+
     def _embed_query(self, client, query: str) -> list:
         """Calcule le vecteur d'embedding de la question via les OVH AI Endpoints.
 
@@ -457,6 +489,22 @@ class OpcpCompanionProvider(AIProvider):
         conn = None
         try:
             conn = await asyncio.to_thread(self._get_pg_connection)
+            # Provisionnement idempotent du magasin vectoriel avant la recherche
+            # (extension pgvector + table de recherche). Sans effet si déjà en
+            # place. En cas d'échec, on lève un message clair nommant la table
+            # cible et la base vectorielle, sans divulguer PG_PASSWORD. Req 2.1-2.3
+            try:
+                await asyncio.to_thread(self.ensure_vector_store, conn)
+            except Exception as provisioning_error:
+                logger.error(
+                    f"OPCP Companion vector store provisioning failed: {str(provisioning_error)}"
+                )
+                raise Exception(
+                    f"Impossible de provisionner la table « {self.table_name} » "
+                    f"dans la base de données vectorielle "
+                    f"« {settings.PG_DB} » sur {settings.PG_HOST}:{settings.PG_PORT} "
+                    f"({str(provisioning_error)})"
+                )
             chunks = await asyncio.to_thread(
                 self._search, conn, query_vector, self.top_k
             )
