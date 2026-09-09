@@ -1,0 +1,2 @@
+HANG(timeout 120s): tests/test_activity_report.py
+test_announcement_endpoint.py: =================== 8 passed, 5 warnings in 91.86s (0:01:31) ===================

@@ -1,13 +1,26 @@
 import { useState } from 'react';
 import { oracleService } from '../services/oracleService';
+import type { Source } from '../services/oracleService';
+import { SourcesList } from './SourcesList';
 
 interface OracleWidgetProps {
   onAnalysisComplete?: (analysis: any) => void;
 }
 
+interface WidgetAnalysis {
+  summary: string;
+  job_loss_prediction_5y: number;
+  job_loss_prediction_10y: number;
+  job_loss_prediction_20y: number;
+  key_topics: string[];
+  sentiment: string;
+  confidence: number;
+  sources?: Source[];
+}
+
 export const OracleWidget = ({ onAnalysisComplete }: OracleWidgetProps) => {
   const [loading, setLoading] = useState(false);
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [analysis, setAnalysis] = useState<WidgetAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const analyzeForumMessages = async () => {
@@ -16,7 +29,7 @@ export const OracleWidget = ({ onAnalysisComplete }: OracleWidgetProps) => {
     
     try {
       const result = await oracleService.analyzeForumMessages('kiro');
-      setAnalysis(result);
+      setAnalysis({ ...result, sources: (result as WidgetAnalysis).sources });
       if (onAnalysisComplete) {
         onAnalysisComplete(result);
       }
@@ -96,6 +109,8 @@ export const OracleWidget = ({ onAnalysisComplete }: OracleWidgetProps) => {
               </div>
             </div>
           </div>
+
+          <SourcesList sources={analysis.sources} />
         </div>
       )}
 

@@ -201,6 +201,12 @@ async def get_available_providers():
                 "name": "OpenAI",
                 "description": "GPT-4 d'OpenAI",
                 "default": False
+            },
+            {
+                "id": "opcp_companion",
+                "name": "OPCP Companion",
+                "description": "Assistant RAG basé sur la base documentaire OPCP (pgvector + OVH)",
+                "default": False
             }
         ]
     }

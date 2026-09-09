@@ -10,6 +10,20 @@ from app.config import settings
 from app.logging_config import logger
 
 
+# Instruction système du pipeline RAG OPCP Companion. Le placeholder {context}
+# reçoit les fragments récupérés dans pgvector, assemblés par _build_context.
+SYSTEM_PROMPT = """Tu es OPCP Companion, un assistant documentaire qui répond aux questions en t'appuyant exclusivement sur le contexte fourni ci-dessous.
+
+Consignes :
+- Réponds en français, de manière claire et concise.
+- Fonde ta réponse uniquement sur le contexte fourni. N'invente rien.
+- Si le contexte ne contient pas l'information nécessaire, indique-le honnêtement.
+- Cite les éléments pertinents du contexte lorsque c'est utile.
+
+Contexte :
+{context}"""
+
+
 def strip_ansi_codes(text: str) -> str:
     """Remove ANSI escape codes from text"""
     # Pattern to match ANSI escape sequences
@@ -278,12 +292,232 @@ class OpenAIProvider(AIProvider):
             raise
 
 
+class OpcpCompanionProvider(AIProvider):
+    """Fournisseur RAG : embedding OVH + recherche pgvector + génération LLM OVH.
+
+    Pipeline autonome porté depuis rag_query.py (dépôt opcp-ai-chatbot), réécrit
+    en classe conforme à l'interface AIProvider. Aucune importation d'exécution du
+    dépôt opcp-ai-chatbot : toute la configuration provient de app.config.settings.
+    """
+
+    def __init__(self):
+        # Embedding (OVH AI Endpoints)
+        self.embed_endpoint = settings.OVH_AI_ENDPOINT
+        self.embed_token = settings.OVH_AI_TOKEN
+        self.embedding_model = settings.EMBEDDING_MODEL
+        self.embedding_dim = settings.EMBEDDING_DIM
+        # Génération (LLM OVH) — retombe sur les endpoints/token d'embedding si vides
+        self.llm_endpoint = settings.LLM_ENDPOINT or settings.OVH_AI_ENDPOINT
+        self.llm_token = settings.LLM_TOKEN or settings.OVH_AI_TOKEN
+        self.llm_model = settings.LLM_MODEL
+        # Recherche pgvector
+        self.table_name = settings.TABLE_NAME
+        self.top_k = 3
+
+    # --- Clients ---
+    def _get_embed_client(self):
+        """Client OpenAI pointant vers les OVH AI Endpoints (embeddings)."""
+        from openai import OpenAI
+        return OpenAI(base_url=self.embed_endpoint, api_key=self.embed_token)
+
+    def _get_llm_client(self):
+        """Client OpenAI pointant vers l'endpoint LLM (génération)."""
+        from openai import OpenAI
+        return OpenAI(base_url=self.llm_endpoint, api_key=self.llm_token)
+
+    def _get_pg_connection(self):
+        """Connexion Postgres pgvector via les variables PG_* de la configuration."""
+        import psycopg2
+        return psycopg2.connect(
+            host=settings.PG_HOST,
+            port=settings.PG_PORT,
+            dbname=settings.PG_DB,
+            user=settings.PG_USER,
+            password=settings.PG_PASSWORD,
+        )
+
+    def _embed_query(self, client, query: str) -> list:
+        """Calcule le vecteur d'embedding de la question via les OVH AI Endpoints.
+
+        `dimensions` n'est transmis que si embedding_dim < 4096 (certains modèles
+        rejettent le paramètre à la dimension native maximale). La longueur du
+        vecteur retourné est validée contre embedding_dim.
+        """
+        kwargs = {"model": self.embedding_model, "input": [query]}
+        if self.embedding_dim < 4096:
+            kwargs["dimensions"] = self.embedding_dim
+        response = client.embeddings.create(**kwargs)
+        vector = response.data[0].embedding
+        if len(vector) != self.embedding_dim:
+            raise Exception(
+                f"Dimension d'embedding inattendue : {len(vector)} "
+                f"(attendu {self.embedding_dim})"
+            )
+        return vector
+
+    # --- Étapes pures / semi-pures ---
+    def _search(self, conn, query_vector: list, top_k: int) -> list:
+        """Recherche cosinus des top_k fragments dans pgvector.
+
+        Le nom de table provient de la configuration (self.table_name, jamais
+        d'une entrée utilisateur), donc son interpolation dans le SQL est sûre.
+        Les valeurs (vecteur, vecteur, top_k) restent paramétrées via %s.
+        """
+        # Sérialisation du vecteur au format attendu par pgvector : "[v1,v2,...]"
+        vector_str = "[" + ",".join(str(v) for v in query_vector) + "]"
+
+        sql = (
+            "SELECT title, file_path, chunk_index, content, "
+            "1 - (embedding <=> %s::vector) AS similarity "
+            f"FROM {self.table_name} "
+            "ORDER BY embedding <=> %s::vector "
+            "LIMIT %s;"
+        )
+
+        cursor = conn.cursor()
+        try:
+            cursor.execute(sql, (vector_str, vector_str, top_k))
+            rows = cursor.fetchall()
+        finally:
+            cursor.close()
+
+        chunks = []
+        for row in rows:
+            title, file_path, chunk_index, content, similarity = row
+            chunks.append({
+                "title": title,
+                "file_path": file_path,
+                "chunk_index": chunk_index,
+                "content": content,
+                "similarity": round(float(similarity), 4),
+            })
+        return chunks
+
+    def _chunks_to_sources(self, chunks: list) -> list:
+        """Dérive la liste des sources (title, file_path, similarity) des chunks."""
+        return [
+            {
+                "title": chunk["title"],
+                "file_path": chunk["file_path"],
+                "similarity": chunk["similarity"],
+            }
+            for chunk in chunks
+        ]
+
+    def _build_context(self, chunks: list) -> str:
+        """Assemble la chaîne de contexte injectée dans le SYSTEM_PROMPT.
+
+        Chaque chunk est formaté `[{title} — chunk {chunk_index}]\n{content}` et
+        les fragments sont joints par un séparateur `\n\n---\n\n`.
+        """
+        return "\n\n---\n\n".join(
+            f"[{chunk['title']} — chunk {chunk['chunk_index']}]\n{chunk['content']}"
+            for chunk in chunks
+        )
+
+    async def query(
+        self,
+        question: str,
+        context: Optional[str] = None,
+        temperature: float = 0.7,
+        max_tokens: int = 2000
+    ) -> Dict[str, Any]:
+        """Exécute le pipeline RAG : embedding OVH → recherche pgvector → génération LLM OVH.
+
+        Les appels bloquants (client OpenAI synchrone, psycopg2) sont déportés
+        hors de la boucle événementielle via asyncio.to_thread. Les erreurs sont
+        journalisées (logger.error) puis relancées avec un message français ne
+        divulguant aucun secret.
+        """
+        start_time = time.time()
+
+        # Garde de token : refuser tôt si une clé requise est absente (Req 5.3).
+        if not self.embed_token:
+            raise Exception(
+                "Configuration manquante : OVH_AI_TOKEN est requis pour l'embedding OPCP Companion."
+            )
+        if not self.llm_token:
+            raise Exception(
+                "Configuration manquante : LLM_TOKEN (ou OVH_AI_TOKEN de repli) est requis pour la génération OPCP Companion."
+            )
+
+        # 1. Embedding de la question (appel OVH) — Req 5.2
+        try:
+            embed_client = self._get_embed_client()
+            query_vector = await asyncio.to_thread(
+                self._embed_query, embed_client, question
+            )
+        except Exception as e:
+            logger.error(f"OPCP Companion embedding failed: {str(e)}")
+            raise Exception(
+                f"Échec de l'appel OVH (embedding) : impossible de calculer le vecteur de la question ({str(e)})"
+            )
+
+        # 2. Récupération des fragments dans pgvector — Req 5.1
+        conn = None
+        try:
+            conn = await asyncio.to_thread(self._get_pg_connection)
+            chunks = await asyncio.to_thread(
+                self._search, conn, query_vector, self.top_k
+            )
+        except Exception as e:
+            logger.error(f"OPCP Companion pgvector search failed: {str(e)}")
+            raise Exception(
+                f"Échec de la connexion ou de la recherche dans la base de données vectorielle ({str(e)})"
+            )
+        finally:
+            if conn is not None:
+                try:
+                    await asyncio.to_thread(conn.close)
+                except Exception:
+                    pass
+
+        # 3. Assemblage du contexte et génération de la réponse (appel OVH) — Req 5.2
+        context_str = self._build_context(chunks)
+        try:
+            llm_client = self._get_llm_client()
+            response = await asyncio.to_thread(
+                lambda: llm_client.responses.create(
+                    model=self.llm_model,
+                    instructions=SYSTEM_PROMPT.format(context=context_str),
+                    input=question,
+                    store=False,
+                    max_output_tokens=max_tokens,
+                    temperature=temperature,
+                )
+            )
+        except Exception as e:
+            logger.error(f"OPCP Companion generation failed: {str(e)}")
+            raise Exception(
+                f"Échec de l'appel OVH (génération) : impossible de produire la réponse ({str(e)})"
+            )
+
+        answer = response.output_text.strip()
+
+        # tokens_used depuis l'usage rapporté, sinon approximation par mots.
+        tokens_used = len(answer.split())
+        usage = getattr(response, "usage", None)
+        if usage is not None:
+            total = getattr(usage, "total_tokens", None)
+            if total is not None:
+                tokens_used = total
+
+        return {
+            "answer": answer,
+            "processing_time": max(0.0, time.time() - start_time),
+            "tokens_used": tokens_used,
+            "provider": "opcp_companion",
+            "sources": self._chunks_to_sources(chunks),
+        }
+
+
 def get_ai_provider(provider_name: str) -> AIProvider:
     """Factory function to get AI provider instance"""
     providers = {
         "kiro": KiroAIProvider,
         "shai": ShaiAIProvider,
-        "openai": OpenAIProvider
+        "openai": OpenAIProvider,
+        "opcp_companion": OpcpCompanionProvider
     }
     
     provider_class = providers.get(provider_name)

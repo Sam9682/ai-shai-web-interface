@@ -1,0 +1,234 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test (BEFORE implementing the fix)": {
+      "status": "passed",
+      "failingExample": "Exploration test FAILED as expected on unfixed code (bug confirmed). All 6 prerequisites-family requests returned an unmatched-route 404 with body {\"detail\": \"Not Found\"}. Refutation guard NOT triggered.",
+      "lastRunTimestamp": 1788941532615
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test (BEFORE implementing the fix)": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940515098
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940528600
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788941555202
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing the fix)": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940515535
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788941559588
+      }
+    ],
+    "3.1 Add persistence models and register them": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940515897
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788941932272
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788942359648
+      }
+    ],
+    "3.2 Add the Alembic migration for the new tables": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940516240
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788942363263
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788942505006
+      }
+    ],
+    "3.3 Add the prerequisites schemas and package init": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940516570
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788942508522
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788946691610
+      }
+    ],
+    "3.4 Implement the router with the four endpoints and auth wiring": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940516829
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788946696440
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788947549116
+      }
+    ],
+    "3.5 Register the router in app/main.py": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940517045
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788947554417
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788947788610
+      }
+    ],
+    "3.6 Add unit tests for models, endpoints, slug validation, and authorization": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940517258
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788947792694
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788947973629
+      }
+    ],
+    "3.7 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940517459
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788947978385
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948046133
+      }
+    ],
+    "3.8 Verify preservation tests still pass": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940517682
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948050525
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948166274
+      }
+    ],
+    "4. Add property-based tests for fix and preservation properties": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940517877
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948171692
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948319812
+      }
+    ],
+    "5. Add integration tests (full round-trip through TestClient with real auth)": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940518079
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948324002
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948861486
+      }
+    ],
+    "6. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788940518343
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948866010
+      },
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948989340
+      }
+    ],
+    "3. Fix for the missing prerequisites backend (mount the route family)": [
+      {
+        "executionId": "c05934ea-c758-4e8f-8ee0-0ed541cd68bd",
+        "chatSessionId": "sess_964ad2a5-e81f-49ad-8b29-b604a98c4dc6",
+        "timestamp": 1788948166390
+      }
+    ]
+  }
+}

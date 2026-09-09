@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { oracleService } from '../services/oracleService';
+import type { Source } from '../services/oracleService';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { SourcesList } from '../components/SourcesList';
 
 interface Message {
   id: string;
@@ -9,13 +11,14 @@ interface Message {
   timestamp: Date;
   provider?: string;
   processingTime?: number;
+  sources?: Source[];
 }
 
 export const OraclePage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [provider, setProvider] = useState<'shai' | 'kiro' | 'openai'>('shai');
+  const [provider, setProvider] = useState<'shai' | 'kiro' | 'openai' | 'opcp_companion'>('shai');
   const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -91,7 +94,7 @@ export const OraclePage = () => {
           setMessages(prev =>
             prev.map(msg =>
               msg.id === assistantMessageId
-                ? { ...msg, provider: data.provider, processingTime: data.processing_time }
+                ? { ...msg, provider: data.provider, processingTime: data.processing_time, sources: data.sources }
                 : msg
             )
           );
@@ -169,6 +172,7 @@ export const OraclePage = () => {
               <option value="shai">Shai AI (OVH)</option>
               <option value="kiro">Kiro AI (AWS)</option>
               <option value="openai">ChatGPT (OpenAI)</option>
+              <option value="opcp_companion">OPCP Companion (RAG)</option>
             </select>
           </div>
 
@@ -224,6 +228,9 @@ export const OraclePage = () => {
                         {message.provider} · {message.processingTime?.toFixed(2)}s
                       </div>
                     )}
+                    {message.role === 'assistant' && message.sources?.length ? (
+                      <SourcesList sources={message.sources} />
+                    ) : null}
                   </div>
                 </div>
               ))}

@@ -61,7 +61,8 @@ class OracleService:
                 created_at=db_query.created_at,
                 user_id=db_query.user_id,
                 processing_time=db_query.processing_time,
-                tokens_used=db_query.tokens_used
+                tokens_used=db_query.tokens_used,
+                sources=result.get("sources")
             )
             
         except Exception as e:
@@ -125,7 +126,8 @@ class OracleService:
                 'id': db_query.id,
                 'provider': result["provider"],
                 'processing_time': processing_time,
-                'tokens_used': result.get("tokens_used")
+                'tokens_used': result.get("tokens_used"),
+                'sources': result.get("sources")
             }
             
         except Exception as e:

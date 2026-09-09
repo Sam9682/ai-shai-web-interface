@@ -48,6 +48,24 @@ class Settings(BaseSettings):
     SHAI_API_KEY: str = ""
     SHAI_API_URL: str = "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1"  # Use EU endpoint to avoid redirect
     
+    # OPCP Companion (RAG) Configuration
+    # OVH AI Endpoints for embeddings (LLM falls back to these when LLM_* is empty)
+    OVH_AI_ENDPOINT: str = ""
+    OVH_AI_TOKEN: str = ""
+    EMBEDDING_MODEL: str = "Qwen3-Embedding-8B"
+    EMBEDDING_DIM: int = 4096
+    # LLM generation endpoint (falls back to OVH_AI_ENDPOINT/OVH_AI_TOKEN when empty)
+    LLM_ENDPOINT: str = ""
+    LLM_TOKEN: str = ""
+    LLM_MODEL: str = "Qwen3-Embedding-8B"
+    # pgvector Postgres connection (explicit PG_* vars, distinct from DATABASE_URL)
+    PG_HOST: str = "localhost"
+    PG_PORT: int = 5432
+    PG_DB: str = "vectordb"
+    PG_USER: str = "postgres"
+    PG_PASSWORD: str = ""
+    TABLE_NAME: str = "md_embeddings"
+    
     model_config = {
         "env_file": ".env",
         "case_sensitive": True,

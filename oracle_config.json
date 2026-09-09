@@ -31,6 +31,14 @@
       "env_var": "OPENAI_API_KEY",
       "model": "gpt-4",
       "description": "GPT-4 d'OpenAI"
+    },
+    "opcp_companion": {
+      "name": "OPCP Companion",
+      "type": "cloud",
+      "rag": true,
+      "requires_api_key": true,
+      "env_var": "OVH_AI_TOKEN",
+      "description": "Assistant RAG basé sur la base documentaire OPCP (pgvector + OVH AI Endpoints)"
     }
   },
   "rate_limits": {

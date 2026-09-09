@@ -1,0 +1,352 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Ajouter les 13 variables RAG à `Settings` dans `app/config.py`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952593400
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952605107
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952748074
+      }
+    ],
+    "1.2 Documenter les variables RAG dans `.env.example`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952593554
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952605917
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952749037
+      }
+    ],
+    "1.3 Ajouter `openai` à `requirements.txt`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952593665
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952606856
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952750010
+      }
+    ],
+    "2.1 Ajouter le schéma `Source` et le champ `sources` sur `OracleResponse`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952593783
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952755045
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953010918
+      }
+    ],
+    "3.1 Créer la classe et les fabriques de clients": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952593891
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952756381
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953011852
+      }
+    ],
+    "3.2 Implémenter `_search` et `_chunks_to_sources`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952594006
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953035545
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953267756
+      }
+    ],
+    "3.5 Implémenter `_build_context`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952594111
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953273058
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953515408
+      }
+    ],
+    "4.1 Implémenter la méthode `query` (pipeline complet + garde + erreurs)": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952594219
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953520028
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953839027
+      }
+    ],
+    "4.2 Enregistrer `opcp_companion` dans `get_ai_provider`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952594344
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953846228
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788954016415
+      }
+    ],
+    "5. Checkpoint - Vérifier que tous les tests backend passent": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952594452
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788954034048
+      }
+    ],
+    "6.1 Propager les sources dans `app/oracle/service.py`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952594563
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953847306
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788954017420
+      }
+    ],
+    "6.4 Ajouter `opcp_companion` à `GET /oracle/providers` (`app/oracle/router.py`)": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952594666
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953848311
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788954018239
+      }
+    ],
+    "6.5 Ajouter l'entrée `opcp_companion` à `oracle_config.json`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952594791
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952607866
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952750972
+      }
+    ],
+    "7. Checkpoint - Vérifier que le câblage backend passe": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952594911
+      }
+    ],
+    "8.1 Étendre les types du service Oracle": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952595041
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952756923
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953012528
+      }
+    ],
+    "9.1 Créer le composant partagé `SourcesList`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952595146
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953036031
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953268370
+      }
+    ],
+    "9.2 Intégrer sources dans `frontend/src/pages/OraclePage.tsx`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952595265
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953274016
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953513778
+      }
+    ],
+    "9.3 Intégrer sources dans `frontend/src/components/OracleWidget.tsx`": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952595400
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953274994
+      },
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953514699
+      }
+    ],
+    "10. Checkpoint final - Vérifier que tous les tests (backend + frontend) passent": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952595508
+      }
+    ],
+    "1. Étendre la configuration et les dépendances (fondations)": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788952750121
+      }
+    ],
+    "2. Étendre les schémas Pydantic (`app/oracle/schemas.py`)": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953011066
+      }
+    ],
+    "8. Frontend — types et service (`frontend/src/services/oracleService.ts`)": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953012630
+      }
+    ],
+    "9. Frontend — affichage des sources": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953514798
+      }
+    ],
+    "3. Implémenter `OpcpCompanionProvider` — étapes pures (`app/oracle/ai_providers.py`)": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788953515545
+      }
+    ],
+    "4. Implémenter `OpcpCompanionProvider.query` et enregistrer le fournisseur": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788954016526
+      }
+    ],
+    "6. Câbler les sources dans le service, le router et la config": [
+      {
+        "executionId": "28b9eac4-935a-4a4d-84e9-73cb3b00ea5a",
+        "chatSessionId": "sess_83c9ae7a-fc2a-43a8-93ce-1b061b9c5d48",
+        "timestamp": 1788954018347
+      }
+    ]
+  }
+}

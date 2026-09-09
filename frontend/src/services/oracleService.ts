@@ -1,9 +1,15 @@
 import api from './api';
 
+export interface Source {
+  title: string;
+  file_path: string;
+  similarity: number;
+}
+
 interface OracleQuery {
   question: string;
   context?: string;
-  ai_provider?: 'shai' | 'kiro' | 'openai';
+  ai_provider?: 'shai' | 'kiro' | 'openai' | 'opcp_companion';
   temperature?: number;
   max_tokens?: number;
 }
@@ -18,6 +24,7 @@ interface OracleResponse {
   user_id?: number;
   processing_time: number;
   tokens_used?: number;
+  sources?: Source[];
 }
 
 interface OracleHistoryItem {
@@ -123,7 +130,7 @@ class OracleService {
     return response.data;
   }
 
-  async analyzeForumMessages(aiProvider: 'shai' | 'kiro' | 'openai' = 'kiro'): Promise<ForumAnalysisResponse> {
+  async analyzeForumMessages(aiProvider: 'shai' | 'kiro' | 'openai' | 'opcp_companion' = 'kiro'): Promise<ForumAnalysisResponse> {
     const response = await api.post('/oracle/analyze/forum', {
       analysis_type: 'forum_summary',
       ai_provider: aiProvider

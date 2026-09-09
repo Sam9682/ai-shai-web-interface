@@ -8,6 +8,7 @@ from app.models.notification import Notification, NotificationPreferences, Notif
 from app.models.audit import AuditLog
 from app.models.token_blacklist import TokenBlacklist
 from app.models.user_deletion import ScheduledUserDeletion
+from app.models.prerequisite import PrerequisiteContent, PrerequisiteAnswer
 
 __all__ = [
     "User", "UserRole",
@@ -18,6 +19,7 @@ __all__ = [
     "Notification", "NotificationPreferences", "NotificationType",
     "AuditLog",
     "TokenBlacklist",
-    "ScheduledUserDeletion"
+    "ScheduledUserDeletion",
+    "PrerequisiteContent", "PrerequisiteAnswer"
 ]
 from app.models.oracle import OracleQuery
