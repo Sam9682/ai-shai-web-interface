@@ -58,11 +58,11 @@ class Settings(BaseSettings):
     LLM_ENDPOINT: str = ""
     LLM_TOKEN: str = ""
     LLM_MODEL: str = "Qwen3-Embedding-8B"
-    # pgvector Postgres connection (explicit PG_* vars, distinct from DATABASE_URL)
-    PG_HOST: str = "localhost"
+    # pgvector Postgres connection (explicit PG_* vars, aligned with DATABASE_URL: shai_db @ postgres)
+    PG_HOST: str = "postgres"
     PG_PORT: int = 5432
-    PG_DB: str = "vectordb"
-    PG_USER: str = "postgres"
+    PG_DB: str = "shai_db"
+    PG_USER: str = "shai_user"
     PG_PASSWORD: str = ""
     TABLE_NAME: str = "md_embeddings"
     

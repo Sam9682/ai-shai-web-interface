@@ -1,0 +1,377 @@
+{
+  "pbtResults": {
+    "3.3 Write property test for document discovery": {
+      "status": "passed",
+      "lastRunTimestamp": 1788967703652
+    },
+    "4.4 Write property test for chunking": {
+      "status": "passed",
+      "lastRunTimestamp": 1788968185797
+    },
+    "6.3 Write property test for re-run idempotency": {
+      "status": "passed",
+      "lastRunTimestamp": 1788968673717
+    },
+    "7.3 Write property test for vector store provisioning idempotency": {
+      "status": "passed",
+      "lastRunTimestamp": 1788968678595
+    }
+  },
+  "executionHistory": {
+    "1.1 Switch the `postgres` service image to pgvector and add the one-off `ingest` service": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966737724
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966752955
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966900297
+      }
+    ],
+    "1.3 Reconcile `PG_*` defaults in `app/config.py`": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966738096
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966754471
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966901672
+      }
+    ],
+    "1.4 Document `PG_*` and OVH RAG vars in the env example files": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966738508
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966755692
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966903029
+      }
+    ],
+    "1.5 Add the `pypdf` dependency": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966738837
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966757101
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966904504
+      }
+    ],
+    "2. Checkpoint - Ensure infrastructure/config tests pass": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966739131
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967249323
+      }
+    ],
+    "3.1 Create the ingestion module skeleton with `DocFile` and entry point": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966739443
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966919451
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967246947
+      }
+    ],
+    "3.2 Implement `discover_documents`": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966739841
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967255507
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967345284
+      }
+    ],
+    "4.1 Implement `extract_text`": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966740149
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967346408
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967434575
+      }
+    ],
+    "4.3 Implement `chunk_text`": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966740460
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967435764
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967551704
+      }
+    ],
+    "5. Checkpoint - Ensure discovery/extraction/chunking tests pass": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966740757
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968214835
+      }
+    ],
+    "6.1 Implement `ingest_file` with provisioning-first, per-chunk embedding, and delete-then-insert upsert": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966741096
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967557134
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968220253
+      }
+    ],
+    "7.1 Implement `validate_credentials` and wire `main()`": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966741638
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968227287
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968468446
+      }
+    ],
+    "8.1 Update the single `PG_*` defaults-equality assertion": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966741918
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966758677
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966905665
+      }
+    ],
+    "9. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966742196
+      }
+    ],
+    "1. Infrastructure and configuration surface": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966904893
+      }
+    ],
+    "8. Regression preservation for provider tests": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966906157
+      }
+    ],
+    "1.2 Write compose smoke tests": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966920710
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967244239
+      }
+    ],
+    "1.6 Write config and env documentation tests": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788966921897
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967245639
+      }
+    ],
+    "3. Ingestion script scaffolding and document discovery": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967345597
+      }
+    ],
+    "4. Text extraction and chunking": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967552503
+      }
+    ],
+    "3.3 Write property test for document discovery": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967553170
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968218587
+      }
+    ],
+    "4.2 Write PDF extraction edge-case test": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967554476
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968217692
+      }
+    ],
+    "4.4 Write property test for chunking": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788967555958
+      },
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968216315
+      }
+    ],
+    "6. Embedding, provisioning, and idempotent upsert": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968220632
+      }
+    ],
+    "7. Orchestration, credential validation, and wiring": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968469251
+      }
+    ],
+    "6.2 Write per-chunk embedding, insert-mapping, and model/dimension unit tests": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968469819
+      }
+    ],
+    "6.3 Write property test for re-run idempotency": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968471821
+      }
+    ],
+    "6.4 Write property test for changed-document replacement": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968473648
+      }
+    ],
+    "7.2 Write provision-before-insert and missing-credentials unit tests": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968474149
+      }
+    ],
+    "7.3 Write property test for vector store provisioning idempotency": [
+      {
+        "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
+        "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
+        "timestamp": 1788968480607
+      }
+    ]
+  }
+}

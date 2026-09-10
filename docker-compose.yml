@@ -1,7 +1,7 @@
 services:
   # PostgreSQL Database
   postgres:
-    image: postgres:15-alpine
+    image: pgvector/pgvector:pg15
     container_name: ai-shai-web-interface-postgres-${USER_ID:-1}-5432
     environment:
       POSTGRES_DB: shai_db
@@ -50,6 +50,26 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    networks:
+      - shai-network
+
+  # One-off RAG document ingestion (run on demand via the "ingest" profile)
+  ingest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles: ["ingest"]
+    env_file:
+      - .env
+    environment:
+      - PG_HOST=postgres
+      - PG_DB=shai_db
+      - PG_USER=shai_user
+      - PG_PASSWORD=${POSTGRES_PASSWORD:-shai_password}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["python", "-m", "scripts.ingest_embeddings"]
     networks:
       - shai-network
 

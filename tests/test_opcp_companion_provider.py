@@ -85,10 +85,10 @@ class TestConfigAndDependenciesSmoke:
         assert s.EMBEDDING_MODEL == "Qwen3-Embedding-8B"
         assert s.EMBEDDING_DIM == 4096
         assert s.LLM_MODEL == "Qwen3-Embedding-8B"
-        assert s.PG_HOST == "localhost"
+        assert s.PG_HOST == "postgres"
         assert s.PG_PORT == 5432
-        assert s.PG_DB == "vectordb"
-        assert s.PG_USER == "postgres"
+        assert s.PG_DB == "shai_db"
+        assert s.PG_USER == "shai_user"
         assert s.TABLE_NAME == "md_embeddings"
 
     def test_env_example_documents_each_rag_var(self):
