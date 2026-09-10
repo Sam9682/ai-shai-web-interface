@@ -10,11 +10,15 @@
     },
     "6.3 Write property test for re-run idempotency": {
       "status": "passed",
-      "lastRunTimestamp": 1788968673717
+      "lastRunTimestamp": 1789059113108
     },
     "7.3 Write property test for vector store provisioning idempotency": {
       "status": "passed",
-      "lastRunTimestamp": 1788968678595
+      "lastRunTimestamp": 1789059132011
+    },
+    "6.4 Write property test for changed-document replacement": {
+      "status": "passed",
+      "lastRunTimestamp": 1789059107914
     }
   },
   "executionHistory": {
@@ -234,6 +238,16 @@
         "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
         "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
         "timestamp": 1788966742196
+      },
+      {
+        "executionId": "3cbd4646-6ad8-49d9-8bc6-0dee5368af45",
+        "chatSessionId": "sess_eb7bebbc-eee2-4447-baf6-a8361ae04a34",
+        "timestamp": 1789059234989
+      },
+      {
+        "executionId": "3cbd4646-6ad8-49d9-8bc6-0dee5368af45",
+        "chatSessionId": "sess_eb7bebbc-eee2-4447-baf6-a8361ae04a34",
+        "timestamp": 1789059296747
       }
     ],
     "1. Infrastructure and configuration surface": [
@@ -343,6 +357,11 @@
         "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
         "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
         "timestamp": 1788968469819
+      },
+      {
+        "executionId": "3cbd4646-6ad8-49d9-8bc6-0dee5368af45",
+        "chatSessionId": "sess_eb7bebbc-eee2-4447-baf6-a8361ae04a34",
+        "timestamp": 1789059149970
       }
     ],
     "6.3 Write property test for re-run idempotency": [
@@ -350,6 +369,11 @@
         "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
         "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
         "timestamp": 1788968471821
+      },
+      {
+        "executionId": "3cbd4646-6ad8-49d9-8bc6-0dee5368af45",
+        "chatSessionId": "sess_eb7bebbc-eee2-4447-baf6-a8361ae04a34",
+        "timestamp": 1789059151396
       }
     ],
     "6.4 Write property test for changed-document replacement": [
@@ -357,6 +381,11 @@
         "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
         "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
         "timestamp": 1788968473648
+      },
+      {
+        "executionId": "3cbd4646-6ad8-49d9-8bc6-0dee5368af45",
+        "chatSessionId": "sess_eb7bebbc-eee2-4447-baf6-a8361ae04a34",
+        "timestamp": 1789059152815
       }
     ],
     "7.2 Write provision-before-insert and missing-credentials unit tests": [
@@ -364,6 +393,11 @@
         "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
         "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
         "timestamp": 1788968474149
+      },
+      {
+        "executionId": "3cbd4646-6ad8-49d9-8bc6-0dee5368af45",
+        "chatSessionId": "sess_eb7bebbc-eee2-4447-baf6-a8361ae04a34",
+        "timestamp": 1789059154212
       }
     ],
     "7.3 Write property test for vector store provisioning idempotency": [
@@ -371,6 +405,23 @@
         "executionId": "243db7f8-1fca-437c-a4d3-d5400bc7a5a0",
         "chatSessionId": "sess_ad655d76-3201-4292-b427-2ecccb66a9bb",
         "timestamp": 1788968480607
+      },
+      {
+        "executionId": "3cbd4646-6ad8-49d9-8bc6-0dee5368af45",
+        "chatSessionId": "sess_eb7bebbc-eee2-4447-baf6-a8361ae04a34",
+        "timestamp": 1789059155408
+      }
+    ],
+    "7.4 Write entry-point smoke test": [
+      {
+        "executionId": "3cbd4646-6ad8-49d9-8bc6-0dee5368af45",
+        "chatSessionId": "sess_eb7bebbc-eee2-4447-baf6-a8361ae04a34",
+        "timestamp": 1789059159750
+      },
+      {
+        "executionId": "3cbd4646-6ad8-49d9-8bc6-0dee5368af45",
+        "chatSessionId": "sess_eb7bebbc-eee2-4447-baf6-a8361ae04a34",
+        "timestamp": 1789059229245
       }
     ]
   }

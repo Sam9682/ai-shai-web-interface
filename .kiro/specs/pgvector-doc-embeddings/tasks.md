@@ -97,19 +97,19 @@ All code is Python (script + tests) and YAML (compose), as fixed by the design. 
     - _Requirements: 4.5, 4.6, 4.7, 5.1, 5.2, 6.4_
     - _Design: Components and Interfaces §5 (Embedding, Idempotent upsert, Vector serialization); Ingestion Sequence steps 4–7_
 
-  - [-]* 6.2 Write per-chunk embedding, insert-mapping, and model/dimension unit tests
+  - [x]* 6.2 Write per-chunk embedding, insert-mapping, and model/dimension unit tests
     - With a mocked embed client, assert one embedding request per produced chunk (Req 4.5)
     - With a fake cursor, assert inserted tuples carry `(title, file_path, chunk_index, content, embedding)` (Req 4.6)
     - Assert embedding goes through the provider path using `EMBEDDING_MODEL` and that a wrong-length vector raises (Req 6.4)
     - _Requirements: 4.5, 4.6, 6.4_
     - _Design: Testing Strategy → Example / edge-case unit tests_
 
-  - [-]* 6.3 Write property test for re-run idempotency
+  - [x]* 6.3 Write property test for re-run idempotency
     - **Property 4: Ingestion is idempotent over re-runs (no duplicate rows)**
     - **Validates: Requirements 5.1**
     - With a fake connection modeling the table as a row store, ingest a generated doc set twice; assert no duplicate `(file_path, chunk_index)` rows and that the two-run result equals the single-run result
 
-  - [-]* 6.4 Write property test for changed-document replacement
+  - [x]* 6.4 Write property test for changed-document replacement
     - **Property 5: Re-ingesting a changed document replaces its chunks**
     - **Validates: Requirements 5.2**
     - Ingest a file, then re-ingest with different generated content; assert stored rows for that `file_path` equal exactly the new chunks with no stale rows remaining
@@ -121,18 +121,18 @@ All code is Python (script + tests) and YAML (compose), as fixed by the design. 
     - _Requirements: 4.7, 6.1, 6.2, 6.3, 6.4_
     - _Design: Components and Interfaces §5 (Credential validation, Provisioning first); Ingestion Sequence steps 1–8; Error Handling_
 
-  - [-]* 7.2 Write provision-before-insert and missing-credentials unit tests
+  - [x]* 7.2 Write provision-before-insert and missing-credentials unit tests
     - Assert `ensure_vector_store` is called before any `INSERT` (Req 4.7)
     - For empty and whitespace `OVH_AI_ENDPOINT`/`OVH_AI_TOKEN`, assert `main()` returns non-zero and the message names the specific variable (Req 6.2, 6.3)
     - _Requirements: 4.7, 6.2, 6.3_
     - _Design: Testing Strategy → Example / edge-case unit tests_
 
-  - [-]* 7.3 Write property test for vector store provisioning idempotency
+  - [x]* 7.3 Write property test for vector store provisioning idempotency
     - **Property 1: Vector store provisioning is idempotent**
     - **Validates: Requirements 3.1, 3.2, 3.3, 3.4**
     - Repeatedly invoke `ensure_vector_store` against a fake connection recording DDL; assert extension + table present and no error regardless of invocation count
 
-  - [ ]* 7.4 Write entry-point smoke test
+  - [x]* 7.4 Write entry-point smoke test
     - Assert `scripts/ingest_embeddings.py` exists with a `__main__` guard and an importable `main()` callable
     - _Requirements: 4.1, 4.8_
     - _Design: Testing Strategy → Config / smoke tests_
@@ -143,7 +143,7 @@ All code is Python (script + tests) and YAML (compose), as fixed by the design. 
     - _Requirements: 2.5, 7.1, 7.2, 7.3_
     - _Design: Components and Interfaces §3 (Compatibility note); Preserving Existing Provider Behavior; Testing Strategy → Regression preservation_
 
-- [~] 9. Final checkpoint - Ensure all tests pass
+- [x] 9. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

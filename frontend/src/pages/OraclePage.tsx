@@ -154,8 +154,7 @@ export const OraclePage = () => {
       <div className="bg-[#000E9C] rounded-lg p-6 mb-6">
         <h1 className="text-2xl font-bold text-white mb-1">Oracle IA</h1>
         <p className="text-sm text-blue-200">
-          Interface d'IA pour explorer les questions sur l'intelligence artificielle et l'humanité
-        </p>
+          Interface d'IA pour explorer OPCP avec l'aide de l'intelligence artificielle        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

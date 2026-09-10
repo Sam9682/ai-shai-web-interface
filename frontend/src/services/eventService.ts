@@ -9,6 +9,7 @@ export interface Event {
   location: string | null;
   max_participants: number | null;
   created_by: string;
+  assigned_user_id: string | null;
   status: string;
   created_at: string;
   updated_at: string;
@@ -22,6 +23,7 @@ export interface CreateEventRequest {
   end_date: string;
   location?: string;
   max_participants?: number;
+  assigned_user_id?: string | null;
 }
 
 export interface UpdateEventRequest {
@@ -31,6 +33,7 @@ export interface UpdateEventRequest {
   end_date?: string;
   location?: string;
   max_participants?: number;
+  assigned_user_id?: string | null; // send null to clear the assignment
 }
 
 export const eventService = {

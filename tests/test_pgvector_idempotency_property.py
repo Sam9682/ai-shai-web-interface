@@ -180,7 +180,10 @@ def _pk_pairs(rows: list[dict]) -> list[tuple]:
 )
 @given(doc_set=_doc_set)
 def test_ingestion_idempotent_over_reruns(tmp_path_factory, doc_set):
-    """Two identical runs == one run; never a duplicate (file_path, chunk_index).
+    """Feature: pgvector-doc-embeddings, Property 4: Ingestion is idempotent
+    over re-runs (no duplicate rows).
+
+    Two identical runs == one run; never a duplicate (file_path, chunk_index).
 
     Validates: Requirements 5.1
     """

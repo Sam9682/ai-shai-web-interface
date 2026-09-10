@@ -184,14 +184,18 @@ async def get_answers(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> ClientAnswersResponse:
-    """Return the ``{ row_id: answer }`` map for a known qa slug (empty when none)."""
+    """Return the ``{ row_id: answer }`` map for a known qa slug, scoped to the
+    authenticated user (empty when the user has no answers)."""
     if slug not in QA_SLUGS:
         logger.warning(f"Unknown qa prerequisite slug requested: {slug}")
         raise _slug_not_found(slug)
 
     rows = (
         db.query(PrerequisiteAnswer)
-        .filter(PrerequisiteAnswer.slug == slug)
+        .filter(
+            PrerequisiteAnswer.user_id == current_user.id,
+            PrerequisiteAnswer.slug == slug,
+        )
         .all()
     )
 
@@ -211,7 +215,8 @@ async def update_answer(
     current_user: User = Depends(get_answering_member),
     db: Session = Depends(get_db),
 ) -> PrerequisiteUpdateResponse:
-    """Upsert the ``(slug, row_id)`` answer row for a known qa slug (members only)."""
+    """Upsert the ``(user_id, slug, row_id)`` answer row for a known qa slug,
+    scoped to the authenticated member (members only)."""
     if slug not in QA_SLUGS:
         logger.warning(f"Unknown qa prerequisite slug on save: {slug}")
         raise _slug_not_found(slug)
@@ -220,6 +225,7 @@ async def update_answer(
         row = (
             db.query(PrerequisiteAnswer)
             .filter(
+                PrerequisiteAnswer.user_id == current_user.id,
                 PrerequisiteAnswer.slug == slug,
                 PrerequisiteAnswer.row_id == row_id,
             )
@@ -228,6 +234,7 @@ async def update_answer(
 
         if row is None:
             row = PrerequisiteAnswer(
+                user_id=current_user.id,
                 slug=slug,
                 row_id=row_id,
                 answer=payload.answer,

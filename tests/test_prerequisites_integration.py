@@ -14,8 +14,9 @@ Covered flows:
   error that would trip the frontend load-error banner). The content
   round-trips exactly.
 - Answer flow (Requirements 2.5, 3.x): a member writes several ``cloudstore``
-  answers, reloads them, and a SECOND, distinct member (distinct JWT) reads the
-  SAME shared server-side map (answers are shared per-slug, not per-user).
+  answers, reloads them, and a SECOND, distinct member (distinct JWT) sees only
+  their OWN answers (answers are scoped per-user by ``(user_id, slug, row_id)``,
+  not shared per-slug).
 
 Validates: Requirements 2.2, 2.5, 3.1, 3.2, 3.3, 3.4, 3.5
 """
@@ -68,8 +69,8 @@ def member_user(db_session):
 def member_user_b(db_session):
     """Create a SECOND, distinct member user (distinct session / JWT).
 
-    Used to assert answers are shared server-side per slug rather than scoped
-    per user.
+    Used to assert answers are scoped per user rather than shared server-side
+    per slug.
     """
     user = User(
         email="member-b@prereq.integration.test",
@@ -203,15 +204,16 @@ class TestAnswerRoundTripAndSharing:
         assert get_resp.status_code == status.HTTP_200_OK
         assert get_resp.json()["answers"] == answers
 
-    def test_answers_are_shared_across_distinct_member_sessions(
+    def test_answers_are_isolated_across_distinct_member_sessions(
         self, client, member_user, member_user_b
     ):
-        """Member A writes answers; a distinct member B (distinct JWT) reads
-        the SAME shared server-side map.
+        """Member A writes answers; a distinct member B (distinct JWT) sees
+        only their OWN answers, never member A's.
 
-        Answers are keyed by (slug, row_id) server-side, not by user, so the
-        second session must observe the first session's writes. Requirement 2.5
-        + cross-session sharing.
+        Per the per-user-prerequisites-persistence feature, answers are keyed by
+        (user_id, slug, row_id). Each member's retrieval returns exactly their
+        own records and excludes every other member's records.
+        Requirements 2.1, 2.2, 2.3.
         """
         # Sanity: the two members are genuinely distinct sessions.
         assert member_user.id != member_user_b.id
@@ -229,36 +231,46 @@ class TestAnswerRoundTripAndSharing:
             )
             assert resp.status_code == status.HTTP_200_OK
 
-        # Member B reads and sees member A's answers.
+        # Member B has written nothing yet -> empty map (no leakage from A).
         b_get = client.get(
             "/api/prerequisites/cloudstore/answers",
             headers=_headers(member_user_b),
         )
         assert b_get.status_code == status.HTTP_200_OK
-        assert b_get.json()["answers"] == a_answers
+        assert b_get.json()["answers"] == {}
 
-        # And member B's write is likewise visible to member A (shared both ways).
+        # Member B writes their own answer under a row_id that A also used.
         b_put = client.put(
-            "/api/prerequisites/cloudstore/answers/cs-bucket-name",
-            json={"answer": "shared-bucket"},
+            "/api/prerequisites/cloudstore/answers/cs-region",
+            json={"answer": "b-only-value"},
             headers=_headers(member_user_b),
         )
         assert b_put.status_code == status.HTTP_200_OK
 
+        # Member B now sees only their own single answer.
+        b_get2 = client.get(
+            "/api/prerequisites/cloudstore/answers",
+            headers=_headers(member_user_b),
+        )
+        assert b_get2.status_code == status.HTTP_200_OK
+        assert b_get2.json()["answers"] == {"cs-region": "b-only-value"}
+
+        # Member A's answers are unchanged by member B's write.
         a_get = client.get(
             "/api/prerequisites/cloudstore/answers",
             headers=_headers(member_user),
         )
         assert a_get.status_code == status.HTTP_200_OK
-        assert a_get.json()["answers"] == {
-            **a_answers,
-            "cs-bucket-name": "shared-bucket",
-        }
+        assert a_get.json()["answers"] == a_answers
 
-    def test_second_member_can_overwrite_shared_answer(
+    def test_each_member_keeps_an_independent_answer_for_same_row(
         self, client, member_user, member_user_b
     ):
-        """A shared answer written by A can be updated in place by B (upsert)."""
+        """Two members writing the same (slug, row_id) keep independent rows.
+
+        A write by member B never overwrites member A's answer; each member's
+        retrieval reflects only their own last write. Requirement 1.4.
+        """
         client.put(
             "/api/prerequisites/cloudstore/answers/cs-region",
             json={"answer": "written-by-a"},
@@ -270,10 +282,17 @@ class TestAnswerRoundTripAndSharing:
             headers=_headers(member_user_b),
         )
 
-        get_resp = client.get(
+        a_get = client.get(
             "/api/prerequisites/cloudstore/answers",
             headers=_headers(member_user),
         )
-        assert get_resp.status_code == status.HTTP_200_OK
-        # Single row, last write wins (no duplicate rows).
-        assert get_resp.json()["answers"] == {"cs-region": "written-by-b"}
+        assert a_get.status_code == status.HTTP_200_OK
+        # Member A keeps their own value; B's write did not clobber it.
+        assert a_get.json()["answers"] == {"cs-region": "written-by-a"}
+
+        b_get = client.get(
+            "/api/prerequisites/cloudstore/answers",
+            headers=_headers(member_user_b),
+        )
+        assert b_get.status_code == status.HTTP_200_OK
+        assert b_get.json()["answers"] == {"cs-region": "written-by-b"}

@@ -133,23 +133,56 @@ class TestPrerequisiteContentModel:
 
 
 class TestPrerequisiteAnswerModel:
+    """Model behavior for the per-user answer schema.
+
+    Per the per-user-prerequisites-persistence feature, ``PrerequisiteAnswer``
+    now carries a non-null ``user_id`` FK and its uniqueness key is
+    ``(user_id, slug, row_id)`` rather than ``(slug, row_id)``. Each test seeds
+    a real owning user so the non-null FK is satisfied.
+    """
+
+    @staticmethod
+    def _make_member(db_session, email):
+        """Persist and return a member user to own the answers under test."""
+        user = User(
+            email=email,
+            password_hash="hashed_password",
+            first_name="Member",
+            last_name="Model",
+            role=UserRole.MEMBER,
+            is_email_verified=True,
+        )
+        db_session.add(user)
+        db_session.commit()
+        db_session.refresh(user)
+        return user
+
     def test_answer_defaults_to_empty_string(self, db_session):
         """answer defaults to "" when not provided (Requirement 2.5)."""
-        row = PrerequisiteAnswer(slug="cloudstore", row_id="cs-subnet-cidr")
+        user = self._make_member(db_session, "answer-default@prereq.test")
+        row = PrerequisiteAnswer(
+            user_id=user.id, slug="cloudstore", row_id="cs-subnet-cidr"
+        )
         db_session.add(row)
         db_session.commit()
         db_session.refresh(row)
         assert row.answer == ""
 
     def test_updated_at_set_on_insert(self, db_session):
-        row = PrerequisiteAnswer(slug="cloudstore", row_id="cs-1", answer="a")
+        user = self._make_member(db_session, "updated-insert@prereq.test")
+        row = PrerequisiteAnswer(
+            user_id=user.id, slug="cloudstore", row_id="cs-1", answer="a"
+        )
         db_session.add(row)
         db_session.commit()
         db_session.refresh(row)
         assert row.updated_at is not None
 
     def test_updated_at_changes_on_update(self, db_session):
-        row = PrerequisiteAnswer(slug="cloudstore", row_id="cs-1", answer="a")
+        user = self._make_member(db_session, "updated-update@prereq.test")
+        row = PrerequisiteAnswer(
+            user_id=user.id, slug="cloudstore", row_id="cs-1", answer="a"
+        )
         db_session.add(row)
         db_session.commit()
         db_session.refresh(row)
@@ -163,27 +196,66 @@ class TestPrerequisiteAnswerModel:
         assert row.updated_at >= first
         assert row.updated_at != first
 
-    def test_slug_row_id_unique_constraint(self, db_session):
-        """A second insert with the same (slug, row_id) raises IntegrityError."""
+    def test_user_slug_row_id_unique_constraint(self, db_session):
+        """A second insert with the same (user_id, slug, row_id) raises IntegrityError.
+
+        Uniqueness is now keyed per user, so a duplicate for the SAME owner is
+        rejected (Requirement 1.2).
+        """
+        user = self._make_member(db_session, "unique-key@prereq.test")
         db_session.add(
-            PrerequisiteAnswer(slug="cloudstore", row_id="cs-1", answer="a")
+            PrerequisiteAnswer(
+                user_id=user.id, slug="cloudstore", row_id="cs-1", answer="a"
+            )
         )
         db_session.commit()
 
         db_session.add(
-            PrerequisiteAnswer(slug="cloudstore", row_id="cs-1", answer="b")
+            PrerequisiteAnswer(
+                user_id=user.id, slug="cloudstore", row_id="cs-1", answer="b"
+            )
         )
         with pytest.raises(IntegrityError):
             db_session.commit()
         db_session.rollback()
 
-    def test_same_row_id_different_slug_allowed(self, db_session):
-        """The unique constraint is on the pair, not row_id alone."""
+    def test_same_slug_row_id_different_user_allowed(self, db_session):
+        """Two members may each hold their own answer for the same (slug, row_id).
+
+        The uniqueness key includes ``user_id``, so per-user rows for an
+        identical (slug, row_id) coexist (Requirements 1.1, 1.2).
+        """
+        user_a = self._make_member(db_session, "owner-a@prereq.test")
+        user_b = self._make_member(db_session, "owner-b@prereq.test")
         db_session.add(
-            PrerequisiteAnswer(slug="cloudstore", row_id="shared", answer="a")
+            PrerequisiteAnswer(
+                user_id=user_a.id, slug="cloudstore", row_id="shared", answer="a"
+            )
         )
         db_session.add(
-            PrerequisiteAnswer(slug="vcf", row_id="shared", answer="b")
+            PrerequisiteAnswer(
+                user_id=user_b.id, slug="cloudstore", row_id="shared", answer="b"
+            )
+        )
+        db_session.commit()  # must not raise
+        rows = db_session.query(PrerequisiteAnswer).filter(
+            PrerequisiteAnswer.slug == "cloudstore",
+            PrerequisiteAnswer.row_id == "shared",
+        ).all()
+        assert len(rows) == 2
+
+    def test_same_row_id_different_slug_allowed(self, db_session):
+        """The unique constraint is on the tuple, not row_id alone."""
+        user = self._make_member(db_session, "diff-slug@prereq.test")
+        db_session.add(
+            PrerequisiteAnswer(
+                user_id=user.id, slug="cloudstore", row_id="shared", answer="a"
+            )
+        )
+        db_session.add(
+            PrerequisiteAnswer(
+                user_id=user.id, slug="vcf", row_id="shared", answer="b"
+            )
         )
         db_session.commit()  # must not raise
         rows = db_session.query(PrerequisiteAnswer).filter(

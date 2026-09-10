@@ -1,0 +1,168 @@
+{
+  "pbtResults": {
+    "1.2 Write property test for getCurrentUser round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1789055543864
+    },
+    "1.3 Write property test for getCurrentUser null on unparseable input": {
+      "status": "passed",
+      "lastRunTimestamp": 1789055463353
+    },
+    "2.3 Write property test for header label precedence": {
+      "status": "passed",
+      "lastRunTimestamp": 1789055642024
+    }
+  },
+  "executionHistory": {
+    "1.1 Add `CurrentUser` type and `getCurrentUser()` to `frontend/src/services/authService.ts`": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055105931
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055114642
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055181868
+      }
+    ],
+    "2.1 Add pure `computeHeaderLabel(user)` helper to `frontend/src/components/Layout.tsx`": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055106058
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055205737
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055481227
+      }
+    ],
+    "2.2 Wire computed label into the shared top banner link": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055106156
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055487455
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055559948
+      }
+    ],
+    "3. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055106273
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055742216
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055794549
+      }
+    ],
+    "1. Add getCurrentUser getter and CurrentUser type to authService": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055181975
+      }
+    ],
+    "1.2 Write property test for getCurrentUser round-trip": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055187154
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055207145
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055559153
+      }
+    ],
+    "1.3 Write property test for getCurrentUser null on unparseable input": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055188069
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055207992
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055482310
+      }
+    ],
+    "2.3 Write property test for header label precedence": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055189494
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055565055
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055657318
+      }
+    ],
+    "2.4 Write example/edge-case DOM tests for banner wiring": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055190635
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055658380
+      },
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055738212
+      }
+    ],
+    "2. Add computeHeaderLabel helper and wire it into Layout": [
+      {
+        "executionId": "ed7db326-1453-41e7-91fa-6559a3d25f3e",
+        "chatSessionId": "sess_3a44cbb3-4260-4462-8a1e-f83ef8eb611a",
+        "timestamp": 1789055560048
+      }
+    ]
+  }
+}

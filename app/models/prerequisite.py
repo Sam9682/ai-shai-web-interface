@@ -48,10 +48,10 @@ class PrerequisiteContent(Base):
 
 
 class PrerequisiteAnswer(Base):
-    """Client answer for a prerequisite question, keyed by (slug, row_id)
+    """Client answer for a prerequisite question, scoped per user by (user_id, slug, row_id)
 
-    Validates Requirements 2.5:
-    - Persists a shared server-side answer per (slug, row_id) so a subsequent GET returns it
+    Validates Requirements 1.1, 1.2:
+    - Persists a per-user answer keyed by (user_id, slug, row_id)
     """
     __tablename__ = "prerequisite_answers"
 
@@ -60,6 +60,14 @@ class PrerequisiteAnswer(Base):
         primary_key=True,
         default=uuid.uuid4,
         server_default="gen_random_uuid()"
+    )
+
+    # Owner of this answer (the submitting Member). Non-null: every answer
+    # belongs to exactly one user.
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"),
+        index=True,
+        nullable=False
     )
 
     # Slug identifier
@@ -99,8 +107,11 @@ class PrerequisiteAnswer(Base):
 
     # Unique constraint and indexes
     __table_args__ = (
-        UniqueConstraint('slug', 'row_id', name='uq_prerequisite_answers_slug_row'),
-        Index('idx_prerequisite_answers_slug', 'slug'),
+        UniqueConstraint(
+            'user_id', 'slug', 'row_id',
+            name='uq_prerequisite_answers_user_slug_row'
+        ),
+        Index('idx_prerequisite_answers_user_slug', 'user_id', 'slug'),
     )
 
     def __repr__(self) -> str:
