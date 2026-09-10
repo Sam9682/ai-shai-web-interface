@@ -74,6 +74,25 @@ class User(Base):
         default=None
     )
     
+    # Two-factor authentication (2FA)
+    totp_secret: Mapped[str | None] = mapped_column(
+        String(64),
+        nullable=True,
+        default=None
+    )
+    totp_enabled: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default="false",
+        default=False
+    )
+    email_2fa_enabled: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default="false",
+        default=False
+    )
+    
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

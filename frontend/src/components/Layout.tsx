@@ -2,15 +2,43 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
+import type { CurrentUser } from '../services/authService';
 import { PREREQ_NAV_ITEMS } from './prerequisites/types';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
+/**
+ * Pure precedence rule for the shared top banner "OPCP" label:
+ *   email present (non-empty, trimmed) -> "OPCP (email)"        (Requirement 1.1)
+ *   else full name present             -> "OPCP (First Last)"   (Requirement 1.2)
+ *   else / no user                     -> "OPCP"                (Requirement 2.1)
+ * Missing/empty fields are guarded with `??` and `.trim()` so an empty user
+ * renders "OPCP" rather than "OPCP ()".
+ */
+export function computeHeaderLabel(user: CurrentUser | null): string {
+  if (!user) {
+    return 'OPCP'; // Requirement 2.1
+  }
+
+  const email = (user.email ?? '').trim();
+  if (email.length > 0) {
+    return `OPCP (${email})`; // Requirement 1.1
+  }
+
+  const fullName = `${(user.first_name ?? '').trim()} ${(user.last_name ?? '').trim()}`.trim();
+  if (fullName.length > 0) {
+    return `OPCP (${fullName})`; // Requirement 1.2
+  }
+
+  return 'OPCP'; // fallback: no usable identifier
+}
+
 export const Layout = ({ children }: LayoutProps) => {
   const isAuthenticated = authService.isAuthenticated();
   const isAdmin = authService.isAdmin();
+  const headerLabel = computeHeaderLabel(authService.getCurrentUser());
   const [showEventsMenu, setShowEventsMenu] = useState(false);
   const [showPrereqMenu, setShowPrereqMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,7 +59,7 @@ export const Layout = ({ children }: LayoutProps) => {
         <div className="max-w-7xl w-full mx-auto flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="text-lg font-bold text-white hover:no-underline">
-              OPCP
+              {headerLabel}
             </Link>
             {/* Desktop Menu */}
             <div className="hidden sm:flex items-center gap-1">
@@ -87,12 +115,24 @@ export const Layout = ({ children }: LayoutProps) => {
           {/* Desktop Auth */}
           <div className="hidden sm:flex items-center gap-2">
             {isAuthenticated ? (
-              <button
-                onClick={handleLogout}
-                className="px-4 py-1.5 text-sm font-medium bg-white/15 border border-white/30 text-white rounded hover:bg-white/25 transition-colors"
-              >
-                Déconnexion
-              </button>
+              <>
+                <Link
+                  to="/account/security"
+                  aria-label="Sécurité du compte"
+                  className="inline-flex items-center justify-center p-1.5 bg-white/15 border border-white/30 text-white rounded hover:bg-white/25 transition-colors hover:no-underline"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" aria-hidden="true">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-1.5 text-sm font-medium bg-white/15 border border-white/30 text-white rounded hover:bg-white/25 transition-colors"
+                >
+                  Déconnexion
+                </button>
+              </>
             ) : (
               <div className="flex gap-2">
                 <Link
@@ -167,12 +207,21 @@ export const Layout = ({ children }: LayoutProps) => {
             )}
             <div className="pt-3 mt-3 border-t border-gray-200">
               {isAuthenticated ? (
-                <button
-                  onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
-                  className="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded"
-                >
-                  Déconnexion
-                </button>
+                <>
+                  <Link
+                    to="/account/security"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline"
+                  >
+                    Sécurité du compte
+                  </Link>
+                  <button
+                    onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                    className="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded"
+                  >
+                    Déconnexion
+                  </button>
+                </>
               ) : (
                 <div className="space-y-2">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-[#000E9C] hover:bg-gray-50 rounded hover:no-underline">

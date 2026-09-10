@@ -166,6 +166,56 @@ class EmailService:
         """
         
         return self.send_email(to_email, subject, html_body, text_body)
+    
+    def send_2fa_code_email(
+        self,
+        to_email: str,
+        code: str,
+        user_name: str
+    ) -> bool:
+        """Send a two-factor authentication verification code to the user.
+        
+        Args:
+            to_email: User's email address
+            code: The verification code to send
+            user_name: User's first name for personalization
+            
+        Returns:
+            True if email was sent successfully, False otherwise
+            
+        Validates: Requirements 7.2
+        """
+        subject = "Votre code de vérification OPCP"
+        
+        html_body = f"""
+        <html>
+            <body>
+                <h2>Bonjour {user_name},</h2>
+                <p>Voici votre code de vérification pour vous connecter à votre compte OPCP :</p>
+                <p style="font-size: 24px; font-weight: bold; letter-spacing: 4px;">{code}</p>
+                <p>Ce code est valide pendant 5 minutes.</p>
+                <p>Si vous n'avez pas tenté de vous connecter, ignorez cet email.</p>
+                <p>Cordialement,<br>L'équipe OPCP</p>
+            </body>
+        </html>
+        """
+        
+        text_body = f"""
+        Bonjour {user_name},
+        
+        Voici votre code de vérification pour vous connecter à votre compte OPCP :
+        
+        {code}
+        
+        Ce code est valide pendant 5 minutes.
+        
+        Si vous n'avez pas tenté de vous connecter, ignorez cet email.
+        
+        Cordialement,
+        L'équipe OPCP
+        """
+        
+        return self.send_email(to_email, subject, html_body, text_body)
 
 
 # Global email service instance

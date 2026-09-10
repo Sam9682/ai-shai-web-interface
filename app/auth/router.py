@@ -14,9 +14,16 @@ from app.auth.schemas import (
     EmailVerificationResponse,
     PasswordResetRequest,
     PasswordResetConfirm,
+    ChangePasswordRequest,
+    TwoFactorStatusResponse,
+    TotpSetupResponse,
+    TotpConfirmRequest,
+    Login2FARequest,
+    Login2FAChallengeResponse,
     ErrorResponse
 )
 from app.auth.password import hash_password, verify_password
+from app.auth import totp
 from app.auth.token import create_access_token, verify_token
 from app.auth.rate_limiter import login_rate_limiter
 from app.auth.dependencies import get_current_user, get_token_from_request
@@ -24,6 +31,10 @@ from app.services.email import email_service
 from app.logging_config import logger
 from app.middleware.rate_limit import limiter
 from datetime import timedelta, datetime, timezone
+from typing import Optional, Union
+from uuid import UUID
+import hashlib
+import secrets
 
 router = APIRouter(prefix="/api/auth", tags=["authentication"])
 
@@ -144,11 +155,22 @@ async def register(
         )
 
 
+def _hash_2fa_code(code: str) -> str:
+    """Return the SHA-256 hex digest of a 2FA verification code.
+
+    Used to embed a hash of the emailed code in the short-lived challenge
+    token (email 2FA) and to compare the submitted code in ``/login/2fa``
+    without persisting the code server-side.
+    """
+    return hashlib.sha256(code.strip().encode("utf-8")).hexdigest()
+
+
 @router.post(
     "/login",
-    response_model=LoginResponse,
+    response_model=None,
     status_code=status.HTTP_200_OK,
     responses={
+        200: {"description": "Session token or 2FA challenge"},
         401: {"description": "Invalid credentials or email not verified"},
         429: {"description": "Too many login attempts"},
         400: {"description": "Invalid login data"}
@@ -159,7 +181,7 @@ async def login(
     request: Request,
     login_data: LoginRequest,
     db: Session = Depends(get_db)
-) -> LoginResponse:
+) -> Union[LoginResponse, Login2FAChallengeResponse]:
     """Authenticate user and generate JWT token.
     
     Validates Requirements 2.3, 2.4, 2.6, 9.6:
@@ -260,6 +282,50 @@ async def login(
                 )
             )
         
+        # Primary credentials validated. If the user has any 2FA method
+        # enabled, do NOT issue a session token yet — return a short-lived
+        # challenge instead (Requirements 7.1, 7.2). Backward compatible:
+        # users with no 2FA fall through to the unchanged token path (7.4).
+        methods: list[str] = []
+        if user.totp_enabled:
+            methods.append("totp")
+        if user.email_2fa_enabled:
+            methods.append("email")
+
+        if methods:
+            challenge_payload = {
+                "sub": str(user.id),
+                "type": "2fa_challenge",
+                "methods": methods,
+            }
+
+            # For the email method, generate a 6-digit code, email it, and
+            # embed only its hash in the challenge token (stateless second step).
+            if "email" in methods:
+                code = f"{secrets.randbelow(1_000_000):06d}"
+                challenge_payload["code_hash"] = _hash_2fa_code(code)
+                email_sent = email_service.send_2fa_code_email(
+                    user.email, code, user.first_name
+                )
+                if not email_sent:
+                    logger.warning(f"Failed to send 2FA code email to {user.email}")
+
+            challenge_token = create_access_token(
+                data=challenge_payload,
+                expires_delta=timedelta(minutes=5),
+            )
+
+            logger.info(
+                f"2FA challenge issued for user: {user.email} "
+                f"(ID: {user.id}, methods: {methods})"
+            )
+
+            return Login2FAChallengeResponse(
+                requires_2fa=True,
+                methods=methods,
+                challenge_token=challenge_token,
+            )
+
         # Generate JWT token (Requirement 2.3)
         access_token = create_access_token(
             data={
@@ -726,3 +792,588 @@ async def confirm_password_reset(
     logger.info(f"Password reset successful for user: {user.email}")
     
     return {"message": "Mot de passe réinitialisé avec succès."}
+
+
+@router.post("/change-password", status_code=status.HTTP_200_OK)
+@limiter.limit("10/hour")
+async def change_password(
+    request: Request,
+    change_data: ChangePasswordRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Change the currently authenticated user's password.
+
+    Validates Requirements 3.3, 3.4, 3.5, 3.6, 3.7:
+    - Verifies the submitted current password against the stored credential
+      before applying any change (3.3).
+    - On success, persists the new password hash as the user's credential (3.4)
+      and records the event in the audit log (3.6).
+    - On mismatch, rejects the request with an authentication error and leaves
+      the stored credential unchanged (3.5).
+    - Returns a French success message consumed by the security page (3.7).
+
+    Args:
+        change_data: The current and new password.
+        current_user: The authenticated user (from get_current_user).
+        db: Database session.
+
+    Returns:
+        A French success message.
+
+    Raises:
+        HTTPException 401: If the current password does not match.
+    """
+    try:
+        # Verify the current password before applying any change (Requirement 3.3, 3.5)
+        if not verify_password(change_data.current_password, current_user.password_hash):
+            logger.warning(f"Failed password change (invalid current password): {current_user.email}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ErrorResponse.create(
+                    code="INVALID_CREDENTIALS",
+                    message="Le mot de passe actuel est incorrect.",
+                    details={}
+                )
+            )
+
+        # Persist the new password (Requirement 3.4)
+        current_user.password_hash = hash_password(change_data.new_password)
+        current_user.updated_at = datetime.now(timezone.utc)
+
+        # Record the event in the audit log (Requirement 3.6)
+        audit_log = AuditLog(
+            admin_id=current_user.id,
+            action="PASSWORD_CHANGED",
+            target_type="user",
+            target_id=current_user.id,
+            details={"email": current_user.email}
+        )
+        db.add(audit_log)
+        db.commit()
+
+        logger.info(f"Password changed successfully for user: {current_user.email} (ID: {current_user.id})")
+
+        # French confirmation message (Requirement 3.7)
+        return {"message": "Mot de passe modifié avec succès."}
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Unexpected error during password change: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="INTERNAL_ERROR",
+                message="An unexpected error occurred during password change",
+                details={}
+            )
+        )
+
+
+@router.get(
+    "/2fa/status",
+    response_model=TwoFactorStatusResponse,
+    status_code=status.HTTP_200_OK,
+    responses={401: {"description": "Invalid or expired token"}},
+)
+async def two_factor_status(
+    current_user: User = Depends(get_current_user),
+) -> TwoFactorStatusResponse:
+    """Return the current 2FA configuration for the authenticated user.
+
+    Validates Requirements 8.1, 8.2:
+    - Reports whether TOTP and Email 2FA are enabled.
+    - Never exposes ``totp_secret``.
+
+    Args:
+        current_user: The authenticated user (from get_current_user).
+
+    Returns:
+        The enabled state of each 2FA method.
+    """
+    return TwoFactorStatusResponse(
+        totp_enabled=current_user.totp_enabled,
+        email_2fa_enabled=current_user.email_2fa_enabled,
+    )
+
+
+@router.post(
+    "/2fa/totp/setup",
+    response_model=TotpSetupResponse,
+    status_code=status.HTTP_200_OK,
+    responses={401: {"description": "Invalid or expired token"}},
+)
+@limiter.limit("10/hour")
+async def totp_setup(
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> TotpSetupResponse:
+    """Begin TOTP setup by generating and storing a pending secret.
+
+    Validates Requirements 5.1, 5.2:
+    - Generates a TOTP secret and stores it as pending on the user
+      (``totp_secret`` set, ``totp_enabled`` stays false until confirmed).
+    - Returns the secret and the otpauth provisioning URI for QR rendering.
+
+    Args:
+        current_user: The authenticated user (from get_current_user).
+        db: Database session.
+
+    Returns:
+        The pending secret and its otpauth provisioning URI.
+    """
+    try:
+        secret = totp.generate_secret()
+
+        # Store as pending: secret set, but TOTP not yet enabled (Requirement 5.1)
+        current_user.totp_secret = secret
+        current_user.updated_at = datetime.now(timezone.utc)
+        db.commit()
+
+        otpauth_uri = totp.provisioning_uri(secret, current_user.email)
+
+        logger.info(f"TOTP setup started for user: {current_user.email} (ID: {current_user.id})")
+
+        return TotpSetupResponse(secret=secret, otpauth_uri=otpauth_uri)
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Unexpected error during TOTP setup: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="INTERNAL_ERROR",
+                message="An unexpected error occurred during TOTP setup",
+                details={},
+            ),
+        )
+
+
+@router.post(
+    "/2fa/totp/confirm",
+    status_code=status.HTTP_200_OK,
+    responses={
+        400: {"description": "Invalid TOTP code"},
+        401: {"description": "Invalid or expired token"},
+    },
+)
+async def totp_confirm(
+    request: Request,
+    confirm_data: TotpConfirmRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Confirm a pending TOTP secret and enable TOTP 2FA.
+
+    Validates Requirements 5.3, 5.4, 5.5:
+    - Validates the submitted code against the stored (pending) secret (5.3).
+    - On valid code: enables TOTP, records ``TOTP_2FA_ENABLED`` audit (5.4).
+    - On invalid code: rejects with ``400 INVALID_2FA_CODE`` and leaves
+      TOTP disabled (5.5).
+
+    Args:
+        confirm_data: The submitted TOTP code.
+        current_user: The authenticated user (from get_current_user).
+        db: Database session.
+
+    Returns:
+        ``{ "totp_enabled": true }`` on success.
+
+    Raises:
+        HTTPException 400: If the submitted code is invalid.
+    """
+    try:
+        # Validate the submitted code against the pending secret (Requirement 5.3)
+        if not totp.verify_code(current_user.totp_secret, confirm_data.code):
+            logger.warning(f"Invalid TOTP confirmation code for user: {current_user.email}")
+            # Leave TOTP disabled (Requirement 5.5)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=ErrorResponse.create(
+                    code="INVALID_2FA_CODE",
+                    message="Le code de vérification est invalide.",
+                    details={},
+                ),
+            )
+
+        # Enable TOTP and persist (Requirement 5.4)
+        current_user.totp_enabled = True
+        current_user.updated_at = datetime.now(timezone.utc)
+
+        audit_log = AuditLog(
+            admin_id=current_user.id,
+            action="TOTP_2FA_ENABLED",
+            target_type="user",
+            target_id=current_user.id,
+            details={"email": current_user.email},
+        )
+        db.add(audit_log)
+        db.commit()
+
+        logger.info(f"TOTP 2FA enabled for user: {current_user.email} (ID: {current_user.id})")
+
+        return {"totp_enabled": True}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Unexpected error during TOTP confirmation: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="INTERNAL_ERROR",
+                message="An unexpected error occurred during TOTP confirmation",
+                details={},
+            ),
+        )
+
+
+@router.post(
+    "/2fa/totp/disable",
+    status_code=status.HTTP_200_OK,
+    responses={401: {"description": "Invalid or expired token"}},
+)
+async def totp_disable(
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Disable TOTP 2FA and clear the stored secret.
+
+    Validates Requirement 8.2 (management):
+    - Sets ``totp_enabled=false``, clears ``totp_secret``, and records a
+      ``TOTP_2FA_DISABLED`` audit event.
+
+    Args:
+        current_user: The authenticated user (from get_current_user).
+        db: Database session.
+
+    Returns:
+        ``{ "totp_enabled": false }``.
+    """
+    try:
+        current_user.totp_enabled = False
+        current_user.totp_secret = None
+        current_user.updated_at = datetime.now(timezone.utc)
+
+        audit_log = AuditLog(
+            admin_id=current_user.id,
+            action="TOTP_2FA_DISABLED",
+            target_type="user",
+            target_id=current_user.id,
+            details={"email": current_user.email},
+        )
+        db.add(audit_log)
+        db.commit()
+
+        logger.info(f"TOTP 2FA disabled for user: {current_user.email} (ID: {current_user.id})")
+
+        return {"totp_enabled": False}
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Unexpected error while disabling TOTP: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="INTERNAL_ERROR",
+                message="An unexpected error occurred while disabling TOTP",
+                details={},
+            ),
+        )
+
+
+@router.post(
+    "/2fa/email/enable",
+    status_code=status.HTTP_200_OK,
+    responses={401: {"description": "Invalid or expired token"}},
+)
+async def email_2fa_enable(
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Enable email-based 2FA for the authenticated user.
+
+    Validates Requirement 6.1:
+    - Sets ``email_2fa_enabled=true`` and records an ``EMAIL_2FA_ENABLED``
+      audit event.
+
+    Args:
+        current_user: The authenticated user (from get_current_user).
+        db: Database session.
+
+    Returns:
+        ``{ "email_2fa_enabled": true }``.
+    """
+    try:
+        current_user.email_2fa_enabled = True
+        current_user.updated_at = datetime.now(timezone.utc)
+
+        audit_log = AuditLog(
+            admin_id=current_user.id,
+            action="EMAIL_2FA_ENABLED",
+            target_type="user",
+            target_id=current_user.id,
+            details={"email": current_user.email},
+        )
+        db.add(audit_log)
+        db.commit()
+
+        logger.info(f"Email 2FA enabled for user: {current_user.email} (ID: {current_user.id})")
+
+        return {"email_2fa_enabled": True}
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Unexpected error while enabling email 2FA: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="INTERNAL_ERROR",
+                message="An unexpected error occurred while enabling email 2FA",
+                details={},
+            ),
+        )
+
+
+@router.post(
+    "/2fa/email/disable",
+    status_code=status.HTTP_200_OK,
+    responses={401: {"description": "Invalid or expired token"}},
+)
+async def email_2fa_disable(
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Disable email-based 2FA for the authenticated user.
+
+    Supports Requirement 6.1 (management):
+    - Sets ``email_2fa_enabled=false`` and records an ``EMAIL_2FA_DISABLED``
+      audit event.
+
+    Args:
+        current_user: The authenticated user (from get_current_user).
+        db: Database session.
+
+    Returns:
+        ``{ "email_2fa_enabled": false }``.
+    """
+    try:
+        current_user.email_2fa_enabled = False
+        current_user.updated_at = datetime.now(timezone.utc)
+
+        audit_log = AuditLog(
+            admin_id=current_user.id,
+            action="EMAIL_2FA_DISABLED",
+            target_type="user",
+            target_id=current_user.id,
+            details={"email": current_user.email},
+        )
+        db.add(audit_log)
+        db.commit()
+
+        logger.info(f"Email 2FA disabled for user: {current_user.email} (ID: {current_user.id})")
+
+        return {"email_2fa_enabled": False}
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Unexpected error while disabling email 2FA: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="INTERNAL_ERROR",
+                message="An unexpected error occurred while disabling email 2FA",
+                details={},
+            ),
+        )
+
+
+@router.post(
+    "/login/2fa",
+    response_model=LoginResponse,
+    status_code=status.HTTP_200_OK,
+    responses={
+        401: {"description": "Invalid challenge token or verification code"},
+        429: {"description": "Too many attempts"},
+    },
+)
+@limiter.limit("20/hour")
+async def login_2fa(
+    request: Request,
+    login_data: Login2FARequest,
+    db: Session = Depends(get_db),
+) -> LoginResponse:
+    """Complete the second (2FA) step of login and issue a session token.
+
+    Validates Requirements 7.1, 7.2, 7.3:
+    - Verifies the short-lived challenge token (``type == "2fa_challenge"``,
+      not expired) and resolves the user by ``sub``. Invalid/expired token →
+      ``401 INVALID_TOKEN`` with no session token.
+    - Validates the submitted code: TOTP is checked against the user's stored
+      secret; the emailed code is checked against the ``code_hash`` embedded in
+      the challenge token. A valid TOTP OR a matching email code is accepted.
+    - Invalid code → ``401 INVALID_2FA_CODE``, no token,
+      ``AuditLog(action="LOGIN_2FA_FAILED")`` (7.3).
+    - Valid code → issue the normal session token (same claims/shape as the
+      no-2FA login path), reset the login rate limiter, and record
+      ``AuditLog(action="LOGIN_SUCCESS")`` (7.1, 7.2).
+
+    Args:
+        login_data: The challenge token and the submitted verification code.
+        db: Database session.
+
+    Returns:
+        LoginResponse with a session access token on success.
+
+    Raises:
+        HTTPException 401: If the challenge token or code is invalid.
+    """
+    try:
+        # Verify the challenge token (not expired, correct type)
+        payload = verify_token(login_data.challenge_token)
+        if not payload or payload.get("type") != "2fa_challenge":
+            logger.warning("2FA login attempt with invalid/expired challenge token")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ErrorResponse.create(
+                    code="INVALID_TOKEN",
+                    message="Le jeton de vérification est invalide ou expiré.",
+                    details={},
+                ),
+            )
+
+        # Resolve the user by subject claim
+        user_id = payload.get("sub")
+        if not user_id:
+            logger.warning("2FA challenge token missing subject claim")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ErrorResponse.create(
+                    code="INVALID_TOKEN",
+                    message="Le jeton de vérification est invalide.",
+                    details={},
+                ),
+            )
+
+        try:
+            user_uuid = UUID(user_id)
+        except (ValueError, AttributeError):
+            logger.warning(f"Invalid user ID in 2FA challenge token: {user_id}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ErrorResponse.create(
+                    code="INVALID_TOKEN",
+                    message="Le jeton de vérification est invalide.",
+                    details={},
+                ),
+            )
+
+        user = db.query(User).filter(User.id == user_uuid).first()
+        if not user:
+            logger.warning(f"User not found for 2FA challenge token: {user_id}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ErrorResponse.create(
+                    code="INVALID_TOKEN",
+                    message="Le jeton de vérification est invalide.",
+                    details={},
+                ),
+            )
+
+        # Validate the submitted code. Accept a valid TOTP code OR a matching
+        # emailed code, based on which methods the challenge covers.
+        methods = payload.get("methods") or []
+        code_valid = False
+
+        if user.totp_enabled and "totp" in methods:
+            if totp.verify_code(user.totp_secret, login_data.code):
+                code_valid = True
+
+        if not code_valid and user.email_2fa_enabled and "email" in methods:
+            code_hash = payload.get("code_hash")
+            if code_hash and secrets.compare_digest(
+                _hash_2fa_code(login_data.code), code_hash
+            ):
+                code_valid = True
+
+        if not code_valid:
+            # Invalid second-step code (Requirement 7.3): no token issued.
+            audit_log = AuditLog(
+                admin_id=user.id,
+                action="LOGIN_2FA_FAILED",
+                target_type="user",
+                target_id=user.id,
+                details={"email": user.email},
+            )
+            db.add(audit_log)
+            db.commit()
+
+            logger.warning(f"Invalid 2FA code for user: {user.email} (ID: {user.id})")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ErrorResponse.create(
+                    code="INVALID_2FA_CODE",
+                    message="Le code de vérification est invalide.",
+                    details={},
+                ),
+            )
+
+        # Valid code: issue the normal session token (same shape/claims as the
+        # no-2FA login path) (Requirements 7.1, 7.2).
+        access_token = create_access_token(
+            data={
+                "sub": str(user.id),
+                "email": user.email,
+                "role": user.role.value,
+            }
+        )
+
+        # Reset rate limiter on successful login
+        login_rate_limiter.reset(user.email)
+
+        audit_log = AuditLog(
+            admin_id=user.id,
+            action="LOGIN_SUCCESS",
+            target_type="user",
+            target_id=user.id,
+            details={"email": user.email, "method": "2fa"},
+        )
+        db.add(audit_log)
+        db.commit()
+
+        logger.info(f"Successful 2FA login: {user.email} (ID: {user.id})")
+
+        return LoginResponse(
+            access_token=access_token,
+            token_type="bearer",
+            user={
+                "id": str(user.id),
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "role": user.role.value,
+                "is_email_verified": user.is_email_verified,
+            },
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Unexpected error during 2FA login: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="INTERNAL_ERROR",
+                message="An unexpected error occurred during 2FA login",
+                details={},
+            ),
+        )

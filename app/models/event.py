@@ -69,6 +69,12 @@ class Event(Base):
         nullable=False
     )
     
+    # Assignment relationship (private-event owner). Nullable => public event.
+    assigned_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=True
+    )
+    
     # Event status
     status: Mapped[EventStatus] = mapped_column(
         SQLEnum(EventStatus, name="event_status", native_enum=False),
@@ -92,10 +98,16 @@ class Event(Base):
     # Indexes for efficient queries
     __table_args__ = (
         Index('idx_events_start_date', 'start_date'),
+        Index('idx_events_assigned_user', 'assigned_user_id'),
     )
     
     # Relationships
     creator: Mapped["User"] = relationship("User", foreign_keys=[created_by], overlaps="events")
+    # Assigned user (private-event owner). Explicit foreign_keys disambiguates from the creator FK.
+    assigned_user: Mapped["User | None"] = relationship(
+        "User",
+        foreign_keys=[assigned_user_id]
+    )
     registrations: Mapped[list["EventRegistration"]] = relationship(
         "EventRegistration",
         back_populates="event",

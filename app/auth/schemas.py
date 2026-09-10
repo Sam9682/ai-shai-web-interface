@@ -146,3 +146,85 @@ class PasswordResetConfirm(BaseModel):
         if not re.search(r'\d', v):
             raise ValueError('Password must contain at least one number')
         return v
+
+
+class ChangePasswordRequest(BaseModel):
+    """Request schema for changing the current user's password.
+
+    Validates Requirements 3.2, 3.4:
+    - Requires the current password
+    - New password must meet complexity requirements (reuses the same
+      validator as PasswordResetConfirm)
+    """
+    current_password: str = Field(min_length=1)
+    new_password: str = Field(min_length=8, max_length=72)
+
+    @field_validator('new_password')
+    @classmethod
+    def validate_password_complexity(cls, v: str) -> str:
+        if len(v) < 8:
+            raise ValueError('Password must be at least 8 characters long')
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('Password must contain at least one uppercase letter')
+        if not re.search(r'[a-z]', v):
+            raise ValueError('Password must contain at least one lowercase letter')
+        if not re.search(r'\d', v):
+            raise ValueError('Password must contain at least one number')
+        return v
+
+
+class TwoFactorStatusResponse(BaseModel):
+    """Response schema for the two-factor status endpoint.
+
+    Validates Requirement 8.2: reports whether each 2FA method is enabled.
+    Never exposes the TOTP secret.
+    """
+    totp_enabled: bool
+    email_2fa_enabled: bool
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class TotpSetupResponse(BaseModel):
+    """Response schema for starting TOTP setup.
+
+    Validates Requirements 5.1, 5.2: returns the pending secret and the
+    otpauth provisioning URI used to render a QR code.
+    """
+    secret: str
+    otpauth_uri: str
+
+
+class TotpConfirmRequest(BaseModel):
+    """Request schema for confirming a pending TOTP secret.
+
+    Validates Requirement 5.3: the user submits a code to prove possession.
+    """
+    code: str = Field(min_length=1, max_length=10)
+
+
+class Login2FARequest(BaseModel):
+    """Request schema for the second-step 2FA login verification.
+
+    Validates Requirements 7.1, 7.2: carries the challenge token and the
+    submitted verification code.
+    """
+    challenge_token: str = Field(min_length=1)
+    code: str = Field(min_length=1, max_length=10)
+
+
+class Login2FAChallengeResponse(BaseModel):
+    """Response schema returned by login when a 2FA challenge is required.
+
+    Validates Requirements 7.1, 7.2: signals the client to prompt for a
+    second-step code and lists the available methods.
+    """
+    requires_2fa: bool = True
+    methods: list[str]
+    challenge_token: str
+
+    model_config = {
+        "from_attributes": True
+    }

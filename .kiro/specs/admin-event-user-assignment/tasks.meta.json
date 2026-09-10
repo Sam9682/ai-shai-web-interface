@@ -1,0 +1,104 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Add `assigned_user_id` FK column and relationship to the Event model": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055814881
+      },
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055827432
+      }
+    ],
+    "1.2 Create the Alembic migration for the new column": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055815148
+      }
+    ],
+    "2.1 Add `assigned_user_id` to the event request/response schemas": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055815422
+      }
+    ],
+    "3.1 Add the `_validate_assigned_user` helper": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055815686
+      }
+    ],
+    "3.2 Wire assignment into the create endpoint": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055815908
+      }
+    ],
+    "4.1 Implement set/change/clear logic on the update endpoint": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055816108
+      }
+    ],
+    "5.1 Add role-aware visibility filtering to the list endpoint": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055816298
+      }
+    ],
+    "6. Checkpoint - Ensure all backend tests pass": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055816500
+      }
+    ],
+    "7.1 Extend event service interfaces with `assigned_user_id`": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055816709
+      },
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055828450
+      }
+    ],
+    "8.1 Create the `UserPicker` component with a pure `filterUsers` helper": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055816919
+      },
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055829768
+      }
+    ],
+    "9.1 Wire `UserPicker` into both create and edit modals": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055817309
+      }
+    ],
+    "10. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
+        "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
+        "timestamp": 1789055817605
+      }
+    ]
+  }
+}

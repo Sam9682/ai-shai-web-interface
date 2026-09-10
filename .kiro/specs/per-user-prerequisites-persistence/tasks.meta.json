@@ -1,0 +1,288 @@
+{
+  "pbtResults": {
+    "2.2 Write property test for retrieval isolation": {
+      "status": "passed",
+      "lastRunTimestamp": 1789029843067
+    },
+    "3.2 Write property test for save ownership": {
+      "status": "passed",
+      "lastRunTimestamp": 1789029853580
+    },
+    "3.3 Write property test for upsert idempotency": {
+      "status": "passed",
+      "lastRunTimestamp": 1789030011605
+    },
+    "6.1 Write property test for shared static content": {
+      "status": "passed",
+      "lastRunTimestamp": 1789036922210
+    }
+  },
+  "executionHistory": {
+    "1. Update the `PrerequisiteAnswer` model for per-user ownership": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029147290
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029156431
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029608834
+      }
+    ],
+    "2.1 Scope `get_answers` to the authenticated user": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029147482
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029619044
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029685302
+      }
+    ],
+    "3.1 Scope the upsert lookup and set `user_id` on insert": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029147639
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029620357
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029686306
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029147837
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789039980427
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789040288761
+      }
+    ],
+    "5.1 Write the per-user answers migration revision": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029147929
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036726828
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036820463
+      }
+    ],
+    "6.2 Verify no frontend signature changes are required": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029148002
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036831478
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789039975808
+      }
+    ],
+    "7. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029148079
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789040292780
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789040406529
+      }
+    ],
+    "2. Update the router read path (`get_answers`)": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029685399
+      }
+    ],
+    "3. Update the router write path (`update_answer`)": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029686420
+      }
+    ],
+    "2.2 Write property test for retrieval isolation": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029696284
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029722161
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036715317
+      }
+    ],
+    "3.2 Write property test for save ownership": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029697656
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029723602
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036716658
+      }
+    ],
+    "3.3 Write property test for upsert idempotency": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029699016
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029725045
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036718101
+      }
+    ],
+    "3.4 Write property test for cross-member isolation on save": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029700409
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029725969
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036819154
+      }
+    ],
+    "3.5 Write example unit tests for authorization and auth failures": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029701805
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029727297
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036719511
+      }
+    ],
+    "5.2 Write migration example tests": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029703210
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036832968
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789039973381
+      }
+    ],
+    "6.1 Write property test for shared static content": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789029704281
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036834179
+      },
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789039974761
+      }
+    ],
+    "5. Create the Alembic migration": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789036820569
+      }
+    ],
+    "6. Confirm static content sharing and frontend stability": [
+      {
+        "executionId": "a5fa5bff-4750-4c7b-a157-8db70a411c47",
+        "chatSessionId": "sess_7ff00096-3817-44ce-b228-78e3e5ec5ec7",
+        "timestamp": 1789039975907
+      }
+    ]
+  }
+}

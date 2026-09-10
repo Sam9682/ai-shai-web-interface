@@ -69,13 +69,13 @@ export const HomePage = () => {
           />
         </div>
         <p className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed mb-4">
-          Ce site a pour objet de promouvoir la compréhension, l'usage, la recherche appliquée et le développement de l'intelligence artificielle, notamment par :
+          Ce site a pour objet de proposer un espace de partage entre les clients d'OPCP et OVH/PSMC, notamment par :
         </p>
         <ul className="text-base text-gray-600 max-w-3xl mx-auto space-y-1 list-disc list-inside text-left">
-          <li>la compréhension de l'impact majeur sur l'évolution de la société,</li>
-          <li>des actions de sensibilisation et de vulgarisation,</li>
-          <li>des événements (conférences, rencontres, hackathons),</li>
-          <li>l'accès à des outils, dont la plateforme <a href="https://opcp-psmc.com" target="_blank" rel="noopener noreferrer" className="text-[#4949FF] hover:underline font-medium">opcp-psmc.com</a></li>
+          <li>les pré-requis à l'installation d'OPCP (réseau, cablage, OS...),</li>
+          <li>partage des documents essentiels à l'utilisation d'OPCP,</li>
+          <li>un forum de discussions sur OPCP et Openstack,</li>
+          <li>des bots genAI comme Shai et un RAG OPCP  <a href="https://opcp-psmc.com" target="_blank" rel="noopener noreferrer" className="text-[#4949FF] hover:underline font-medium">opcp-psmc.com</a></li>
         </ul>
         <div className="mt-8 flex justify-center gap-4 flex-wrap">
           <a href="/register" className="btn-primary">
@@ -92,27 +92,28 @@ export const HomePage = () => {
         <div className="card p-6">
           <h2 className="text-xl font-bold text-[#000E9C] mb-3">Notre Mission</h2>
           <p className="text-gray-600 text-sm leading-relaxed">
-            Créer un espace d'échange et de collaboration pour nos membres, 
-            pour prendre conscience de l'impact de l'IA sur notre société.
-            Ce site web a été spécifié, construit et déployé en moins de 24h pour un coût de 1€.
+            Créer un espace d'échange et de collaboration pour les clients OPCP, 
+            en intéraction avec des Cloud Architectes de l'équipe PSMC d'OVH.
+            Ce site web a été spécifié, construit et déployé par Shai Agent OVH.
           </p>
         </div>
         
         <div className="card p-6">
           <h2 className="text-xl font-bold text-[#000E9C] mb-3">Nos Activités</h2>
           <p className="text-gray-600 text-sm leading-relaxed">
-            Utilisation d'une plateforme de test pour du 
-            déploiement d'application web par des agents IA sur <a href="https://opcp-psmc.com" target="_blank" rel="noopener noreferrer" className="text-[#4949FF] hover:underline font-medium">opcp-psmc.com</a>.
-            Ce site est déployé par des IA sur la plateforme.
+            Enregistrer et garder toutes les étapes de l'installation de l'OPCP.
+            Mettre à jour le RAG avec toutes les dernières informations.
+            Récupérer les remarques/demandes client pour faire évolution OPCP.
           </p>
         </div>
         
         <div className="card p-6">
           <h2 className="text-xl font-bold text-[#000E9C] mb-3">Rejoignez-nous</h2>
           <p className="text-gray-600 text-sm leading-relaxed">
-            Devenez membre et participez activement à la vie de l'association. 
-            Ensemble, impulsons la transformation de la société
-            en commençant par l'Éducation et la Formation.
+            Devenez membre et participez activement à l'évolution. 
+            Demandez de nouvelles fonctionnalités sur OPCP !
+            Consultez les dernières documents.
+            <a href="https://opcp-psmc.com" target="_blank" rel="noopener noreferrer" className="text-[#4949FF] hover:underline font-medium">opcp-psmc.com</a>
           </p>
         </div>
       </div>
@@ -239,7 +240,7 @@ export const HomePage = () => {
           <div className="bg-gray-50 p-5 rounded-lg">
             <h3 className="font-semibold text-gray-900 mb-2 text-sm">La Team PSMC OVH</h3>
             <p className="text-gray-600 text-sm">
-              Samuel LEPETRE, Cloud Architect OPCP PSMC
+              Contact: Samuel LEPETRE, Cloud Architect OPCP PSMC
             </p>
           </div>
         </div>

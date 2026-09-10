@@ -20,6 +20,7 @@ import { CloudStorePage } from './pages/CloudStorePage';
 import { VcfPage } from './pages/VcfPage';
 import { NetworkFluxPage } from './pages/NetworkFluxPage';
 import { DocumentsPage } from './pages/DocumentsPage';
+import { SecurityPage } from './pages/SecurityPage';
 
 function App() {
   return (
@@ -144,6 +145,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <DocumentsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/account/security"
+                  element={
+                    <ProtectedRoute>
+                      <SecurityPage />
                     </ProtectedRoute>
                   }
                 />
