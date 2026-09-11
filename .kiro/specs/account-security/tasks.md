@@ -169,7 +169,7 @@ This plan implements account security management across the FastAPI backend and 
     - Header link rendering + navigation target (1.1, 1.2, 1.4); route registration + unauthenticated redirect (2.1, 2.2)
     - _Requirements: 1.1, 1.2, 1.4, 2.1, 2.2_
 
-- [-] 11. Final checkpoint - Ensure all tests pass
+- [x] 11. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
