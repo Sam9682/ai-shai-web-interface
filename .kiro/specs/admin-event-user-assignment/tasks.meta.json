@@ -11,6 +11,21 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055827432
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061985820
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061994959
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789065629181
       }
     ],
     "1.2 Create the Alembic migration for the new column": [
@@ -18,6 +33,16 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055815148
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061985910
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789065636888
       }
     ],
     "2.1 Add `assigned_user_id` to the event request/response schemas": [
@@ -25,6 +50,16 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055815422
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061985993
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789065638043
       }
     ],
     "3.1 Add the `_validate_assigned_user` helper": [
@@ -32,6 +67,11 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055815686
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061986084
       }
     ],
     "3.2 Wire assignment into the create endpoint": [
@@ -39,6 +79,11 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055815908
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061986184
       }
     ],
     "4.1 Implement set/change/clear logic on the update endpoint": [
@@ -46,6 +91,11 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055816108
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061986268
       }
     ],
     "5.1 Add role-aware visibility filtering to the list endpoint": [
@@ -53,6 +103,11 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055816298
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061986356
       }
     ],
     "6. Checkpoint - Ensure all backend tests pass": [
@@ -60,6 +115,11 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055816500
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061986442
       }
     ],
     "7.1 Extend event service interfaces with `assigned_user_id`": [
@@ -72,6 +132,21 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055828450
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061986529
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061996829
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789065630460
       }
     ],
     "8.1 Create the `UserPicker` component with a pure `filterUsers` helper": [
@@ -84,6 +159,21 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055829768
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061986628
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061997330
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789065631771
       }
     ],
     "9.1 Wire `UserPicker` into both create and edit modals": [
@@ -91,6 +181,11 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055817309
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061986720
       }
     ],
     "10. Final checkpoint - Ensure all tests pass": [
@@ -98,6 +193,25 @@
         "executionId": "301c9573-ff21-46cc-b002-a58129851e70",
         "chatSessionId": "sess_1faac4aa-91a2-44a0-9255-586a5f19be4b",
         "timestamp": 1789055817605
+      },
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789061986814
+      }
+    ],
+    "7. Frontend event service": [
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789065630560
+      }
+    ],
+    "8. Frontend user picker component": [
+      {
+        "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
+        "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
+        "timestamp": 1789065631875
       }
     ]
   }

@@ -7,13 +7,13 @@ Add an optional per-event user assignment across three layers. The plan works bo
 ## Tasks
 
 - [ ] 1. Data model and migration
-  - [ ] 1.1 Add `assigned_user_id` FK column and relationship to the Event model
+  - [x] 1.1 Add `assigned_user_id` FK column and relationship to the Event model
     - In `app/models/event.py`, add a nullable `assigned_user_id: Mapped[uuid.UUID | None]` column with `ForeignKey("users.id")`
     - Add an `assigned_user` relationship with explicit `foreign_keys=[assigned_user_id]` to disambiguate from the existing `creator` FK
     - Add `Index('idx_events_assigned_user', 'assigned_user_id')` to `__table_args__`
     - _Requirements: 5.1_
 
-  - [ ] 1.2 Create the Alembic migration for the new column
+  - [-] 1.2 Create the Alembic migration for the new column
     - Add revision file under `migrations/versions/` following the `YYYYMMDD_HHMM_<slug>_<desc>.py` convention
     - Set `revision = 'add_event_assigned_user'` and `down_revision = 'per_user_prerequisite_answers'`
     - `upgrade()`: add nullable `assigned_user_id` UUID column, create FK `fk_events_assigned_user_id_users`, create index `idx_events_assigned_user`
@@ -21,18 +21,18 @@ Add an optional per-event user assignment across three layers. The plan works bo
     - _Requirements: 5.1, 5.3_
 
 - [ ] 2. Backend schemas
-  - [ ] 2.1 Add `assigned_user_id` to the event request/response schemas
+  - [-] 2.1 Add `assigned_user_id` to the event request/response schemas
     - In `app/events/schemas.py`, add `assigned_user_id: Optional[UUID]` to `EventCreateRequest` and `EventUpdateRequest`
     - Add `assigned_user_id: Optional[UUID] = None` to `EventResponse`
     - Document on the update field that an explicit `null` clears the assignment (relies on `exclude_unset` in the handler)
     - _Requirements: 1.1, 1.2, 2.1, 2.2, 5.2_
 
 - [ ] 3. Backend validation and create endpoint
-  - [ ] 3.1 Add the `_validate_assigned_user` helper
+  - [~] 3.1 Add the `_validate_assigned_user` helper
     - In `app/events/router.py`, add a helper that returns early on `None` and raises `400 INVALID_ASSIGNED_USER` when the id does not match an existing user
     - _Requirements: 1.4, 2.3_
 
-  - [ ] 3.2 Wire assignment into the create endpoint
+  - [~] 3.2 Wire assignment into the create endpoint
     - In `POST /api/events`, call `_validate_assigned_user(db, event_data.assigned_user_id)` before constructing the `Event` (so failure prevents creation)
     - Pass `assigned_user_id=event_data.assigned_user_id` into the `Event(...)` constructor
     - Ensure the returned `EventResponse` includes `assigned_user_id`
@@ -53,7 +53,7 @@ Add an optional per-event user assignment across three layers. The plan works bo
     - _Requirements: 1.3_
 
 - [ ] 4. Backend update endpoint
-  - [ ] 4.1 Implement set/change/clear logic on the update endpoint
+  - [~] 4.1 Implement set/change/clear logic on the update endpoint
     - In `PUT /api/events/{event_id}`, compute `provided = event_data.model_dump(exclude_unset=True)`
     - When `"assigned_user_id" in provided` and the value is non-null, call `_validate_assigned_user` before mutating
     - Assign `event.assigned_user_id = provided["assigned_user_id"]` only when the key is present (UUID sets/changes, `None` clears); omission leaves it unchanged
@@ -70,7 +70,7 @@ Add an optional per-event user assignment across three layers. The plan works bo
     - _Requirements: 2.4_
 
 - [ ] 5. Backend list endpoint visibility
-  - [ ] 5.1 Add role-aware visibility filtering to the list endpoint
+  - [~] 5.1 Add role-aware visibility filtering to the list endpoint
     - In `GET /api/events`, preserve existing `start_date >= now`, `status == SCHEDULED`, and ordering filters
     - For non-administrators, add `or_(Event.assigned_user_id.is_(None), Event.assigned_user_id == current_user.id)`
     - For administrators, apply no assignment filter
@@ -92,17 +92,17 @@ Add an optional per-event user assignment across three layers. The plan works bo
     - **Validates: Requirements 5.2, 5.3**
     - Minimum 100 iterations; assert every returned event's `assigned_user_id` equals the stored value (null when unassigned)
 
-- [ ] 6. Checkpoint - Ensure all backend tests pass
+- [~] 6. Checkpoint - Ensure all backend tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Frontend event service
-  - [ ] 7.1 Extend event service interfaces with `assigned_user_id`
+- [x] 7. Frontend event service
+  - [x] 7.1 Extend event service interfaces with `assigned_user_id`
     - In `frontend/src/services/eventService.ts`, add `assigned_user_id: string | null` to `Event`
     - Add `assigned_user_id?: string | null` to `CreateEventRequest` and `UpdateEventRequest` (null clears on update)
     - _Requirements: 5.2_
 
-- [ ] 8. Frontend user picker component
-  - [ ] 8.1 Create the `UserPicker` component with a pure `filterUsers` helper
+- [x] 8. Frontend user picker component
+  - [x] 8.1 Create the `UserPicker` component with a pure `filterUsers` helper
     - Add `frontend/src/components/UserPicker.tsx` exporting a `filterUsers(users, query)` pure helper (case-insensitive match on first name, last name, email; empty query returns all)
     - Implement the controlled `UserPicker` (props: `users`, `value`, `onChange`, optional `label`, `placeholder`) with a text input, filtered dropdown, selected-user display, and an "×" clear control that calls `onChange(null)`
     - Follow page styling: Tailwind, brand colors `#000E9C` / `#4949FF`, focus ring `focus:ring-[#4949FF]`, French labels
@@ -119,7 +119,7 @@ Add an optional per-event user assignment across three layers. The plan works bo
     - _Requirements: 4.1, 4.3, 4.5_
 
 - [ ] 9. Frontend admin events page wiring
-  - [ ] 9.1 Wire `UserPicker` into both create and edit modals
+  - [~] 9.1 Wire `UserPicker` into both create and edit modals
     - In `frontend/src/pages/AdminEventsPage.tsx`, add `assigned_user_id: string | null` to shared `formData` (init `null`)
     - Load the user list once via `adminService.listUsers()` and hold `members` in state
     - Render `<UserPicker>` in both modals bound to `formData.assigned_user_id`
@@ -132,7 +132,7 @@ Add an optional per-event user assignment across three layers. The plan works bo
     - **Validates: Requirements 4.2, 4.3**
     - Minimum 100 iterations; generate events (assigned/public), assert the picker preselects the assigned user or shows none for public events
 
-- [ ] 10. Final checkpoint - Ensure all tests pass
+- [~] 10. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
