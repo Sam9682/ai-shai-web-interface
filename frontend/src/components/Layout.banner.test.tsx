@@ -3,6 +3,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Layout } from './Layout';
+import { LanguageProvider } from '../hooks/useLanguage';
 import { authService } from '../services/authService';
 
 // Example / edge-case DOM tests for the shared top-banner "OPCP" link wiring.
@@ -20,12 +21,15 @@ import { authService } from '../services/authService';
 // Validates: Requirements 3.1, 4.2
 
 function renderLayout() {
+  // Layout calls useTranslation(), so wrap it in a LanguageProvider.
   return render(
-    <MemoryRouter>
-      <Layout>
-        <div>content</div>
-      </Layout>
-    </MemoryRouter>,
+    <LanguageProvider>
+      <MemoryRouter>
+        <Layout>
+          <div>content</div>
+        </Layout>
+      </MemoryRouter>
+    </LanguageProvider>,
   );
 }
 

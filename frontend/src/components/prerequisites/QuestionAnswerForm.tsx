@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PREREQ_MARKERS } from './types';
 import type { QuestionFormConfig } from './types';
+import { useTranslation } from '../../hooks/useLanguage';
 import { authService } from '../../services/authService';
 import { prerequisitesService } from '../../services/prerequisitesService';
 
@@ -20,21 +21,24 @@ const READONLY_FIELD_CLASS =
  * Visible key mapping the mandatory/optional markers to their icon + label so
  * the per-row markers stay consistent with the shared legend.
  */
-const MarkerLegend = () => (
-  <div className="mb-6 rounded border border-gray-200 bg-gray-50 p-3">
-    <span className="mr-3 text-sm font-medium text-gray-700">Légende :</span>
-    <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
-      {(Object.keys(PREREQ_MARKERS) as (keyof typeof PREREQ_MARKERS)[]).map((key) => (
-        <span key={key} className="text-sm text-gray-700">
-          <span aria-hidden="true" className="mr-1">
-            {PREREQ_MARKERS[key].icon}
+const MarkerLegend = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="mb-6 rounded border border-gray-200 bg-gray-50 p-3">
+      <span className="mr-3 text-sm font-medium text-gray-700">Légende :</span>
+      <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
+        {(Object.keys(PREREQ_MARKERS) as (keyof typeof PREREQ_MARKERS)[]).map((key) => (
+          <span key={key} className="text-sm text-gray-700">
+            <span aria-hidden="true" className="mr-1">
+              {PREREQ_MARKERS[key].icon}
+            </span>
+            {t(PREREQ_MARKERS[key].labelKey)}
           </span>
-          {PREREQ_MARKERS[key].label}
-        </span>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 /**
  * Data-driven question/answer form for the prerequisites pages that follow the
@@ -47,6 +51,7 @@ const MarkerLegend = () => (
  * `prerequisitesService` (no localStorage).
  */
 export const QuestionAnswerForm = ({ slug, title, config }: QuestionAnswerFormProps) => {
+  const { t } = useTranslation();
   const canAnswer = authService.isAuthenticated() && !authService.isAdmin();
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [errorRowIds, setErrorRowIds] = useState<Set<string>>(new Set());
@@ -120,13 +125,15 @@ export const QuestionAnswerForm = ({ slug, title, config }: QuestionAnswerFormPr
                 <div key={row.id} className="border-b border-gray-100 pb-4 last:border-b-0">
                   <div className="mb-2 flex items-center gap-2">
                     <span
-                      aria-label={marker.label}
-                      title={marker.label}
+                      aria-label={t(marker.labelKey)}
+                      title={t(marker.labelKey)}
                       className="text-sm"
                     >
                       {marker.icon}
                     </span>
-                    <span className="text-xs font-medium text-gray-500">{marker.label}</span>
+                    <span className="text-xs font-medium text-gray-500">
+                      {t(marker.labelKey)}
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-2">

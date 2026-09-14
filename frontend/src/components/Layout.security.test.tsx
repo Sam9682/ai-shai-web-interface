@@ -3,6 +3,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Layout } from './Layout';
+import { LanguageProvider } from '../hooks/useLanguage';
 
 // Accessible name of the icon-only desktop control and the mobile menu label.
 const SECURITY_LABEL = 'Sécurité du compte';
@@ -12,12 +13,15 @@ const SECURITY_ROUTE = '/account/security';
 // time via authService.isAuthenticated() (!!localStorage 'access_token'). We
 // drive auth by seeding localStorage before render, matching Layout.prereq.test.
 function renderLayout() {
+  // Layout calls useTranslation(), so wrap it in a LanguageProvider.
   return render(
-    <MemoryRouter>
-      <Layout>
-        <div>content</div>
-      </Layout>
-    </MemoryRouter>,
+    <LanguageProvider>
+      <MemoryRouter>
+        <Layout>
+          <div>content</div>
+        </Layout>
+      </MemoryRouter>
+    </LanguageProvider>,
   );
 }
 

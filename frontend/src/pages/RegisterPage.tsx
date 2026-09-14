@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { validateEmail, getPasswordStrengthMessage } from '../utils/validation';
+import { useTranslation } from '../hooks/useLanguage';
 
 export const RegisterPage = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -28,12 +30,12 @@ export const RegisterPage = () => {
     setError('');
 
     if (!validateEmail(formData.email)) {
-      setError('Adresse email invalide');
+      setError(t('page.register.error.invalidEmail'));
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError(t('page.register.error.passwordMismatch'));
       return;
     }
 
@@ -58,7 +60,7 @@ export const RegisterPage = () => {
         err.response?.data?.detail?.error?.message || 
         err.response?.data?.detail || 
         err.response?.data?.message ||
-        'Échec de l\'inscription';
+        t('page.register.error.failed');
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -70,10 +72,9 @@ export const RegisterPage = () => {
       <div className="min-h-[70vh] flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full">
           <div className="card p-8 text-center">
-            <h3 className="text-xl font-bold text-green-800 mb-3">Inscription réussie !</h3>
+            <h3 className="text-xl font-bold text-green-800 mb-3">{t('page.register.success.title')}</h3>
             <p className="text-sm text-green-700">
-              Veuillez vérifier votre email pour activer votre compte.
-              Redirection vers la page de connexion...
+              {t('page.register.success.message')}
             </p>
           </div>
         </div>
@@ -85,8 +86,8 @@ export const RegisterPage = () => {
     <div className="min-h-[70vh] flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold text-[#000E9C]">Inscription</h2>
-          <p className="mt-1 text-sm text-gray-600">Rejoignez notre communauté</p>
+          <h2 className="text-3xl font-bold text-[#000E9C]">{t('page.register.title')}</h2>
+          <p className="mt-1 text-sm text-gray-600">{t('page.register.subtitle')}</p>
         </div>
         <div className="card p-8">
           <form className="space-y-4" onSubmit={handleSubmit}>
@@ -97,7 +98,7 @@ export const RegisterPage = () => {
             )}
             <div>
               <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                Prénom
+                {t('page.register.field.firstName')}
               </label>
               <input
                 id="firstName"
@@ -112,7 +113,7 @@ export const RegisterPage = () => {
             </div>
             <div>
               <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                Nom
+                {t('page.register.field.lastName')}
               </label>
               <input
                 id="lastName"
@@ -127,7 +128,7 @@ export const RegisterPage = () => {
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Adresse email
+                {t('page.register.field.email')}
               </label>
               <input
                 id="email"
@@ -142,7 +143,7 @@ export const RegisterPage = () => {
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Mot de passe
+                {t('page.register.field.password')}
               </label>
               <input
                 id="password"
@@ -155,12 +156,12 @@ export const RegisterPage = () => {
                 onChange={handleChange}
               />
               <p className="mt-1 text-xs text-gray-500">
-                Minimum 8 caractères avec majuscule, minuscule et chiffre
+                {t('page.register.password.hint')}
               </p>
             </div>
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                Confirmer le mot de passe
+                {t('page.register.field.confirmPassword')}
               </label>
               <input
                 id="confirmPassword"
@@ -173,7 +174,7 @@ export const RegisterPage = () => {
                 onChange={handleChange}
               />
               {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                <p className="mt-1 text-xs text-red-600">Les mots de passe ne correspondent pas</p>
+                <p className="mt-1 text-xs text-red-600">{t('page.register.error.passwordMismatch')}</p>
               )}
             </div>
 
@@ -182,14 +183,14 @@ export const RegisterPage = () => {
               disabled={loading}
               className="w-full py-2.5 text-sm font-semibold rounded text-white bg-[#000E9C] hover:bg-[#4949FF] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4949FF] disabled:opacity-50 transition-colors"
             >
-              {loading ? 'Inscription en cours...' : 'S\'inscrire'}
+              {loading ? t('page.register.submitting') : t('page.register.submit')}
             </button>
           </form>
           <div className="mt-5 text-center">
             <p className="text-sm text-gray-600">
-              Déjà membre ?{' '}
+              {t('page.register.alreadyMember')}{' '}
               <a href="/login" className="font-medium text-[#4949FF] hover:underline">
-                Connectez-vous ici
+                {t('page.register.loginHere')}
               </a>
             </p>
           </div>

@@ -4,6 +4,18 @@ import userEvent from '@testing-library/user-event';
 import { SecurityPage } from './SecurityPage';
 import { securityService } from '../services/securityService';
 import { authService } from '../services/authService';
+import { LanguageProvider } from '../hooks/useLanguage';
+
+// SecurityPage consumes the translation context, so it must render inside a
+// LanguageProvider. The default Active_Language is French, so the existing
+// French-text assertions in this file continue to hold.
+function renderPage() {
+  return render(
+    <LanguageProvider>
+      <SecurityPage />
+    </LanguageProvider>,
+  );
+}
 
 // securityService is the persistence path for 2FA status and management.
 // Mock it so status loads resolve/reject deterministically with no network.
@@ -44,7 +56,7 @@ beforeEach(() => {
 // Requirement 8.1 — the page requests the current 2FA configuration on mount.
 describe('2FA status fetch on mount (Req 8.1)', () => {
   it('calls getTwoFactorStatus once when the page loads', async () => {
-    render(<SecurityPage />);
+    renderPage();
 
     await waitFor(() => {
       expect(mockedSecurity.getTwoFactorStatus).toHaveBeenCalledTimes(1);
@@ -57,7 +69,7 @@ describe('2FA status error banner (Req 8.3)', () => {
   it('shows "Impossible de charger le statut 2FA." when the status request fails', async () => {
     mockedSecurity.getTwoFactorStatus.mockRejectedValue(new Error('network down'));
 
-    render(<SecurityPage />);
+    renderPage();
 
     await waitFor(() => {
       expect(screen.getByText('Impossible de charger le statut 2FA.')).toBeInTheDocument();
@@ -68,7 +80,7 @@ describe('2FA status error banner (Req 8.3)', () => {
 // Requirements 2.4, 3.1, 5.2 — password and 2FA sections render.
 describe('password + 2FA section rendering (Req 2.4, 3.1, 5.2)', () => {
   it('renders current/new password inputs and the change-password submit (Req 3.1)', async () => {
-    render(<SecurityPage />);
+    renderPage();
 
     // Password section inputs (Req 3.1) and submit control (Req 2.4).
     expect(screen.getByLabelText('Mot de passe actuel')).toBeInTheDocument();
@@ -84,7 +96,7 @@ describe('password + 2FA section rendering (Req 2.4, 3.1, 5.2)', () => {
   });
 
   it('renders the two-factor section with TOTP and email methods (Req 2.4, 5.2)', async () => {
-    render(<SecurityPage />);
+    renderPage();
 
     // The 2FA section header renders (Req 2.4).
     expect(
@@ -111,7 +123,7 @@ describe('reset-by-email invocation (Req 4.2)', () => {
     localStorage.setItem('user', JSON.stringify({ email }));
 
     const user = userEvent.setup();
-    render(<SecurityPage />);
+    renderPage();
 
     await user.click(
       screen.getByRole('button', { name: /Réinitialiser par Email/i })
@@ -125,7 +137,7 @@ describe('reset-by-email invocation (Req 4.2)', () => {
 
   it('does not call requestPasswordReset when no email is stored', async () => {
     const user = userEvent.setup();
-    render(<SecurityPage />);
+    renderPage();
 
     await user.click(
       screen.getByRole('button', { name: /Réinitialiser par Email/i })

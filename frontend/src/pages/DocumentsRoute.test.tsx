@@ -3,6 +3,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { DocumentsPage } from './DocumentsPage';
+import { LanguageProvider } from '../hooks/useLanguage';
 
 // Keep this route test focused on auth gating: stub the document service so the
 // page never hits the network. An empty list drives the "Documents" heading +
@@ -18,20 +19,23 @@ vi.mock('../services/documentService', () => ({
 // wrapped in a ProtectedRoute, with a recognizable /login placeholder used to
 // detect the auth-guard redirect.
 function renderDocumentsRoutes(initialEntry: string) {
+  // The page calls useTranslation(), so wrap the routes in a LanguageProvider.
   return render(
-    <MemoryRouter initialEntries={[initialEntry]}>
-      <Routes>
-        <Route path="/login" element={<div>Login Placeholder</div>} />
-        <Route
-          path="/documents"
-          element={
-            <ProtectedRoute>
-              <DocumentsPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </MemoryRouter>,
+    <LanguageProvider>
+      <MemoryRouter initialEntries={[initialEntry]}>
+        <Routes>
+          <Route path="/login" element={<div>Login Placeholder</div>} />
+          <Route
+            path="/documents"
+            element={
+              <ProtectedRoute>
+                <DocumentsPage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    </LanguageProvider>,
   );
 }
 

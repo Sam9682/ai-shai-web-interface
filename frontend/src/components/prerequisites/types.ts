@@ -2,15 +2,15 @@ export type Status = 'received' | 'pending' | 'blocked' | 'na';
 
 export interface StatusMeta {
   value: Status;
-  label: string;
+  labelKey: string;
   icon: string;
 }
 
 export const STATUS_OPTIONS: StatusMeta[] = [
-  { value: 'received', label: 'Reçu', icon: '✅' },
-  { value: 'pending', label: 'En attente', icon: '⏳' },
-  { value: 'blocked', label: 'Bloqué', icon: '❌' },
-  { value: 'na', label: 'N/A', icon: '—' },
+  { value: 'received', labelKey: 'prereq.status.received', icon: '✅' },
+  { value: 'pending', labelKey: 'prereq.status.pending', icon: '⏳' },
+  { value: 'blocked', labelKey: 'prereq.status.blocked', icon: '❌' },
+  { value: 'na', labelKey: 'prereq.status.na', icon: '—' },
 ];
 
 // Static description of a parameter row (from config)
@@ -45,26 +45,26 @@ export type FormState = Record<string, RowState>;
 
 // Shared navigation config for the prerequisites dropdown (desktop + mobile)
 export interface PrereqNavItem {
-  label: string;
+  labelKey: string;
   route: string; // always `/prerequisites/${slug}`
   archetype: 'how-to-use' | 'static' | 'qa';
 }
 
 export const PREREQ_NAV_ITEMS = [
-  { label: 'How to use', route: '/prerequisites/how-to-use', archetype: 'how-to-use' },
-  { label: 'Basics', route: '/prerequisites/basics', archetype: 'static' },
-  { label: 'Network Checklist', route: '/prerequisites/network-checklist', archetype: 'qa' },
-  { label: 'Core Control Plane', route: '/prerequisites/core-control-plane', archetype: 'qa' },
-  { label: 'CloudStore', route: '/prerequisites/cloudstore', archetype: 'qa' },
-  { label: 'VCF', route: '/prerequisites/vcf', archetype: 'qa' },
-  { label: 'Network Flux', route: '/prerequisites/network-flux', archetype: 'static' },
+  { labelKey: 'prereq.nav.howToUse', route: '/prerequisites/how-to-use', archetype: 'how-to-use' },
+  { labelKey: 'prereq.nav.basics', route: '/prerequisites/basics', archetype: 'static' },
+  { labelKey: 'prereq.nav.networkChecklist', route: '/prerequisites/network-checklist', archetype: 'qa' },
+  { labelKey: 'prereq.nav.coreControlPlane', route: '/prerequisites/core-control-plane', archetype: 'qa' },
+  { labelKey: 'prereq.nav.cloudstore', route: '/prerequisites/cloudstore', archetype: 'qa' },
+  { labelKey: 'prereq.nav.vcf', route: '/prerequisites/vcf', archetype: 'qa' },
+  { labelKey: 'prereq.nav.networkFlux', route: '/prerequisites/network-flux', archetype: 'static' },
 ] as const satisfies readonly PrereqNavItem[];
 
 // Shared marker legend used by the How-to-use legend and per-row markers on
 // question/answer pages so they stay consistent.
 export const PREREQ_MARKERS = {
-  mandatory: { label: 'Obligatoire', icon: '🔴' },
-  optional: { label: 'Optionnel', icon: '⚪' },
+  mandatory: { labelKey: 'prereq.marker.mandatory', icon: '🔴' },
+  optional: { labelKey: 'prereq.marker.optional', icon: '⚪' },
 } as const;
 // ---------------------------------------------------------------------------
 // Question-archetype data models (Network Checklist, Core Control Plane,

@@ -3,6 +3,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import fc from 'fast-check';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from '../components/ProtectedRoute';
+import { LanguageProvider } from '../hooks/useLanguage';
 import { HowToUsePage } from './HowToUsePage';
 import { BasicsPage } from './BasicsPage';
 import { NetworkChecklistPage } from './NetworkChecklistPage';
@@ -29,7 +30,10 @@ vi.mock('../services/prerequisitesService', () => ({
 // wrapped in a ProtectedRoute, with a recognizable /login placeholder used to
 // detect the auth-guard redirect.
 function renderPrereqRoutes(initialEntry: string) {
+  // The prerequisites pages call useTranslation(), so wrap the routes in a
+  // LanguageProvider.
   return render(
+    <LanguageProvider>
     <MemoryRouter initialEntries={[initialEntry]}>
       <Routes>
         <Route path="/login" element={<div>Login Placeholder</div>} />
@@ -90,7 +94,8 @@ function renderPrereqRoutes(initialEntry: string) {
           }
         />
       </Routes>
-    </MemoryRouter>,
+    </MemoryRouter>
+    </LanguageProvider>,
   );
 }
 

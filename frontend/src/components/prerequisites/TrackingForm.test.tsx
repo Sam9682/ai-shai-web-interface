@@ -1,3 +1,4 @@
+import type React from 'react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, cleanup, within } from '@testing-library/react';
 import fc from 'fast-check';
@@ -5,9 +6,18 @@ import { TrackingForm } from './TrackingForm';
 import { STATUS_OPTIONS } from './types';
 import type { FormConfig } from './types';
 import { cloudStoreConfig } from './configs';
+import { LanguageProvider } from '../../hooks/useLanguage';
 
 // Minimum property-test iterations mandated by the design (>= 100).
 const NUM_RUNS = 100;
+
+// TrackingForm resolves its status labels through the translation layer, so
+// render it inside a LanguageProvider. localStorage is cleared before each test
+// (and before each fast-check run) so the default French language is active and
+// status labels resolve to their French copy ('Reçu', 'En attente', ...).
+function renderForm(ui: React.ReactElement) {
+  return render(<LanguageProvider>{ui}</LanguageProvider>);
+}
 
 beforeEach(() => {
   localStorage.clear();
@@ -42,7 +52,7 @@ describe('Property 2: every parameter row renders all four fields', () => {
         localStorage.clear();
         cleanup();
 
-        render(
+        renderForm(
           <TrackingForm
             title="Test Form"
             storageKey={`prop2-${keySuffix}`}
@@ -98,7 +108,7 @@ describe('Property 3: status field offers exactly the four status choices', () =
         localStorage.clear();
         cleanup();
 
-        render(
+        renderForm(
           <TrackingForm
             title="Test Form"
             storageKey={`prop3-${keySuffix}`}
@@ -132,7 +142,7 @@ describe('status legend and French labels', () => {
   });
 
   it('maps each status to its icon and French label in the legend', () => {
-    render(
+    renderForm(
       <TrackingForm
         title="CloudStore"
         storageKey="legend-test"
@@ -157,7 +167,7 @@ describe('status legend and French labels', () => {
   });
 
   it('renders section headings and row labels in French for CloudStore', () => {
-    render(
+    renderForm(
       <TrackingForm
         title="CloudStore"
         storageKey="french-test"

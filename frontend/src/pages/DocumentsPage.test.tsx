@@ -4,6 +4,18 @@ import userEvent from '@testing-library/user-event';
 import fc from 'fast-check';
 import { DocumentsPage, formatSize } from './DocumentsPage';
 import { documentService, type Document, type DocumentCategory } from '../services/documentService';
+import { LanguageProvider } from '../hooks/useLanguage';
+
+// DocumentsPage consumes the translation context, so it must render inside a
+// LanguageProvider. The default Active_Language is French, so the existing
+// French-text assertions in this file continue to hold.
+function renderPage() {
+  return render(
+    <LanguageProvider>
+      <DocumentsPage />
+    </LanguageProvider>,
+  );
+}
 
 // Mock the service module: both methods are vi.fn()s whose behaviour is set per test.
 vi.mock('../services/documentService', () => ({
@@ -120,7 +132,7 @@ describe('Property 7: grouping is a partition by category', () => {
         cleanup();
         mockedListDocuments.mockResolvedValue({ documents, total: documents.length });
 
-        render(<DocumentsPage />);
+        renderPage();
         await waitForLoaded();
 
         // Collect, per category, the set of document ids rendered under that
@@ -173,7 +185,7 @@ describe('Property 8: displayed item content', () => {
         cleanup();
         mockedListDocuments.mockResolvedValue({ documents, total: documents.length });
 
-        render(<DocumentsPage />);
+        renderPage();
         await waitForLoaded();
 
         // One "Télécharger" button per document.
@@ -207,7 +219,7 @@ describe('Property 9: search filter subset and membership', () => {
         cleanup();
         mockedListDocuments.mockResolvedValue({ documents, total: documents.length });
 
-        render(<DocumentsPage />);
+        renderPage();
         const input = await screen.findByLabelText('Rechercher un document');
 
         // Set the input value directly. fireEvent.change avoids userEvent's
@@ -269,7 +281,7 @@ describe('DocumentsPage — mount and interactions', () => {
   it('calls documentService.listDocuments on mount', async () => {
     mockedListDocuments.mockResolvedValue({ documents: [], total: 0 });
 
-    render(<DocumentsPage />);
+    renderPage();
     await waitForLoaded();
 
     expect(mockedListDocuments).toHaveBeenCalledTimes(1);
@@ -280,7 +292,7 @@ describe('DocumentsPage — mount and interactions', () => {
     mockedListDocuments.mockResolvedValue({ documents: [doc], total: 1 });
     mockedDownloadDocument.mockResolvedValue(undefined);
 
-    render(<DocumentsPage />);
+    renderPage();
     await waitForLoaded();
 
     const button = await screen.findByRole('button', { name: 'Télécharger' });
@@ -293,7 +305,7 @@ describe('DocumentsPage — mount and interactions', () => {
   it('shows a French error message when the document list fails to load', async () => {
     mockedListDocuments.mockRejectedValue(new Error('network'));
 
-    render(<DocumentsPage />);
+    renderPage();
 
     expect(await screen.findByText('Impossible de charger les documents')).toBeInTheDocument();
   });
@@ -303,7 +315,7 @@ describe('DocumentsPage — mount and interactions', () => {
     mockedListDocuments.mockResolvedValue({ documents: [doc], total: 1 });
     mockedDownloadDocument.mockRejectedValue(new Error('denied'));
 
-    render(<DocumentsPage />);
+    renderPage();
     await waitForLoaded();
 
     const button = await screen.findByRole('button', { name: 'Télécharger' });

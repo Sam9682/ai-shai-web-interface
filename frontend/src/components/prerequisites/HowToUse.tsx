@@ -1,29 +1,33 @@
 import { PREREQ_MARKERS } from './types';
+import { useTranslation } from '../../hooks/useLanguage';
 
 /**
  * Legend describing the Mandatory / Optional markers, built from the shared
  * `PREREQ_MARKERS` constant so it stays consistent with the per-row markers
  * rendered on the question/answer pages (Req 3.2).
  */
-const MarkerLegend = () => (
-  <div className="mb-6 rounded border border-gray-200 bg-gray-50 p-3">
-    <span className="mr-3 text-sm font-medium text-gray-700">Légende :</span>
-    <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
-      <span className="text-sm text-gray-700">
-        <span aria-hidden="true" className="mr-1">
-          {PREREQ_MARKERS.mandatory.icon}
+const MarkerLegend = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="mb-6 rounded border border-gray-200 bg-gray-50 p-3">
+      <span className="mr-3 text-sm font-medium text-gray-700">Légende :</span>
+      <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
+        <span className="text-sm text-gray-700">
+          <span aria-hidden="true" className="mr-1">
+            {PREREQ_MARKERS.mandatory.icon}
+          </span>
+          {t(PREREQ_MARKERS.mandatory.labelKey)}
         </span>
-        {PREREQ_MARKERS.mandatory.label}
-      </span>
-      <span className="text-sm text-gray-700">
-        <span aria-hidden="true" className="mr-1">
-          {PREREQ_MARKERS.optional.icon}
+        <span className="text-sm text-gray-700">
+          <span aria-hidden="true" className="mr-1">
+            {PREREQ_MARKERS.optional.icon}
+          </span>
+          {t(PREREQ_MARKERS.optional.labelKey)}
         </span>
-        {PREREQ_MARKERS.optional.label}
-      </span>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 /**
  * Short bulleted list of completion tips / example guidance drawn from the

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { eventService, type Event } from '../services/eventService';
+import { useTranslation } from '../hooks/useLanguage';
 
 export const AdminEventsPage = () => {
+  const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
@@ -62,7 +64,7 @@ export const AdminEventsPage = () => {
   };
 
   const handleDelete = async (eventId: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir annuler cet événement ?')) return;
+    if (!confirm(t('page.adminEvents.confirm.cancel'))) return;
     try {
       await eventService.deleteEvent(eventId);
       loadEvents();
@@ -90,18 +92,18 @@ export const AdminEventsPage = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8 text-gray-500">Chargement...</div>;
+    return <div className="text-center py-8 text-gray-500">{t('page.adminEvents.loading')}</div>;
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-[#000E9C]">Gestion des événements</h1>
+        <h1 className="text-2xl font-bold text-[#000E9C]">{t('page.adminEvents.title')}</h1>
         <button
           onClick={() => setShowCreateModal(true)}
           className="px-4 py-2 text-sm font-medium bg-[#000E9C] text-white rounded hover:bg-[#4949FF] transition-colors"
         >
-          Nouvel événement
+          {t('page.adminEvents.newEvent')}
         </button>
       </div>
 
@@ -113,10 +115,10 @@ export const AdminEventsPage = () => {
                 <h3 className="text-lg font-semibold text-gray-900 mb-1">{event.title}</h3>
                 {event.description && <p className="text-sm text-gray-600 mb-2">{event.description}</p>}
                 <div className="text-xs text-gray-500 space-y-0.5">
-                  <p>Début : {new Date(event.start_date).toLocaleString('fr-FR')}</p>
-                  <p>Fin : {new Date(event.end_date).toLocaleString('fr-FR')}</p>
-                  {event.location && <p>Lieu : {event.location}</p>}
-                  <p>Participants : {event.participant_count}{event.max_participants ? `/${event.max_participants}` : ''}</p>
+                  <p>{t('page.adminEvents.start')} {new Date(event.start_date).toLocaleString('fr-FR')}</p>
+                  <p>{t('page.adminEvents.end')} {new Date(event.end_date).toLocaleString('fr-FR')}</p>
+                  {event.location && <p>{t('page.adminEvents.location')} {event.location}</p>}
+                  <p>{t('page.adminEvents.participants')} {event.participant_count}{event.max_participants ? `/${event.max_participants}` : ''}</p>
                   <p>
                     <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-medium ${
                       event.status === 'scheduled' ? 'bg-green-100 text-green-800' :
@@ -133,13 +135,13 @@ export const AdminEventsPage = () => {
                   onClick={() => handleEdit(event)}
                   className="text-xs font-medium text-[#4949FF] hover:underline"
                 >
-                  Modifier
+                  {t('page.adminEvents.action.edit')}
                 </button>
                 <button
                   onClick={() => handleDelete(event.id)}
                   className="text-xs font-medium text-red-600 hover:underline"
                 >
-                  Annuler
+                  {t('page.adminEvents.action.cancel')}
                 </button>
               </div>
             </div>
@@ -151,40 +153,40 @@ export const AdminEventsPage = () => {
       {editingEvent && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-bold text-[#000E9C] mb-4">Modifier l'événement</h2>
+            <h2 className="text-lg font-bold text-[#000E9C] mb-4">{t('page.adminEvents.edit.title')}</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.title')}</label>
                 <input type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.description')}</label>
                 <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" rows={3} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.startDate')}</label>
                   <input type="datetime-local" value={formData.start_date} onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.endDate')}</label>
                   <input type="datetime-local" value={formData.end_date} onChange={(e) => setFormData({ ...formData, end_date: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Lieu</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.location')}</label>
                 <input type="text" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre max de participants</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.maxParticipants')}</label>
                 <input type="number" value={formData.max_participants} onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button onClick={() => setEditingEvent(null)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
-                  Annuler
+                  {t('page.adminEvents.cancel')}
                 </button>
                 <button onClick={handleSave} className="px-4 py-2 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors">
-                  Enregistrer
+                  {t('page.adminEvents.save')}
                 </button>
               </div>
             </div>
@@ -196,40 +198,40 @@ export const AdminEventsPage = () => {
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-bold text-[#000E9C] mb-4">Nouvel événement</h2>
+            <h2 className="text-lg font-bold text-[#000E9C] mb-4">{t('page.adminEvents.create.title')}</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.title')}</label>
                 <input type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.description')}</label>
                 <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" rows={3} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.startDate')}</label>
                   <input type="datetime-local" value={formData.start_date} onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.endDate')}</label>
                   <input type="datetime-local" value={formData.end_date} onChange={(e) => setFormData({ ...formData, end_date: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Lieu</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.location')}</label>
                 <input type="text" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre max de participants</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.maxParticipants')}</label>
                 <input type="number" value={formData.max_participants} onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button onClick={() => setShowCreateModal(false)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
-                  Annuler
+                  {t('page.adminEvents.cancel')}
                 </button>
                 <button onClick={handleCreate} className="px-4 py-2 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors">
-                  Créer
+                  {t('page.adminEvents.create')}
                 </button>
               </div>
             </div>

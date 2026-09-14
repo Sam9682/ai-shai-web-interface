@@ -1,4 +1,5 @@
 import { usePersistentForm } from '../../hooks/usePersistentForm';
+import { useTranslation } from '../../hooks/useLanguage';
 import { STATUS_OPTIONS } from './types';
 import type { FormConfig, RowState } from './types';
 
@@ -21,21 +22,24 @@ const FIELD_CLASS =
 /**
  * Visible key mapping each status choice to its icon + French label.
  */
-const StatusLegend = () => (
-  <div className="mb-6 rounded border border-gray-200 bg-gray-50 p-3">
-    <span className="mr-3 text-sm font-medium text-gray-700">Légende :</span>
-    <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
-      {STATUS_OPTIONS.map((opt) => (
-        <span key={opt.value} className="text-sm text-gray-700">
-          <span aria-hidden="true" className="mr-1">
-            {opt.icon}
+const StatusLegend = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="mb-6 rounded border border-gray-200 bg-gray-50 p-3">
+      <span className="mr-3 text-sm font-medium text-gray-700">Légende :</span>
+      <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
+        {STATUS_OPTIONS.map((opt) => (
+          <span key={opt.value} className="text-sm text-gray-700">
+            <span aria-hidden="true" className="mr-1">
+              {opt.icon}
+            </span>
+            {t(opt.labelKey)}
           </span>
-          {opt.label}
-        </span>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 /**
  * Data-driven tracking form shared by every prerequisites page. Renders the
@@ -45,6 +49,7 @@ const StatusLegend = () => (
  */
 export const TrackingForm = ({ title, storageKey, config }: TrackingFormProps) => {
   const { state, updateField } = usePersistentForm(storageKey, config);
+  const { t } = useTranslation();
 
   return (
     <div className="card p-6">
@@ -103,7 +108,7 @@ export const TrackingForm = ({ title, storageKey, config }: TrackingFormProps) =
                       >
                         {STATUS_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value}>
-                            {`${opt.icon} ${opt.label}`}
+                            {`${opt.icon} ${t(opt.labelKey)}`}
                           </option>
                         ))}
                       </select>

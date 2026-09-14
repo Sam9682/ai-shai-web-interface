@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { securityService, type TwoFactorStatus, type TotpSetup } from '../services/securityService';
 import { authService } from '../services/authService';
+import { useTranslation } from '../hooks/useLanguage';
 
 /** Read the current user's email from the persisted session in localStorage. */
 function getCurrentUserEmail(): string {
@@ -48,18 +49,20 @@ function ErrorBanner({ message }: { message: string }) {
 }
 
 function StatusBadge({ active }: { active: boolean }) {
+  const { t } = useTranslation();
   return active ? (
     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-      ✅ Activé
+      {t('page.security.status.enabled')}
     </span>
   ) : (
     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-      ⚪ Désactivé
+      {t('page.security.status.disabled')}
     </span>
   );
 }
 
 function PasswordSection() {
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState('');
@@ -77,11 +80,11 @@ function PasswordSection() {
     setLoading(true);
     try {
       await securityService.changePassword(currentPassword, newPassword);
-      setSuccess('Mot de passe modifié avec succès.');
+      setSuccess(t('page.security.password.success'));
       setCurrentPassword('');
       setNewPassword('');
     } catch (err: any) {
-      setError(extractError(err, 'Impossible de modifier le mot de passe. Veuillez réessayer.'));
+      setError(extractError(err, t('page.security.password.error.change')));
     } finally {
       setLoading(false);
     }
@@ -92,15 +95,15 @@ function PasswordSection() {
     setResetSuccess('');
     const email = getCurrentUserEmail();
     if (!email) {
-      setResetError('Adresse email introuvable. Veuillez vous reconnecter.');
+      setResetError(t('page.security.password.error.noEmail'));
       return;
     }
     setResetLoading(true);
     try {
       await authService.requestPasswordReset(email);
-      setResetSuccess('Un email de réinitialisation a été envoyé.');
+      setResetSuccess(t('page.security.password.reset.success'));
     } catch (err: any) {
-      setResetError(extractError(err, 'Une erreur est survenue. Veuillez réessayer.'));
+      setResetError(extractError(err, t('page.security.password.reset.error')));
     } finally {
       setResetLoading(false);
     }
@@ -108,9 +111,9 @@ function PasswordSection() {
 
   return (
     <section className="card p-6 sm:p-8">
-      <h3 className="text-xl font-bold text-[#000E9C] mb-1">🔑 Mot de Passe</h3>
+      <h3 className="text-xl font-bold text-[#000E9C] mb-1">{t('page.security.password.title')}</h3>
       <p className="text-sm text-gray-600 mb-5">
-        Modifiez votre mot de passe ou recevez un lien de réinitialisation par email.
+        {t('page.security.password.subtitle')}
       </p>
 
       <form className="space-y-4" onSubmit={handleChangePassword}>
@@ -119,7 +122,7 @@ function PasswordSection() {
 
         <div>
           <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 mb-1">
-            Mot de passe actuel
+            {t('page.security.password.current')}
           </label>
           <input
             id="current-password"
@@ -136,7 +139,7 @@ function PasswordSection() {
 
         <div>
           <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 mb-1">
-            Nouveau mot de passe
+            {t('page.security.password.new')}
           </label>
           <input
             id="new-password"
@@ -150,12 +153,12 @@ function PasswordSection() {
             onChange={(e) => setNewPassword(e.target.value)}
           />
           <p className="mt-1 text-xs text-gray-500">
-            Minimum 8 caractères avec majuscule, minuscule et chiffre
+            {t('page.security.password.hint')}
           </p>
         </div>
 
         <button type="submit" disabled={loading} className={primaryButtonClass}>
-          {loading ? 'Modification en cours...' : 'Changer le Mot de Passe'}
+          {loading ? t('page.security.password.submitting') : t('page.security.password.submit')}
         </button>
       </form>
 
@@ -163,8 +166,7 @@ function PasswordSection() {
         {resetError && <ErrorBanner message={resetError} />}
         {resetSuccess && <SuccessBanner message={resetSuccess} />}
         <p className="text-sm text-gray-600">
-          Vous préférez réinitialiser votre mot de passe par email ? Un lien sera envoyé à votre adresse
-          enregistrée.
+          {t('page.security.password.resetPrompt')}
         </p>
         <button
           type="button"
@@ -172,7 +174,7 @@ function PasswordSection() {
           disabled={resetLoading}
           className={secondaryButtonClass}
         >
-          {resetLoading ? 'Envoi en cours...' : '📧 Réinitialiser par Email'}
+          {resetLoading ? t('page.security.password.resetSubmitting') : t('page.security.password.resetSubmit')}
         </button>
       </div>
     </section>
@@ -180,6 +182,7 @@ function PasswordSection() {
 }
 
 function TwoFactorSection() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<TwoFactorStatus | null>(null);
   const [statusError, setStatusError] = useState('');
   const [statusLoading, setStatusLoading] = useState(true);
@@ -203,7 +206,7 @@ function TwoFactorSection() {
       const result = await securityService.getTwoFactorStatus();
       setStatus(result);
     } catch {
-      setStatusError('Impossible de charger le statut 2FA.');
+      setStatusError(t('page.security.twoFactor.statusError'));
     } finally {
       setStatusLoading(false);
     }
@@ -221,7 +224,7 @@ function TwoFactorSection() {
       const setup = await securityService.startTotpSetup();
       setTotpSetup(setup);
     } catch (err: any) {
-      setTotpError(extractError(err, 'Impossible de démarrer la configuration TOTP.'));
+      setTotpError(extractError(err, t('page.security.totp.error.start')));
     } finally {
       setTotpBusy(false);
     }
@@ -234,12 +237,12 @@ function TwoFactorSection() {
     setTotpBusy(true);
     try {
       await securityService.confirmTotp(totpCode.trim());
-      setTotpSuccess('Application authenticator activée avec succès.');
+      setTotpSuccess(t('page.security.totp.success.enabled'));
       setTotpSetup(null);
       setTotpCode('');
       await loadStatus();
     } catch (err: any) {
-      setTotpError(extractError(err, 'Code invalide. Veuillez réessayer.'));
+      setTotpError(extractError(err, t('page.security.totp.error.invalidCode')));
     } finally {
       setTotpBusy(false);
     }
@@ -251,10 +254,10 @@ function TwoFactorSection() {
     setTotpBusy(true);
     try {
       await securityService.disableTotp();
-      setTotpSuccess('Application authenticator désactivée.');
+      setTotpSuccess(t('page.security.totp.success.disabled'));
       await loadStatus();
     } catch (err: any) {
-      setTotpError(extractError(err, 'Impossible de désactiver le TOTP.'));
+      setTotpError(extractError(err, t('page.security.totp.error.disable')));
     } finally {
       setTotpBusy(false);
     }
@@ -268,10 +271,10 @@ function TwoFactorSection() {
     try {
       if (enabling) {
         await securityService.enableEmail2fa();
-        setEmailSuccess('Vérification par email activée.');
+        setEmailSuccess(t('page.security.email2fa.success.enabled'));
       } else {
         await securityService.disableEmail2fa();
-        setEmailSuccess('Vérification par email désactivée.');
+        setEmailSuccess(t('page.security.email2fa.success.disabled'));
       }
       await loadStatus();
     } catch (err: any) {
@@ -279,8 +282,8 @@ function TwoFactorSection() {
         extractError(
           err,
           enabling
-            ? 'Impossible d\'activer la vérification par email.'
-            : 'Impossible de désactiver la vérification par email.'
+            ? t('page.security.email2fa.error.enable')
+            : t('page.security.email2fa.error.disable')
         )
       );
     } finally {
@@ -297,14 +300,14 @@ function TwoFactorSection() {
   return (
     <section className="card p-6 sm:p-8">
       <h3 className="text-xl font-bold text-[#000E9C] mb-1">
-        🛡️ Authentification à Deux Facteurs (2FA)
+        {t('page.security.twoFactor.title')}
       </h3>
       <p className="text-sm text-gray-600 mb-5">
-        Ajoutez une couche de sécurité supplémentaire à votre compte.
+        {t('page.security.twoFactor.subtitle')}
       </p>
 
       {statusError && <ErrorBanner message={statusError} />}
-      {statusLoading && <p className="text-sm text-gray-500">Chargement du statut 2FA...</p>}
+      {statusLoading && <p className="text-sm text-gray-500">{t('page.security.twoFactor.statusLoading')}</p>}
 
       {!statusLoading && !statusError && status && (
         <div className="space-y-6">
@@ -313,11 +316,10 @@ function TwoFactorSection() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h4 className="text-base font-semibold text-gray-900">
-                  📱 Application Authenticator (TOTP)
+                  {t('page.security.totp.title')}
                 </h4>
                 <p className="mt-1 text-sm text-gray-600">
-                  Utilisez une application comme Google Authenticator, Authy ou Microsoft
-                  Authenticator pour générer des codes temporels.
+                  {t('page.security.totp.description')}
                 </p>
               </div>
               <StatusBadge active={status.totp_enabled} />
@@ -334,31 +336,29 @@ function TwoFactorSection() {
                   disabled={totpBusy}
                   className={secondaryButtonClass}
                 >
-                  {totpBusy ? 'Traitement...' : 'Désactiver l\'application authenticator'}
+                  {totpBusy ? t('page.security.totp.processing') : t('page.security.totp.disable')}
                 </button>
               ) : totpSetup ? (
                 <div className="space-y-4">
                   <div className="rounded bg-blue-50 border border-blue-200 p-4 space-y-3">
                     <p className="text-sm text-gray-700">
-                      Ajoutez ce compte à votre application authenticator en scannant le QR code ou
-                      en saisissant la clé secrète manuellement.
+                      {t('page.security.totp.setupInstruction')}
                     </p>
                     <div>
                       <p className="text-xs font-medium text-gray-500 mb-1">
-                        Clé secrète (saisie manuelle)
+                        {t('page.security.totp.secretLabel')}
                       </p>
                       <code className="block w-full break-all rounded bg-white border border-gray-200 px-3 py-2 text-sm font-mono text-gray-900">
                         {totpSetup.secret}
                       </code>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-gray-500 mb-1">URI d'approvisionnement (QR)</p>
+                      <p className="text-xs font-medium text-gray-500 mb-1">{t('page.security.totp.uriLabel')}</p>
                       <code className="block w-full break-all rounded bg-white border border-gray-200 px-3 py-2 text-xs font-mono text-gray-700">
                         {totpSetup.otpauth_uri}
                       </code>
                       <p className="mt-1 text-xs text-gray-500">
-                        Copiez cette URI dans un générateur de QR code, ou saisissez la clé secrète
-                        ci-dessus directement dans votre application.
+                        {t('page.security.totp.uriHint')}
                       </p>
                     </div>
                   </div>
@@ -366,7 +366,7 @@ function TwoFactorSection() {
                   <form className="space-y-3" onSubmit={handleConfirmTotp}>
                     <div>
                       <label htmlFor="totp-code" className="block text-sm font-medium text-gray-700 mb-1">
-                        Code de vérification
+                        {t('page.security.totp.codeLabel')}
                       </label>
                       <input
                         id="totp-code"
@@ -383,7 +383,7 @@ function TwoFactorSection() {
                     </div>
                     <div className="flex gap-3">
                       <button type="submit" disabled={totpBusy} className={primaryButtonClass}>
-                        {totpBusy ? 'Vérification...' : 'Confirmer'}
+                        {totpBusy ? t('page.security.totp.verifying') : t('page.security.totp.confirm')}
                       </button>
                       <button
                         type="button"
@@ -391,7 +391,7 @@ function TwoFactorSection() {
                         disabled={totpBusy}
                         className={secondaryButtonClass}
                       >
-                        Annuler
+                        {t('page.security.totp.cancel')}
                       </button>
                     </div>
                   </form>
@@ -403,7 +403,7 @@ function TwoFactorSection() {
                   disabled={totpBusy}
                   className={primaryButtonClass}
                 >
-                  {totpBusy ? 'Chargement...' : 'Configurer l\'application authenticator'}
+                  {totpBusy ? t('page.security.totp.loading') : t('page.security.totp.setup')}
                 </button>
               )}
             </div>
@@ -413,9 +413,9 @@ function TwoFactorSection() {
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h4 className="text-base font-semibold text-gray-900">📧 Vérification par Email</h4>
+                <h4 className="text-base font-semibold text-gray-900">{t('page.security.email2fa.title')}</h4>
                 <p className="mt-1 text-sm text-gray-600">
-                  Recevez un code de vérification par email à chaque connexion.
+                  {t('page.security.email2fa.description')}
                 </p>
               </div>
               <StatusBadge active={status.email_2fa_enabled} />
@@ -432,10 +432,10 @@ function TwoFactorSection() {
                 className={status.email_2fa_enabled ? secondaryButtonClass : primaryButtonClass}
               >
                 {emailBusy
-                  ? 'Traitement...'
+                  ? t('page.security.email2fa.processing')
                   : status.email_2fa_enabled
-                  ? 'Désactiver la vérification par email'
-                  : 'Activer la vérification par email'}
+                  ? t('page.security.email2fa.disable')
+                  : t('page.security.email2fa.enable')}
               </button>
             </div>
           </div>
@@ -446,12 +446,13 @@ function TwoFactorSection() {
 }
 
 function SecurityPage() {
+  const { t } = useTranslation();
   return (
     <div className="max-w-2xl mx-auto py-8 px-4 space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-[#000E9C]">🔐 Sécurité du Compte</h2>
+        <h2 className="text-3xl font-bold text-[#000E9C]">{t('page.security.title')}</h2>
         <p className="mt-1 text-sm text-gray-600">
-          Gérez votre mot de passe et vos options d'authentification à deux facteurs.
+          {t('page.security.subtitle')}
         </p>
       </div>
 
