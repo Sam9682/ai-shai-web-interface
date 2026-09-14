@@ -1,0 +1,205 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Create the Shai skill-context file": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374227047
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374235223
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374278038
+      }
+    ],
+    "2.1 Add `SHAI_SKILL_CONTEXT_PATH = \"conf/shai_context.md\"` module-level constant in `app/oracle/ai_providers.py`": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374227133
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374236853
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374279481
+      }
+    ],
+    "2.2 Implement `_load_shai_skill_context() -> Optional[str]`": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374227217
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374283263
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374353862
+      }
+    ],
+    "3.1 Implement `_build_shai_prompt(skill_context, context, question) -> str`": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374227304
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374284648
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374355033
+      }
+    ],
+    "4. Wire `ShaiAIProvider.query()` to use the new helpers": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374227395
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374365245
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374515333
+      }
+    ],
+    "5. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374227476
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374532489
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374587331
+      }
+    ],
+    "7. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374227555
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374702888
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374747961
+      }
+    ],
+    "2. Add the skill-context path constant and loader": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374353953
+      }
+    ],
+    "3. Add the prompt builder": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374355120
+      }
+    ],
+    "2.3 Write unit tests for `_load_shai_skill_context()`": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374366581
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374511346
+      }
+    ],
+    "3.2 Write property test for successful-read prompt assembly": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374367965
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374512634
+      }
+    ],
+    "3.3 Write property test for missing/unreadable graceful degradation": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374369324
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374514041
+      }
+    ],
+    "6.1 Write tests asserting other providers are unchanged": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374588622
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374696693
+      }
+    ],
+    "6.2 Write integration test for `ShaiAIProvider.query()` prompt assembly": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374589844
+      },
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374697949
+      }
+    ],
+    "6. Regression coverage for scope": [
+      {
+        "executionId": "aae2b0ab-55e2-499b-ac20-66a8a71f4c7e",
+        "chatSessionId": "sess_5f8a270e-ad38-429e-9578-99e76c672d6f",
+        "timestamp": 1789374696804
+      }
+    ]
+  }
+}
