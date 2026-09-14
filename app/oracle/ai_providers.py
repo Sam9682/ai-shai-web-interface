@@ -24,6 +24,46 @@ Contexte :
 {context}"""
 
 
+# Chemin du fichier de contexte métier injecté dans le fournisseur Shai,
+# relatif à la racine du projet (même convention que app.config, ex. DOCS_SEED_DIR).
+SHAI_SKILL_CONTEXT_PATH = "conf/shai_context.md"
+
+
+def _load_shai_skill_context() -> Optional[str]:
+    """Lit le contexte métier Shai depuis SHAI_SKILL_CONTEXT_PATH.
+
+    Retourne le contenu (sans espaces superflus) en cas de succès, sinon None.
+    Un fichier manquant ou illisible n'interrompt pas la requête : un
+    avertissement est journalisé et None est retourné.
+    """
+    try:
+        with open(SHAI_SKILL_CONTEXT_PATH, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+        return content or None
+    except OSError as e:
+        logger.warning(
+            f"Contexte métier Shai indisponible ({SHAI_SKILL_CONTEXT_PATH}) : "
+            f"{str(e)}. Poursuite sans le contexte métier."
+        )
+        return None
+
+
+def _build_shai_prompt(
+    skill_context: Optional[str],
+    context: Optional[str],
+    question: str,
+) -> str:
+    """Assemble le prompt Shai : contexte métier (optionnel) + contexte existant
+    (optionnel) + question. Combine sans remplacer le contexte existant."""
+    parts = []
+    if skill_context:
+        parts.append(skill_context)
+    if context:
+        parts.append(f"Contexte: {context}")
+    parts.append(f"Question: {question}")
+    return "\n\n".join(parts)
+
+
 def strip_ansi_codes(text: str) -> str:
     """Remove ANSI escape codes from text"""
     # Pattern to match ANSI escape sequences
@@ -147,9 +187,8 @@ class ShaiAIProvider(AIProvider):
         start_time = time.time()
 
         try:
-            prompt = question
-            if context:
-                prompt = f"Contexte: {context}\n\nQuestion: {question}"
+            skill_context = _load_shai_skill_context()
+            prompt = _build_shai_prompt(skill_context, context, question)
 
             import os
             env = os.environ.copy()
