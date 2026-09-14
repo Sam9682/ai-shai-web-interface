@@ -1,0 +1,345 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Create translation dictionaries and language types (`frontend/src/i18n/translations.ts`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371228154
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371237653
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371314888
+      }
+    ],
+    "1.3 Implement pure resolution and normalization (`frontend/src/i18n/resolve.ts`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371228353
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371239060
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371316263
+      }
+    ],
+    "1.7 Create the language context object (`frontend/src/i18n/LanguageContext.ts`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371228454
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371240278
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371317519
+      }
+    ],
+    "2.1 Implement provider and hook (`frontend/src/hooks/useLanguage.tsx`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371228608
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371331445
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371419420
+      }
+    ],
+    "3. Wire LanguageProvider into the app root (`frontend/src/App.tsx`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371228725
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371425296
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371502237
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371228839
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371507198
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371588895
+      }
+    ],
+    "5.1 Add the desktop and mobile language switcher controls": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371228943
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371593243
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371720886
+      }
+    ],
+    "6. Migrate hardcoded French strings in Layout to keyed lookups (`frontend/src/components/Layout.tsx`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371229041
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371729356
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789373112925
+      }
+    ],
+    "7.1 Convert prerequisites nav/status/marker labels to keys (`frontend/src/components/prerequisites/types.ts`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371229139
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371594488
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371722188
+      }
+    ],
+    "7.2 Resolve prerequisites labels via `t` at render sites": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371229237
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371730777
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789373114358
+      }
+    ],
+    "8. Migrate hardcoded French strings in page components (`frontend/src/pages/`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371229364
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371732216
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789373116408
+      }
+    ],
+    "9. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371229510
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789373573031
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789373644882
+      }
+    ],
+    "1. Create i18n translation primitives": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371317620
+      }
+    ],
+    "1.2 Write structural test for dictionary key parity (`frontend/src/i18n/translations.test.ts`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371333340
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371413684
+      }
+    ],
+    "1.4 Write property test for key resolution (`frontend/src/i18n/resolve.test.ts`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371334751
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371415058
+      }
+    ],
+    "1.5 Write property test for missing-key fallback (`frontend/src/i18n/resolve.test.ts`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371336141
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371416482
+      }
+    ],
+    "1.6 Write property test for invalid-value normalization (`frontend/src/i18n/resolve.test.ts`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371337346
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371418336
+      }
+    ],
+    "2. Implement the LanguageProvider and useTranslation hook": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371419507
+      }
+    ],
+    "2.2 Write property test for set-language transition (`frontend/src/hooks/useLanguage.test.tsx`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371426701
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371498108
+      }
+    ],
+    "2.3 Write property test for persistence round-trip (`frontend/src/hooks/useLanguage.test.tsx`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371428100
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371499563
+      }
+    ],
+    "2.4 Write example tests for provider behavior (`frontend/src/hooks/useLanguage.test.tsx`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371429630
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371500967
+      }
+    ],
+    "5. Add EN/FR Language_Control to the Top_Banner (`frontend/src/components/Layout.tsx`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371720963
+      }
+    ],
+    "5.2 Write example tests for the language controls (`frontend/src/components/Layout.language.test.tsx`)": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789371733507
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789373111553
+      }
+    ],
+    "7. Migrate prerequisites navigation and static labels": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789373114446
+      }
+    ],
+    "7.3 Update prerequisites tests for keyed labels": [
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789373125186
+      },
+      {
+        "executionId": "c93bbeca-bd36-4851-844a-cbac81ab82e4",
+        "chatSessionId": "sess_fe6753ed-b5b9-4ee8-9c19-6c004907a920",
+        "timestamp": 1789373568490
+      }
+    ]
+  }
+}

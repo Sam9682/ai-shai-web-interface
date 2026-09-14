@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { forumService } from '../services/forumService';
+import { useTranslation } from '../hooks/useLanguage';
 
 export const NewTopicPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -18,7 +20,7 @@ export const NewTopicPage = () => {
       const topic = await forumService.createTopic({ title });
       navigate(`/forum/topics/${topic.id}`);
     } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Erreur lors de la création du sujet');
+      setError(err.response?.data?.error?.message || t('page.newTopic.error.create'));
       setSubmitting(false);
     }
   };
@@ -27,12 +29,12 @@ export const NewTopicPage = () => {
     <div>
       <div className="mb-5">
         <Link to="/forum" className="text-sm font-medium text-[#4949FF] hover:underline">
-          ← Retour au forum
+          {t('page.newTopic.back')}
         </Link>
       </div>
 
       <div className="card p-6">
-        <h1 className="text-2xl font-bold text-[#000E9C] mb-5">Nouveau sujet</h1>
+        <h1 className="text-2xl font-bold text-[#000E9C] mb-5">{t('page.newTopic.title')}</h1>
 
         <form onSubmit={handleSubmit}>
           {error && (
@@ -43,7 +45,7 @@ export const NewTopicPage = () => {
 
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-              Titre du sujet
+              {t('page.newTopic.field.title')}
             </label>
             <input
               type="text"
@@ -51,13 +53,13 @@ export const NewTopicPage = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent"
-              placeholder="Entrez le titre de votre sujet"
+              placeholder={t('page.newTopic.placeholder.title')}
               disabled={submitting}
               required
               maxLength={255}
             />
             <p className="mt-1 text-xs text-gray-500">
-              Choisissez un titre clair et descriptif
+              {t('page.newTopic.hint')}
             </p>
           </div>
 
@@ -66,14 +68,14 @@ export const NewTopicPage = () => {
               to="/forum"
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
             >
-              Annuler
+              {t('page.newTopic.cancel')}
             </Link>
             <button
               type="submit"
               disabled={submitting || !title.trim()}
               className="px-4 py-2 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {submitting ? 'Création...' : 'Créer le sujet'}
+              {submitting ? t('page.newTopic.submitting') : t('page.newTopic.submit')}
             </button>
           </div>
         </form>

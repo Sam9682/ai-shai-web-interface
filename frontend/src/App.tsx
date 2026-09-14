@@ -21,10 +21,12 @@ import { VcfPage } from './pages/VcfPage';
 import { NetworkFluxPage } from './pages/NetworkFluxPage';
 import { DocumentsPage } from './pages/DocumentsPage';
 import { SecurityPage } from './pages/SecurityPage';
+import { LanguageProvider } from './hooks/useLanguage';
 
 function App() {
   return (
-    <Router>
+    <LanguageProvider>
+      <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -162,7 +164,8 @@ function App() {
           }
         />
       </Routes>
-    </Router>
+      </Router>
+    </LanguageProvider>
   );
 }
 

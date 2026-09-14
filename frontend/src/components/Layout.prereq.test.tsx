@@ -5,23 +5,37 @@ import { MemoryRouter } from 'react-router-dom';
 import fc from 'fast-check';
 import { Layout } from './Layout';
 import { PREREQ_NAV_ITEMS } from './prerequisites/types';
+import { LanguageProvider } from '../hooks/useLanguage';
+import { fr } from '../i18n/translations';
 
 // Minimum property-test iterations mandated by the design (>= 100).
 const NUM_RUNS = 100;
 
 const PREREQ_TRIGGER_LABEL = 'OPCP installation prerequisites';
 
+// Nav entries carry a translation key (labelKey); links render their resolved
+// text via t(labelKey). Under the default French language the accessible name
+// of each link equals the French dictionary value for that key.
+function navLabel(item: (typeof PREREQ_NAV_ITEMS)[number]): string {
+  return fr[item.labelKey];
+}
+
 // Layout uses <Link>, so it must render inside a Router. Auth is read at render
 // time via authService.isAuthenticated() (!!localStorage 'access_token') and
 // authService.isAdmin() (localStorage 'user_role' === 'administrator'). We drive
 // auth by seeding localStorage before render.
 function renderLayout() {
+  // Layout now calls useTranslation(), so wrap it in a LanguageProvider.
+  // localStorage is cleared in beforeEach, so the default French language is
+  // active and labels resolve to their French copy.
   return render(
-    <MemoryRouter>
-      <Layout>
-        <div>content</div>
-      </Layout>
-    </MemoryRouter>,
+    <LanguageProvider>
+      <MemoryRouter>
+        <Layout>
+          <div>content</div>
+        </Layout>
+      </MemoryRouter>
+    </LanguageProvider>,
   );
 }
 
@@ -63,7 +77,7 @@ describe('Property 1: navigation entries map to their configured routes', () => 
         // Within the revealed dropdown, the link for this entry targets exactly
         // its configured route.
         const link = within(dropdownContainer).getByRole('link', {
-          name: item.label,
+          name: navLabel(item),
         }) as HTMLAnchorElement;
         expect(link.getAttribute('href')).toBe(item.route);
       }),
@@ -82,7 +96,7 @@ describe('Property 1: navigation entries map to their configured routes', () => 
 
     for (const item of PREREQ_NAV_ITEMS) {
       const link = within(dropdownContainer).getByRole('link', {
-        name: item.label,
+        name: navLabel(item),
       }) as HTMLAnchorElement;
       expect(link.getAttribute('href')).toBe(item.route);
     }
@@ -100,7 +114,7 @@ describe('Property 1: navigation entries map to their configured routes', () => 
     const dropdownContainer = desktopTrigger.parentElement as HTMLElement;
     for (const item of PREREQ_NAV_ITEMS) {
       const link = within(dropdownContainer).getByRole('link', {
-        name: item.label,
+        name: navLabel(item),
       }) as HTMLAnchorElement;
       expect(link.getAttribute('href')).toBe(item.route);
     }
@@ -122,7 +136,7 @@ describe('Property 1: navigation entries map to their configured routes', () => 
       fc.property(fc.constantFrom(...PREREQ_NAV_ITEMS), (item) => {
         // Every mobile link carrying this entry's label targets exactly its route.
         const links = screen.getAllByRole('link', {
-          name: item.label,
+          name: navLabel(item),
         }) as HTMLAnchorElement[];
         expect(links.length).toBeGreaterThan(0);
         expect(links.every((l) => l.getAttribute('href') === item.route)).toBe(true);
@@ -162,7 +176,7 @@ describe('prerequisites menu auth-gated visibility', () => {
       // ...along with a link for each configured entry pointing at its route.
       for (const item of PREREQ_NAV_ITEMS) {
         const links = screen.getAllByRole('link', {
-          name: item.label,
+          name: navLabel(item),
         }) as HTMLAnchorElement[];
         expect(links.length).toBeGreaterThan(0);
         expect(links.every((l) => l.getAttribute('href') === item.route)).toBe(true);
@@ -177,7 +191,7 @@ describe('prerequisites menu auth-gated visibility', () => {
 
       expect(screen.queryByText(PREREQ_TRIGGER_LABEL)).toBeNull();
       for (const item of PREREQ_NAV_ITEMS) {
-        expect(screen.queryByRole('link', { name: item.label })).toBeNull();
+        expect(screen.queryByRole('link', { name: navLabel(item) })).toBeNull();
       }
     });
 
@@ -191,7 +205,7 @@ describe('prerequisites menu auth-gated visibility', () => {
       // Neither the section heading nor any entry link is present.
       expect(screen.queryByText(PREREQ_TRIGGER_LABEL)).toBeNull();
       for (const item of PREREQ_NAV_ITEMS) {
-        expect(screen.queryByRole('link', { name: item.label })).toBeNull();
+        expect(screen.queryByRole('link', { name: navLabel(item) })).toBeNull();
       }
     });
   });

@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { documentService, type Document, type DocumentCategory } from '../services/documentService';
+import { useTranslation } from '../hooks/useLanguage';
 
-const CATEGORY_LABELS: Record<DocumentCategory, string> = {
-  statutes: 'Statuts',
-  minutes: 'Comptes rendus',
-  financial_reports: 'Rapports financiers',
-  other: 'Autre',
+/** Maps each document category to its translation key (resolved at render time). */
+const CATEGORY_LABEL_KEYS: Record<DocumentCategory, string> = {
+  statutes: 'page.documents.category.statutes',
+  minutes: 'page.documents.category.minutes',
+  financial_reports: 'page.documents.category.financialReports',
+  other: 'page.documents.category.other',
 };
 const CATEGORY_ORDER: DocumentCategory[] = ['statutes', 'minutes', 'financial_reports', 'other'];
 
@@ -22,6 +24,7 @@ export function formatSize(bytes: number): string {
 }
 
 export const DocumentsPage = () => {
+  const { t } = useTranslation();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +36,7 @@ export const DocumentsPage = () => {
     documentService
       .listDocuments()
       .then((res) => { if (active) setDocuments(res.documents); })
-      .catch(() => { if (active) setError('Impossible de charger les documents'); })
+      .catch(() => { if (active) setError(t('page.documents.error.load')); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, []);
@@ -57,26 +60,26 @@ export const DocumentsPage = () => {
       setDownloadError(null);
       await documentService.downloadDocument(doc.id, doc.original_name); // Requirement 10.1
     } catch {
-      setDownloadError(`Échec du téléchargement de « ${doc.original_name} »`); // Requirement 10.3
+      setDownloadError(`${t('page.documents.error.downloadPrefix')}${doc.original_name}${t('page.documents.error.downloadSuffix')}`); // Requirement 10.3
     }
   };
 
-  if (loading) return <div className="card p-6 text-gray-600">Chargement des documents…</div>;
+  if (loading) return <div className="card p-6 text-gray-600">{t('page.documents.loading')}</div>;
   if (error) return (
     <div className="card p-6 bg-red-50 border border-red-200 text-red-700">{error}</div>
   );
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[#000E9C] mb-5">Documents</h1>
+      <h1 className="text-2xl font-bold text-[#000E9C] mb-5">{t('page.documents.title')}</h1>
 
       <div className="mb-5">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Rechercher un document…"
-          aria-label="Rechercher un document"
+          placeholder={t('page.documents.search.placeholder')}
+          aria-label={t('page.documents.search.ariaLabel')}
           className="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent"
         />
       </div>
@@ -88,12 +91,12 @@ export const DocumentsPage = () => {
       )}
 
       {filtered.length === 0 ? (
-        <div className="card p-6 text-gray-600">Aucun document disponible.</div>
+        <div className="card p-6 text-gray-600">{t('page.documents.empty')}</div>
       ) : (
         CATEGORY_ORDER.map((category) =>
           grouped[category].length > 0 ? (
             <section key={category} className="card p-6 mb-5">
-              <h2 className="text-lg font-semibold text-[#000E9C] mb-3">{CATEGORY_LABELS[category]}</h2>
+              <h2 className="text-lg font-semibold text-[#000E9C] mb-3">{t(CATEGORY_LABEL_KEYS[category])}</h2>
               <ul className="divide-y divide-gray-100">
                 {grouped[category].map((doc) => (
                   <li key={doc.id} className="flex items-center justify-between py-2.5">
@@ -105,7 +108,7 @@ export const DocumentsPage = () => {
                       onClick={() => handleDownload(doc)}
                       className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
                     >
-                      Télécharger
+                      {t('page.documents.download')}
                     </button>
                   </li>
                 ))}

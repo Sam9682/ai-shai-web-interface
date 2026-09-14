@@ -3,6 +3,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import fc from 'fast-check';
 import { Layout, computeHeaderLabel } from './Layout';
+import { LanguageProvider } from '../hooks/useLanguage';
 import type { CurrentUser } from '../services/authService';
 
 // Minimum property-test iterations mandated by the design (>= 100).
@@ -13,12 +14,15 @@ const NUM_RUNS = 100;
 // drive the user state by seeding localStorage['user'] before render, matching
 // how authService.getCurrentUser() reads it.
 function renderLayout() {
+  // Layout calls useTranslation(), so wrap it in a LanguageProvider.
   return render(
-    <MemoryRouter>
-      <Layout>
-        <div>content</div>
-      </Layout>
-    </MemoryRouter>,
+    <LanguageProvider>
+      <MemoryRouter>
+        <Layout>
+          <div>content</div>
+        </Layout>
+      </MemoryRouter>
+    </LanguageProvider>,
   );
 }
 

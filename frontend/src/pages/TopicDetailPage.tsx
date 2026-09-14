@@ -3,8 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { forumService, type TopicDetail, type Post } from '../services/forumService';
 import { authService } from '../services/authService';
 import { RichTextEditor } from '../components/RichTextEditor';
+import { useTranslation } from '../hooks/useLanguage';
 
 export const TopicDetailPage = () => {
+  const { t } = useTranslation();
   const { topicId } = useParams<{ topicId: string }>();
   const [topic, setTopic] = useState<TopicDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ export const TopicDetailPage = () => {
         : await forumService.getTopicPublic(topicId);
       setTopic(data);
     } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Erreur lors du chargement du sujet');
+      setError(err.response?.data?.error?.message || t('page.topicDetail.error.load'));
     } finally {
       setLoading(false);
     }
@@ -61,7 +63,7 @@ export const TopicDetailPage = () => {
       setReplyContent('');
       await loadTopic();
     } catch (err: any) {
-      setSubmitError(err.response?.data?.error?.message || 'Erreur lors de l\'envoi de la réponse');
+      setSubmitError(err.response?.data?.error?.message || t('page.topicDetail.error.reply'));
     } finally {
       setSubmitting(false);
     }
@@ -85,17 +87,17 @@ export const TopicDetailPage = () => {
       setEditContent('');
       await loadTopic();
     } catch (err: any) {
-      alert(err.response?.data?.error?.message || 'Erreur lors de la modification');
+      alert(err.response?.data?.error?.message || t('page.topicDetail.error.edit'));
     }
   };
 
   const handleDeletePost = async (postId: string) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) return;
+    if (!window.confirm(t('page.topicDetail.confirm.deletePost'))) return;
     try {
       await forumService.deletePost(postId);
       await loadTopic();
     } catch (err: any) {
-      alert(err.response?.data?.error?.message || 'Erreur lors de la suppression');
+      alert(err.response?.data?.error?.message || t('page.topicDetail.error.delete'));
     }
   };
 
@@ -119,17 +121,17 @@ export const TopicDetailPage = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-12 text-gray-500">Chargement...</div>;
+    return <div className="text-center py-12 text-gray-500">{t('page.topicDetail.loading')}</div>;
   }
 
   if (error || !topic) {
     return (
       <div>
         <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-3 rounded">
-          <p className="text-sm text-red-700">{error || 'Sujet introuvable'}</p>
+          <p className="text-sm text-red-700">{error || t('page.topicDetail.notFound')}</p>
         </div>
         <Link to="/forum" className="text-sm font-medium text-[#4949FF] hover:underline">
-          ← Retour au forum
+          {t('page.topicDetail.back')}
         </Link>
       </div>
     );
@@ -139,7 +141,7 @@ export const TopicDetailPage = () => {
     <div>
       <div className="mb-5">
         <Link to="/forum" className="text-sm font-medium text-[#4949FF] hover:underline">
-          ← Retour au forum
+          {t('page.topicDetail.back')}
         </Link>
       </div>
 
@@ -148,10 +150,10 @@ export const TopicDetailPage = () => {
         <div className="flex items-center gap-2 mb-2">
           <h1 className="text-2xl font-bold text-gray-900">{topic.title}</h1>
           {topic.is_pinned && (
-            <span className="text-xs font-medium px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded">Épinglé</span>
+            <span className="text-xs font-medium px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded">{t('page.topicDetail.pinned')}</span>
           )}
           {topic.is_locked && (
-            <span className="text-xs font-medium px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">Verrouillé</span>
+            <span className="text-xs font-medium px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">{t('page.topicDetail.locked')}</span>
           )}
         </div>
         <div className="text-xs text-gray-500">
@@ -173,19 +175,19 @@ export const TopicDetailPage = () => {
                     <p className="text-sm font-semibold text-gray-900">{post.author_name}</p>
                     <p className="text-xs text-gray-500">{formatDate(post.created_at)}</p>
                     {post.updated_at !== post.created_at && (
-                      <p className="text-xs text-gray-400 italic">Modifié le {formatDate(post.updated_at)}</p>
+                      <p className="text-xs text-gray-400 italic">{t('page.topicDetail.editedOn')} {formatDate(post.updated_at)}</p>
                     )}
                   </div>
                   {isAuthenticated && editingPostId !== post.id && (
                     <div className="flex gap-3">
                       {canEditPost(post) && (
                         <button onClick={() => handleEditPost(post)} className="text-xs text-[#4949FF] hover:underline font-medium">
-                          Modifier
+                          {t('page.topicDetail.edit')}
                         </button>
                       )}
                       {canDeletePost() && (
                         <button onClick={() => handleDeletePost(post.id)} className="text-xs text-red-600 hover:underline font-medium">
-                          Supprimer
+                          {t('page.topicDetail.delete')}
                         </button>
                       )}
                     </div>
@@ -197,20 +199,20 @@ export const TopicDetailPage = () => {
                     <RichTextEditor
                       value={editContent}
                       onChange={setEditContent}
-                      placeholder="Modifiez votre message..."
+                      placeholder={t('page.topicDetail.editPlaceholder')}
                     />
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleSaveEdit(post.id)}
                         className="px-3 py-1.5 text-xs font-medium rounded text-white bg-[#000E9C] hover:bg-[#4949FF] transition-colors"
                       >
-                        Enregistrer
+                        {t('page.topicDetail.save')}
                       </button>
                       <button
                         onClick={handleCancelEdit}
                         className="px-3 py-1.5 text-xs font-medium rounded text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
                       >
-                        Annuler
+                        {t('page.topicDetail.cancel')}
                       </button>
                     </div>
                   </div>
@@ -229,7 +231,7 @@ export const TopicDetailPage = () => {
       {/* Reply Form */}
       {!topic.is_locked && (
         <div className="card p-5">
-          <h3 className="text-base font-semibold text-gray-900 mb-3">Répondre</h3>
+          <h3 className="text-base font-semibold text-gray-900 mb-3">{t('page.topicDetail.reply.title')}</h3>
           <form onSubmit={handleSubmitReply}>
             {submitError && (
               <div className="mb-3 bg-red-50 border-l-4 border-red-500 p-3 rounded">
@@ -239,7 +241,7 @@ export const TopicDetailPage = () => {
             <RichTextEditor
               value={replyContent}
               onChange={setReplyContent}
-              placeholder="Écrivez votre réponse..."
+              placeholder={t('page.topicDetail.reply.placeholder')}
               disabled={submitting}
             />
             <div className="mt-3 flex justify-end">
@@ -248,7 +250,7 @@ export const TopicDetailPage = () => {
                 disabled={submitting || !replyContent.trim()}
                 className="px-5 py-2 text-sm font-medium rounded text-white bg-[#000E9C] hover:bg-[#4949FF] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {submitting ? 'Envoi...' : 'Envoyer'}
+                {submitting ? t('page.topicDetail.reply.submitting') : t('page.topicDetail.reply.submit')}
               </button>
             </div>
           </form>
@@ -257,7 +259,7 @@ export const TopicDetailPage = () => {
 
       {topic.is_locked && (
         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded">
-          <p className="text-sm text-yellow-800">Ce sujet est verrouillé. Vous ne pouvez plus y répondre.</p>
+          <p className="text-sm text-yellow-800">{t('page.topicDetail.lockedNotice')}</p>
         </div>
       )}
     </div>

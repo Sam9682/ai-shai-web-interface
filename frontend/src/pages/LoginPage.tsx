@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService, isLogin2FAChallenge } from '../services/authService';
 import { validateEmail } from '../utils/validation';
+import { useTranslation } from '../hooks/useLanguage';
 
 export const LoginPage = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,7 +20,7 @@ export const LoginPage = () => {
     setError('');
 
     if (!validateEmail(email)) {
-      setError('Adresse email invalide');
+      setError(t('page.login.error.invalidEmail'));
       return;
     }
 
@@ -38,7 +40,7 @@ export const LoginPage = () => {
         || err.response?.data?.detail 
         || err.response?.data?.error?.message 
         || err.message 
-        || 'Échec de la connexion';
+        || t('page.login.error.failed');
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -59,7 +61,7 @@ export const LoginPage = () => {
       navigate('/');
     } catch (err: any) {
       console.error('2FA verification error:', err);
-      setError('Code de vérification invalide.');
+      setError(t('page.login.error.invalidCode'));
     } finally {
       setLoading(false);
     }
@@ -69,9 +71,9 @@ export const LoginPage = () => {
     <div className="min-h-[70vh] flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold text-[#000E9C]">Connexion</h2>
+          <h2 className="text-3xl font-bold text-[#000E9C]">{t('page.login.title')}</h2>
           <p className="mt-1 text-sm text-gray-600">
-            {challengeToken ? 'Vérification en deux étapes' : 'Accédez à votre espace membre'}
+            {challengeToken ? t('page.login.subtitle.twoFactor') : t('page.login.subtitle.default')}
           </p>
         </div>
         <div className="card p-8">
@@ -83,11 +85,11 @@ export const LoginPage = () => {
                 </div>
               )}
               <p className="text-sm text-gray-600">
-                Saisissez le code de vérification pour terminer la connexion.
+                {t('page.login.twoFactor.instruction')}
               </p>
               <div>
                 <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-1">
-                  Code de vérification
+                  {t('page.login.field.code')}
                 </label>
                 <input
                   id="code"
@@ -108,7 +110,7 @@ export const LoginPage = () => {
                 disabled={loading}
                 className="w-full py-2.5 text-sm font-semibold rounded text-white bg-[#000E9C] hover:bg-[#4949FF] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4949FF] disabled:opacity-50 transition-colors"
               >
-                {loading ? 'Vérification en cours...' : 'Vérifier'}
+                {loading ? t('page.login.submitting.verify') : t('page.login.submit.verify')}
               </button>
 
               <button
@@ -120,7 +122,7 @@ export const LoginPage = () => {
                 }}
                 className="w-full text-sm text-[#4949FF] hover:underline"
               >
-                Retour
+                {t('page.login.back')}
               </button>
             </form>
           ) : (
@@ -132,7 +134,7 @@ export const LoginPage = () => {
               )}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  Adresse email
+                  {t('page.login.field.email')}
                 </label>
                 <input
                   id="email"
@@ -147,7 +149,7 @@ export const LoginPage = () => {
               </div>
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Mot de passe
+                  {t('page.login.field.password')}
                 </label>
                 <input
                   id="password"
@@ -166,19 +168,19 @@ export const LoginPage = () => {
                 disabled={loading}
                 className="w-full py-2.5 text-sm font-semibold rounded text-white bg-[#000E9C] hover:bg-[#4949FF] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4949FF] disabled:opacity-50 transition-colors"
               >
-                {loading ? 'Connexion en cours...' : 'Se connecter'}
+                {loading ? t('page.login.submitting') : t('page.login.submit')}
               </button>
             </form>
           )}
           {!challengeToken && (
             <div className="mt-5 space-y-2 text-center">
               <a href="/forgot-password" className="text-sm text-[#4949FF] hover:underline">
-                Mot de passe oublié ?
+                {t('page.login.forgotPassword')}
               </a>
               <p className="text-sm text-gray-600">
-                Pas encore membre ?{' '}
+                {t('page.login.notMember')}{' '}
                 <a href="/register" className="font-medium text-[#4949FF] hover:underline">
-                  Inscrivez-vous ici
+                  {t('page.login.registerHere')}
                 </a>
               </p>
             </div>

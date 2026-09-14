@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { forumService, type Topic } from '../services/forumService';
+import { useTranslation } from '../hooks/useLanguage';
 
 export const ForumPage = () => {
+  const { t } = useTranslation();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +20,7 @@ export const ForumPage = () => {
       const data = await forumService.getTopics();
       setTopics(data);
     } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Erreur lors du chargement des sujets');
+      setError(err.response?.data?.error?.message || t('page.forum.error.load'));
     } finally {
       setLoading(false);
     }
@@ -37,7 +39,7 @@ export const ForumPage = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-12 text-gray-500">Chargement...</div>
+      <div className="text-center py-12 text-gray-500">{t('page.forum.loading')}</div>
     );
   }
 
@@ -45,14 +47,14 @@ export const ForumPage = () => {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-[#000E9C]">Forum</h1>
-          <p className="mt-1 text-sm text-gray-600">Discutez avec les autres membres de l'association</p>
+          <h1 className="text-3xl font-bold text-[#000E9C]">{t('page.forum.title')}</h1>
+          <p className="mt-1 text-sm text-gray-600">{t('page.forum.subtitle')}</p>
         </div>
         <Link
           to="/forum/new"
           className="btn-primary text-sm"
         >
-          Nouveau sujet
+          {t('page.forum.newTopic')}
         </Link>
       </div>
 
@@ -65,9 +67,9 @@ export const ForumPage = () => {
       <div className="card overflow-hidden">
         {topics.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">Aucun sujet pour le moment</p>
+            <p className="text-gray-600 mb-4">{t('page.forum.empty')}</p>
             <Link to="/forum/new" className="btn-primary text-sm">
-              Créer le premier sujet
+              {t('page.forum.createFirst')}
             </Link>
           </div>
         ) : (
@@ -86,12 +88,12 @@ export const ForumPage = () => {
                         </h3>
                         {topic.is_pinned && (
                           <span className="text-xs font-medium px-1.5 py-0.5 bg-yellow-100 text-yellow-800 rounded">
-                            Épinglé
+                            {t('page.forum.topic.pinned')}
                           </span>
                         )}
                         {topic.is_locked && (
                           <span className="text-xs font-medium px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">
-                            Verrouillé
+                            {t('page.forum.topic.locked')}
                           </span>
                         )}
                       </div>
@@ -101,7 +103,7 @@ export const ForumPage = () => {
                     </div>
                     <div className="ml-4">
                       <span className="text-xs font-medium text-[#000E9C] bg-blue-50 px-2.5 py-1 rounded">
-                        {topic.post_count} réponses
+                        {topic.post_count} {t('page.forum.topic.repliesSuffix')}
                       </span>
                     </div>
                   </div>

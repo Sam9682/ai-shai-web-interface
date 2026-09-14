@@ -3,6 +3,18 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, cleanup, waitFor, within } from '@testing-library/react';
 import fc from 'fast-check';
 import { SecurityPage } from './SecurityPage';
+import { LanguageProvider } from '../hooks/useLanguage';
+
+// SecurityPage consumes the translation context, so it must render inside a
+// LanguageProvider. The default Active_Language is French, so the existing
+// French-label assertions in this file continue to hold.
+function renderPage() {
+  return render(
+    <LanguageProvider>
+      <SecurityPage />
+    </LanguageProvider>,
+  );
+}
 
 // SecurityPage reads the 2FA status exclusively through
 // securityService.getTwoFactorStatus(). Mock the service so each case can inject
@@ -82,7 +94,7 @@ describe('Feature: account-security, Property 5: 2FA status rendering fidelity',
         mockedGetStatus.mockReset();
         mockedGetStatus.mockResolvedValue({ totp_enabled: totp, email_2fa_enabled: email });
 
-        render(<SecurityPage />);
+        renderPage();
 
         // Wait for the async status fetch to resolve and the method cards to render.
         await waitFor(() => {
@@ -111,7 +123,7 @@ describe('Feature: account-security, Property 5: 2FA status rendering fidelity',
     async ({ totp, email }) => {
       mockedGetStatus.mockResolvedValue({ totp_enabled: totp, email_2fa_enabled: email });
 
-      render(<SecurityPage />);
+      renderPage();
 
       await waitFor(() => {
         expect(screen.getByRole('heading', { name: TOTP_HEADING })).toBeInTheDocument();

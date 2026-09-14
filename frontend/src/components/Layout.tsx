@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import type { CurrentUser } from '../services/authService';
 import { PREREQ_NAV_ITEMS } from './prerequisites/types';
+import { useTranslation } from '../hooks/useLanguage';
 
 interface LayoutProps {
   children: ReactNode;
@@ -39,6 +40,7 @@ export const Layout = ({ children }: LayoutProps) => {
   const isAuthenticated = authService.isAuthenticated();
   const isAdmin = authService.isAdmin();
   const headerLabel = computeHeaderLabel(authService.getCurrentUser());
+  const { language, setLanguage, t } = useTranslation();
   const [showEventsMenu, setShowEventsMenu] = useState(false);
   const [showPrereqMenu, setShowPrereqMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -64,40 +66,40 @@ export const Layout = ({ children }: LayoutProps) => {
             {/* Desktop Menu */}
             <div className="hidden sm:flex items-center gap-1">
               <Link to="/" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
-                Accueil
+                {t('nav.home')}
               </Link>
               {isAuthenticated && (
                 <>
                   <Link to="/forum" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
-                    Forum
+                    {t('nav.forum')}
                   </Link>
                   <div className="relative" onMouseEnter={() => setShowEventsMenu(true)} onMouseLeave={() => setShowEventsMenu(false)}>
                     <Link to="/events" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
-                      Événements {isAdmin && <span className="ml-0.5 text-xs">▾</span>}
+                      {t('nav.events')} {isAdmin && <span className="ml-0.5 text-xs">▾</span>}
                     </Link>
                     {isAdmin && showEventsMenu && (
                       <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded shadow-lg border border-gray-200 py-1 z-50">
                         <Link to="/admin/events" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:no-underline">
-                          Gérer les événements
+                          {t('nav.events.manage')}
                         </Link>
                       </div>
                     )}
                   </div>
                   <Link to="/documents" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
-                    Documents
+                    {t('nav.documents')}
                   </Link>
                   <Link to="/oracle" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
-                    Oracle IA
+                    {t('nav.oracle')}
                   </Link>
                   <div className="relative" onMouseEnter={() => setShowPrereqMenu(true)} onMouseLeave={() => setShowPrereqMenu(false)}>
                     <span className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors cursor-pointer">
-                      OPCP installation prerequisites <span className="ml-0.5 text-xs">▾</span>
+                      {t('nav.prerequisites')} <span className="ml-0.5 text-xs">▾</span>
                     </span>
                     {showPrereqMenu && (
                       <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded shadow-lg border border-gray-200 py-1 z-50">
                         {PREREQ_NAV_ITEMS.map((item) => (
                           <Link key={item.route} to={item.route} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:no-underline">
-                            {item.label}
+                            {t(item.labelKey)}
                           </Link>
                         ))}
                       </div>
@@ -105,7 +107,7 @@ export const Layout = ({ children }: LayoutProps) => {
                   </div>
                   {isAdmin && (
                     <Link to="/admin/users" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
-                      Utilisateurs
+                      {t('nav.users')}
                     </Link>
                   )}
                 </>
@@ -114,11 +116,28 @@ export const Layout = ({ children }: LayoutProps) => {
           </div>
           {/* Desktop Auth */}
           <div className="hidden sm:flex items-center gap-2">
+            <div className="flex items-center gap-1" role="group" aria-label="Language">
+              {(['fr', 'en'] as const).map((lng) => (
+                <button
+                  key={lng}
+                  type="button"
+                  onClick={() => setLanguage(lng)}
+                  aria-pressed={language === lng}
+                  className={
+                    language === lng
+                      ? 'px-2 py-1 text-xs font-semibold rounded bg-white text-[#000E9C]'
+                      : 'px-2 py-1 text-xs font-medium rounded text-white/80 hover:bg-white/10'
+                  }
+                >
+                  {t(`lang.${lng}`)}
+                </button>
+              ))}
+            </div>
             {isAuthenticated ? (
               <>
                 <Link
                   to="/account/security"
-                  aria-label="Sécurité du compte"
+                  aria-label={t('auth.accountSecurity')}
                   className="inline-flex items-center justify-center p-1.5 bg-white/15 border border-white/30 text-white rounded hover:bg-white/25 transition-colors hover:no-underline"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" aria-hidden="true">
@@ -130,7 +149,7 @@ export const Layout = ({ children }: LayoutProps) => {
                   onClick={handleLogout}
                   className="px-4 py-1.5 text-sm font-medium bg-white/15 border border-white/30 text-white rounded hover:bg-white/25 transition-colors"
                 >
-                  Déconnexion
+                  {t('auth.logout')}
                 </button>
               </>
             ) : (
@@ -139,13 +158,13 @@ export const Layout = ({ children }: LayoutProps) => {
                   to="/login"
                   className="px-4 py-1.5 text-sm font-medium bg-white/15 border border-white/30 text-white rounded hover:bg-white/25 transition-colors hover:no-underline"
                 >
-                  Connexion
+                  {t('auth.login')}
                 </Link>
                 <Link
                   to="/register"
                   className="px-4 py-1.5 text-sm font-medium bg-white text-[#000E9C] rounded hover:bg-gray-100 transition-colors hover:no-underline"
                 >
-                  Inscription
+                  {t('auth.register')}
                 </Link>
               </div>
             )}
@@ -165,29 +184,46 @@ export const Layout = ({ children }: LayoutProps) => {
       {mobileMenuOpen && (
         <div className="sm:hidden bg-white border-b border-gray-200 shadow-md">
           <div className="px-4 py-3 space-y-1">
+            <div className="flex items-center gap-1 pb-2 mb-2 border-b border-gray-200" role="group" aria-label="Language">
+              {(['fr', 'en'] as const).map((lng) => (
+                <button
+                  key={lng}
+                  type="button"
+                  onClick={() => setLanguage(lng)}
+                  aria-pressed={language === lng}
+                  className={
+                    language === lng
+                      ? 'px-3 py-1 text-sm font-semibold rounded bg-[#000E9C] text-white'
+                      : 'px-3 py-1 text-sm font-medium rounded text-[#000E9C] hover:bg-gray-50'
+                  }
+                >
+                  {t(`lang.${lng}`)}
+                </button>
+              ))}
+            </div>
             <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
-              Accueil
+              {t('nav.home')}
             </Link>
             {isAuthenticated && (
               <>
                 <Link to="/forum" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
-                  Forum
+                  {t('nav.forum')}
                 </Link>
                 <Link to="/events" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
-                  Événements
+                  {t('nav.events')}
                 </Link>
                 {isAdmin && (
                   <Link to="/admin/events" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 pl-6 text-sm text-gray-600 hover:bg-gray-50 rounded hover:no-underline">
-                    Gérer les événements
+                    {t('nav.events.manage')}
                   </Link>
                 )}
                 <Link to="/documents" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
-                  Documents
+                  {t('nav.documents')}
                 </Link>
                 <Link to="/oracle" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
-                  Oracle IA
+                  {t('nav.oracle')}
                 </Link>
-                <div className="px-3 py-2 text-sm font-medium text-gray-700">OPCP installation prerequisites</div>
+                <div className="px-3 py-2 text-sm font-medium text-gray-700">{t('nav.prerequisites')}</div>
                 {PREREQ_NAV_ITEMS.map((item) => (
                   <Link
                     key={item.route}
@@ -195,12 +231,12 @@ export const Layout = ({ children }: LayoutProps) => {
                     onClick={() => setMobileMenuOpen(false)}
                     className="block px-3 py-2 pl-6 text-sm text-gray-600 hover:bg-gray-50 rounded hover:no-underline"
                   >
-                    {item.label}
+                    {t(item.labelKey)}
                   </Link>
                 ))}
                 {isAdmin && (
                   <Link to="/admin/users" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
-                    Utilisateurs
+                    {t('nav.users')}
                   </Link>
                 )}
               </>
@@ -213,22 +249,22 @@ export const Layout = ({ children }: LayoutProps) => {
                     onClick={() => setMobileMenuOpen(false)}
                     className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline"
                   >
-                    Sécurité du compte
+                    {t('auth.accountSecurity')}
                   </Link>
                   <button
                     onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
                     className="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded"
                   >
-                    Déconnexion
+                    {t('auth.logout')}
                   </button>
                 </>
               ) : (
                 <div className="space-y-2">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-[#000E9C] hover:bg-gray-50 rounded hover:no-underline">
-                    Connexion
+                    {t('auth.login')}
                   </Link>
                   <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-white bg-[#000E9C] rounded text-center hover:no-underline">
-                    Inscription
+                    {t('auth.register')}
                   </Link>
                 </div>
               )}

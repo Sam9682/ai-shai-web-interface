@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, cleanup, within, fireEvent, act } from '@testing-library/react';
 import fc from 'fast-check';
+import type React from 'react';
 import { QuestionAnswerForm } from './QuestionAnswerForm';
-import { PREREQ_MARKERS } from './types';
 import type { QuestionFormConfig } from './types';
+import { LanguageProvider } from '../../hooks/useLanguage';
 import { authService } from '../../services/authService';
 import { prerequisitesService } from '../../services/prerequisitesService';
 
@@ -39,8 +40,23 @@ function setAuth(isMember: boolean) {
   mockedAuth.isAdmin.mockReturnValue(!isMember);
 }
 
+// QuestionAnswerForm now resolves its marker labels through the translation
+// layer (t(labelKey)). Under the default French language the markers resolve to
+// their French copy; the per-row marker's aria-label uses this resolved text.
+const MARKER_LABEL_MANDATORY = 'Obligatoire';
+const MARKER_LABEL_OPTIONAL = 'Optionnel';
+
+// Render QuestionAnswerForm inside a LanguageProvider so useTranslation works.
+// A helper keeps the many render sites concise while wrapping every mount.
+function renderForm(ui: React.ReactElement) {
+  return render(<LanguageProvider>{ui}</LanguageProvider>);
+}
+
 beforeEach(() => {
   vi.clearAllMocks();
+  // Clear the language store so the default French language is active and the
+  // marker labels resolve to their French copy.
+  localStorage.clear();
   // Default: loads resolve to empty answers so mount never rejects.
   mockedPrereq.loadClientAnswers.mockResolvedValue({ slug: '', answers: {} });
   mockedPrereq.saveClientAnswer.mockResolvedValue(undefined);
@@ -103,7 +119,7 @@ describe('Property 6: read-only questions + editable member answer', () => {
         cleanup();
         setAuth(isMember);
 
-        render(<QuestionAnswerForm slug="network-checklist" title="Test" config={config} />);
+        renderForm(<QuestionAnswerForm slug="network-checklist" title="Test" config={config} />);
 
         const canAnswer = isMember; // authenticated && !admin
 
@@ -161,10 +177,12 @@ describe('Property 7: required row annotations', () => {
         cleanup();
         setAuth(isMember);
 
-        render(<QuestionAnswerForm slug="vcf" title="Test" config={config} />);
+        renderForm(<QuestionAnswerForm slug="vcf" title="Test" config={config} />);
 
-        const expectedMandatory = PREREQ_MARKERS.mandatory;
-        const expectedOptional = PREREQ_MARKERS.optional;
+        // Under the default French language the markers resolve to their French
+        // labels; the mandatory marker uses the 🔴 icon and the optional ⚪.
+        const expectedMandatory = { label: MARKER_LABEL_MANDATORY, icon: '🔴' };
+        const expectedOptional = { label: MARKER_LABEL_OPTIONAL, icon: '⚪' };
 
         for (const section of config.sections) {
           for (const row of section.rows) {
@@ -180,7 +198,7 @@ describe('Property 7: required row annotations', () => {
             expect(rowEl).not.toBeNull();
 
             // The marker icon is rendered on a node whose aria-label is the
-            // marker label; within the row it is unique.
+            // resolved marker label; within the row it is unique.
             const markerIcon = within(rowEl).getByLabelText(expected.label);
             expect(markerIcon).toHaveTextContent(expected.icon);
             // The opposite marker is absent from this row.
@@ -235,7 +253,7 @@ describe('Property 9: saving a client answer forwards it to the service', () => 
         setAuth(true);
 
         const slug = 'core-control-plane';
-        render(<QuestionAnswerForm slug={slug} title="Test" config={fixedConfig} />);
+        renderForm(<QuestionAnswerForm slug={slug} title="Test" config={fixedConfig} />);
 
         // Let the mount-time loadClientAnswers promise resolve before typing.
         await act(async () => {
@@ -280,7 +298,7 @@ describe('Property 11: a failed save shows an error indication', () => {
         mockedPrereq.saveClientAnswer.mockRejectedValue(new Error('save failed'));
         setAuth(true);
 
-        render(
+        renderForm(
           <QuestionAnswerForm slug="cloudstore" title="Test" config={fixedConfig} />,
         );
 
