@@ -40,6 +40,10 @@ services:
     volumes:
       - app_data:/app/storage
       - ./ssl:/app/ssl:ro
+      # Shai business context + reference docs mounted so they can be updated
+      # without rebuilding the image (read as relative paths from WORKDIR /app).
+      - ./conf/shai_context.md:/app/conf/shai_context.md:ro
+      - ./docs/opcp_external_docs:/app/docs/opcp_external_docs:ro
     depends_on:
       postgres:
         condition: service_healthy
