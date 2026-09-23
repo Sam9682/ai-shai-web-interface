@@ -3,6 +3,8 @@ services:
   postgres:
     image: pgvector/pgvector:pg15
     container_name: ai-shai-web-interface-postgres-${USER_ID:-1}-5432
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: shai_db
       POSTGRES_USER: shai_user
