@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { forumService, type TopicDetail, type Post } from '../services/forumService';
 import { authService } from '../services/authService';
-import { RichTextEditor } from '../components/RichTextEditor';
+import { RichTextEditor, RichContentStyles } from '../components/RichTextEditor';
 import { useTranslation } from '../hooks/useLanguage';
 
 export const TopicDetailPage = () => {
@@ -139,6 +139,9 @@ export const TopicDetailPage = () => {
 
   return (
     <div>
+      {/* Load shared rich-content formatting rules so stored post HTML renders
+          with the same styling as the editor, even when the editor isn't mounted. */}
+      <RichContentStyles />
       <div className="mb-5">
         <Link to="/forum" className="text-sm font-medium text-[#4949FF] hover:underline">
           {t('page.topicDetail.back')}
@@ -218,7 +221,7 @@ export const TopicDetailPage = () => {
                   </div>
                 ) : (
                   <div 
-                    className="text-sm text-gray-700 prose prose-sm max-w-none"
+                    className="text-sm text-gray-700 prose prose-sm max-w-none rich-content"
                     dangerouslySetInnerHTML={{ __html: post.content }}
                   />
                 )}

@@ -1,0 +1,141 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Bug confirmed — all 12 assertions failed on unfixed code (expected for an exploration test).\n\nRendering counterexamples (TopicDetailPage display container), one per formatting type from containsFormatting:\n- `<h1>Titre</h1>`      -> expected false to be true: display `<div>` lacks `rich-content` class (has only `text-sm text-gray-700 prose prose-sm max-w-none`)\n- `<ul><li>a</li><li>b</li></ul>` -> same: no `rich-content` class on display container\n- `<img src=\"https://example.com/x.png\">` -> same\n- `<hr>`                 -> same\n\nRoot-cause counterexamples (RichTextEditor <style> selectors):\n- No `.rich-content h1|h2|h3|ul|ol|img|hr` selector exists (toMatch failed for all 7 tags)\n- sharedFormattingRules === 0 vs 4 contenteditable-scoped block/semantic rules (expected 0 to be >= 4). All formatting rules are scoped to `[contenteditable] ...`, which cannot match the non-contenteditable `prose prose-sm` display container — confirming the CSS-scoping root cause.",
+      "lastRunTimestamp": 1790170000520
+    },
+    "3.3 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1790170688576
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790169654501
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790169664112
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170024340
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790169654847
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170028803
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170391702
+      }
+    ],
+    "3.1 Share the formatting stylesheet and apply it in the editor": [
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790169655051
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170398043
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170547944
+      }
+    ],
+    "3.2 Apply the shared class and styles on the display page": [
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790169655494
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170551954
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170642539
+      }
+    ],
+    "3.3 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790169655674
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170650604
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170701003
+      }
+    ],
+    "3.4 Verify preservation tests still pass": [
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790169655847
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170704815
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170760798
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790169655996
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170765333
+      },
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170853024
+      }
+    ],
+    "3. Fix for forum formatting not rendering at display time (CSS scoping)": [
+      {
+        "executionId": "647f1e1b-520a-4946-a2b5-e0fa5bd90012",
+        "chatSessionId": "sess_117beb71-a918-453d-ac20-4836803ef55d",
+        "timestamp": 1790170760983
+      }
+    ]
+  }
+}

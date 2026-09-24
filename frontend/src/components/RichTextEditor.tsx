@@ -1,5 +1,72 @@
 import { useRef, useEffect } from 'react';
 
+/**
+ * Shared formatting stylesheet for rich forum content.
+ *
+ * The formatting rules are retargeted to the shared `.rich-content` class so
+ * they apply BOTH inside the editor (which also carries `rich-content`) and on
+ * the non-`contenteditable` display container on `TopicDetailPage`. This is the
+ * single source of truth for forum content formatting — render it once on any
+ * surface that shows rich content.
+ *
+ * The `[contenteditable]:empty:before` placeholder rule is intentionally scoped
+ * to the editor only and must NOT leak into the display view.
+ */
+export const RichContentStyles = () => (
+  <style>{`
+    [contenteditable]:empty:before {
+      content: attr(data-placeholder);
+      color: #9ca3af;
+      pointer-events: none;
+    }
+
+    [contenteditable] h1, .rich-content h1 {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 0.67em 0;
+    }
+
+    [contenteditable] h2, .rich-content h2 {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 0.75em 0;
+    }
+
+    [contenteditable] h3, .rich-content h3 {
+      font-size: 1.17em;
+      font-weight: bold;
+      margin: 0.83em 0;
+    }
+
+    [contenteditable] ul, [contenteditable] ol,
+    .rich-content ul, .rich-content ol {
+      margin: 1em 0;
+      padding-left: 2em;
+    }
+
+    [contenteditable] ul, .rich-content ul {
+      list-style: disc;
+    }
+
+    [contenteditable] ol, .rich-content ol {
+      list-style: decimal;
+    }
+
+    [contenteditable] img, .rich-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+      margin: 1em 0;
+    }
+
+    [contenteditable] hr, .rich-content hr {
+      border: none;
+      border-top: 2px solid #e5e7eb;
+      margin: 1.5em 0;
+    }
+  `}</style>
+);
+
 interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -220,7 +287,7 @@ export const RichTextEditor = ({ value, onChange, placeholder, disabled }: RichT
         ref={editorRef}
         contentEditable={!disabled}
         onInput={handleInput}
-        className="p-4 min-h-[200px] max-h-[500px] overflow-y-auto focus:outline-none prose prose-sm max-w-none"
+        className="p-4 min-h-[200px] max-h-[500px] overflow-y-auto focus:outline-none prose prose-sm max-w-none rich-content"
         style={{
           wordWrap: 'break-word',
           overflowWrap: 'break-word',
@@ -228,49 +295,7 @@ export const RichTextEditor = ({ value, onChange, placeholder, disabled }: RichT
         data-placeholder={placeholder}
       />
 
-      <style>{`
-        [contenteditable]:empty:before {
-          content: attr(data-placeholder);
-          color: #9ca3af;
-          pointer-events: none;
-        }
-        
-        [contenteditable] h1 {
-          font-size: 2em;
-          font-weight: bold;
-          margin: 0.67em 0;
-        }
-        
-        [contenteditable] h2 {
-          font-size: 1.5em;
-          font-weight: bold;
-          margin: 0.75em 0;
-        }
-        
-        [contenteditable] h3 {
-          font-size: 1.17em;
-          font-weight: bold;
-          margin: 0.83em 0;
-        }
-        
-        [contenteditable] ul, [contenteditable] ol {
-          margin: 1em 0;
-          padding-left: 2em;
-        }
-        
-        [contenteditable] img {
-          max-width: 100%;
-          height: auto;
-          border-radius: 0.5rem;
-          margin: 1em 0;
-        }
-        
-        [contenteditable] hr {
-          border: none;
-          border-top: 2px solid #e5e7eb;
-          margin: 1.5em 0;
-        }
-      `}</style>
+      <RichContentStyles />
     </div>
   );
 };
