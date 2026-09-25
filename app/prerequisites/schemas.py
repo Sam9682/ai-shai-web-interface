@@ -16,8 +16,9 @@ callers/routers get a single, consistent error contract) and are NOT redefined.
 """
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 # Re-export the shared error schema so error bodies stay consistent with the
 # other routers. Do NOT redefine ErrorResponse here.
@@ -29,6 +30,10 @@ __all__ = [
     "ClientAnswersResponse",
     "ClientAnswerUpdateRequest",
     "PrerequisiteUpdateResponse",
+    "InstallationCreateRequest",
+    "InstallationUpdateRequest",
+    "InstallationResponse",
+    "InstallationListResponse",
     "ErrorResponse",
 ]
 
@@ -87,3 +92,53 @@ class PrerequisiteUpdateResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+
+class InstallationCreateRequest(BaseModel):
+    """Request schema for creating an Installation.
+
+    Validates Requirements 6.1, 6.2, 6.5:
+    - ``project_name`` is required and must not be blank/whitespace-only.
+      The ``field_validator`` strips surrounding whitespace and raises a
+      ``ValueError`` for empty values so FastAPI returns a 422 validation error.
+    """
+    project_name: str = Field(min_length=1)
+
+    @field_validator("project_name")
+    @classmethod
+    def _strip_non_blank(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("project_name must not be blank")
+        return v
+
+
+class InstallationUpdateRequest(InstallationCreateRequest):
+    """Request schema for updating an Installation.
+
+    Shares the same validation as :class:`InstallationCreateRequest`
+    (non-blank ``project_name``). Validates Requirements 6.3, 6.5.
+    """
+    pass
+
+
+class InstallationResponse(BaseModel):
+    """Response schema for a single Installation.
+
+    Matches the frontend Installation shape:
+    ``{ id, project_name, created_at, updated_at }``. Validates Requirements 6.1, 6.2, 6.3.
+    """
+    id: UUID
+    project_name: str
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class InstallationListResponse(BaseModel):
+    """Response schema for listing Installations.
+
+    Matches the frontend ``{ installations: [...] }`` shape. Validates Requirement 6.1.
+    """
+    installations: list[InstallationResponse]

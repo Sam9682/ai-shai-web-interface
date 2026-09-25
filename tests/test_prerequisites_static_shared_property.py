@@ -1,18 +1,19 @@
-"""Property-based test for shared static prerequisite content (task 6.1).
+"""Property-based test for shared static prerequisite content.
 
 Spec: .kiro/specs/per-user-prerequisites-persistence
+Migrated by: .kiro/specs/vcf-prerequisites-update (task 6.1)
 
-Property 5: Static content is identical across users.
+Property 5: Static content is identical across users (within an installation).
 
 For any Static_Slug (basics, network-flux) and any two distinct authenticated
-users, requesting ``GET /{slug}/content`` returns the same shared content value
-independent of user_id. Static content is keyed by slug alone
-(``PrerequisiteContent``) with no per-user answer scope, so both users observe
-one shared value.
+users, requesting ``GET /installations/{id}/{slug}/content`` returns the same
+shared content value independent of the requesting user. Content is keyed by
+``(installation_id, slug)`` (``PrerequisiteContent``) with no per-user scope, so
+both users observe one shared value for a given installation.
 
-Feature: per-user-prerequisites-persistence, Property 5: Static content is identical across users
+Feature: vcf-prerequisites-update, Property 5: Static content is identical across users
 
-Validates: Requirements 4.1, 4.2
+Validates: Requirements 9.3, 7.7
 
 State isolation note: the conftest ``client`` fixture is function-scoped and
 recreates the DB per test, but ``@given`` runs many examples inside a SINGLE
@@ -28,7 +29,7 @@ from fastapi import status
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
-from app.models import User, UserRole
+from app.models import User, UserRole, Installation
 from app.models.prerequisite import PrerequisiteContent
 from app.auth.token import create_access_token
 
@@ -72,6 +73,19 @@ def _make_member():
         db.close()
 
 
+def _make_installation():
+    """Create a fresh Installation and return its id (standalone session)."""
+    db = _session()
+    try:
+        inst = Installation(project_name=f"inst-{uuid.uuid4().hex}")
+        db.add(inst)
+        db.commit()
+        db.refresh(inst)
+        return inst.id
+    finally:
+        db.close()
+
+
 # Static content bodies: arbitrary text (the API stores rich-text HTML but any
 # string round-trips through JSON). Bounded to keep runtime small.
 _content = st.text(max_size=200)
@@ -90,20 +104,23 @@ def test_static_content_is_identical_across_users(client, slug, content):
     """Two distinct members observe the same shared static content.
 
     For any static slug and any generated shared content value, after seeding
-    the single ``PrerequisiteContent`` row, two distinct authenticated members
-    each GET ``/{slug}/content`` and both receive the identical shared content
-    independent of their user_id.
+    the single ``PrerequisiteContent`` row for an installation, two distinct
+    authenticated members each GET ``/installations/{id}/{slug}/content`` and
+    both receive the identical shared content independent of which user asked.
 
-    Validates: Requirements 4.1, 4.2
+    Validates: Requirements 9.3, 7.7
     """
     user_a = _make_member()
     user_b = _make_member()
     assert user_a.id != user_b.id, "test requires two distinct users"
 
-    # --- Seed the single shared static content row for this slug. ---
+    installation_id = _make_installation()
+
+    # --- Seed the single shared static content row for this (installation, slug). ---
     db = _session()
     try:
         row = PrerequisiteContent(
+            installation_id=installation_id,
             slug=slug,
             content=content,
             updated_by=user_a.id,
@@ -116,7 +133,9 @@ def test_static_content_is_identical_across_users(client, slug, content):
         raise
 
     try:
-        path = f"/api/prerequisites/{slug}/content"
+        path = (
+            f"/api/prerequisites/installations/{installation_id}/{slug}/content"
+        )
 
         resp_a = client.get(path, headers=_headers(user_a))
         resp_b = client.get(path, headers=_headers(user_b))
@@ -145,12 +164,21 @@ def test_static_content_is_identical_across_users(client, slug, content):
             f"user B got {body_b['content']!r}"
         )
     finally:
-        # --- Per-example isolation: remove the content row this example wrote. ---
+        # --- Per-example isolation: remove the content row and installation this
+        # example wrote (deleting the installation cascades its content). ---
         cleanup = _session()
         try:
             cleanup.query(PrerequisiteContent).filter(
-                PrerequisiteContent.slug == slug
+                PrerequisiteContent.installation_id == installation_id,
+                PrerequisiteContent.slug == slug,
             ).delete(synchronize_session=False)
+            inst = (
+                cleanup.query(Installation)
+                .filter(Installation.id == installation_id)
+                .first()
+            )
+            if inst is not None:
+                cleanup.delete(inst)
             cleanup.commit()
         finally:
             cleanup.close()

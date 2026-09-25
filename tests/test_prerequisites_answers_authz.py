@@ -1,18 +1,19 @@
 """Example/edge-case unit tests for Q&A answer authorization and auth failures.
 
 Spec: .kiro/specs/per-user-prerequisites-persistence (task 3.5)
+Migrated by: .kiro/specs/vcf-prerequisites-update (task 6.1)
 
 These example tests pin the authorization boundary and auth-failure behavior of
-the per-user Q&A answer endpoints:
+the installation-scoped Q&A answer endpoints:
 
 - An Administrator PUT to a Q&A slug is rejected with HTTP 403 and the
-  structured code ``ANSWER_NOT_ALLOWED_FOR_ADMIN`` (Requirement 3.1). The admin
-  block is retained even though answers are now per-user scoped.
+  structured code ``ANSWER_NOT_ALLOWED_FOR_ADMIN``. The admin block is retained
+  even though answers are now shared per installation.
 - A missing or invalid Bearer token on the answer GET and PUT is rejected before
   any user identity is resolved: the read/write is never scoped to an
-  unauthenticated caller (Requirement 5.3).
+  unauthenticated caller.
 
-Validates: Requirements 3.1, 5.3
+Validates: Requirements 9.3, 7.7
 """
 import pytest
 from fastapi import status
@@ -88,11 +89,11 @@ def _error_code(body: dict) -> str | None:
 class TestAdminAnswerForbidden:
     @pytest.mark.parametrize("slug", QA_SLUGS)
     def test_admin_put_answer_forbidden_for_each_qa_slug(
-        self, client, admin_user, slug
+        self, client, admin_user, installation_id, slug
     ):
         """An admin PUT to any Q&A slug -> 403 with ANSWER_NOT_ALLOWED_FOR_ADMIN."""
         resp = client.put(
-            f"/api/prerequisites/{slug}/answers/row-1",
+            f"/api/prerequisites/installations/{installation_id}/{slug}/answers/row-1",
             json={"answer": "value"},
             headers=_headers(admin_user),
         )
@@ -100,20 +101,20 @@ class TestAdminAnswerForbidden:
         assert _error_code(resp.json()) == "ANSWER_NOT_ALLOWED_FOR_ADMIN"
 
     def test_admin_put_answer_does_not_persist(
-        self, client, admin_user, member_user
+        self, client, admin_user, member_user, installation_id
     ):
         """A rejected admin PUT must not create an Answer_Record.
 
-        A member GET for the same slug returns an empty map (the admin write
-        was refused before any row was created).
+        A member GET for the same installation + slug returns an empty map (the
+        admin write was refused before any row was created).
         """
         client.put(
-            "/api/prerequisites/cloudstore/answers/cs-1",
+            f"/api/prerequisites/installations/{installation_id}/cloudstore/answers/cs-1",
             json={"answer": "admin-should-not-write"},
             headers=_headers(admin_user),
         )
         get_resp = client.get(
-            "/api/prerequisites/cloudstore/answers",
+            f"/api/prerequisites/installations/{installation_id}/cloudstore/answers",
             headers=_headers(member_user),
         )
         assert get_resp.status_code == status.HTTP_200_OK
@@ -124,26 +125,32 @@ class TestAdminAnswerForbidden:
 # Requirement 5.3: Missing/invalid Bearer token on GET and PUT answers -> 401
 # ===========================================================================
 class TestAnswersUnauthenticated:
-    def test_get_answers_missing_token_rejected(self, client):
+    """Auth is enforced BEFORE any installation lookup, so these use a valid
+    installation path shape; the caller is rejected on the missing/invalid
+    token regardless of whether the installation exists."""
+
+    def test_get_answers_missing_token_rejected(self, client, installation_id):
         """No Authorization header on GET answers -> not authorized (401/403)."""
-        resp = client.get("/api/prerequisites/cloudstore/answers")
+        resp = client.get(
+            f"/api/prerequisites/installations/{installation_id}/cloudstore/answers"
+        )
         assert resp.status_code in (
             status.HTTP_401_UNAUTHORIZED,
             status.HTTP_403_FORBIDDEN,
         )
 
-    def test_get_answers_invalid_token_401(self, client):
+    def test_get_answers_invalid_token_401(self, client, installation_id):
         """An invalid Bearer token on GET answers -> 401."""
         resp = client.get(
-            "/api/prerequisites/cloudstore/answers",
+            f"/api/prerequisites/installations/{installation_id}/cloudstore/answers",
             headers={"Authorization": "Bearer not-a-real-token"},
         )
         assert resp.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_put_answer_missing_token_rejected(self, client):
+    def test_put_answer_missing_token_rejected(self, client, installation_id):
         """No Authorization header on PUT answer -> not authorized (401/403)."""
         resp = client.put(
-            "/api/prerequisites/cloudstore/answers/cs-1",
+            f"/api/prerequisites/installations/{installation_id}/cloudstore/answers/cs-1",
             json={"answer": "value"},
         )
         assert resp.status_code in (
@@ -151,19 +158,21 @@ class TestAnswersUnauthenticated:
             status.HTTP_403_FORBIDDEN,
         )
 
-    def test_put_answer_invalid_token_401(self, client):
+    def test_put_answer_invalid_token_401(self, client, installation_id):
         """An invalid Bearer token on PUT answer -> 401."""
         resp = client.put(
-            "/api/prerequisites/cloudstore/answers/cs-1",
+            f"/api/prerequisites/installations/{installation_id}/cloudstore/answers/cs-1",
             json={"answer": "value"},
             headers={"Authorization": "Bearer not-a-real-token"},
         )
         assert resp.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_invalid_token_get_answers_does_not_leak_answers(self, client):
+    def test_invalid_token_get_answers_does_not_leak_answers(
+        self, client, installation_id
+    ):
         """An unauthenticated GET never returns an answer map."""
         resp = client.get(
-            "/api/prerequisites/cloudstore/answers",
+            f"/api/prerequisites/installations/{installation_id}/cloudstore/answers",
             headers={"Authorization": "Bearer not-a-real-token"},
         )
         assert resp.status_code == status.HTTP_401_UNAUTHORIZED

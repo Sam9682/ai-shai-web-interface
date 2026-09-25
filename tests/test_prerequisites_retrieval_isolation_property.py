@@ -1,16 +1,26 @@
-"""Property-based test for per-user prerequisites retrieval isolation.
+"""Property-based test for installation-scoped prerequisites retrieval isolation.
 
 Feature spec: .kiro/specs/per-user-prerequisites-persistence (task 2.2)
+Migrated by: .kiro/specs/vcf-prerequisites-update (task 6.1)
 
-Property 4: Retrieval returns exactly the requesting member's answers
+The parent spec ``multi-instance-opcp-prerequisites`` re-scoped answers to be
+shared per installation (no ``user_id`` scope). The former "retrieval returns
+exactly the requesting member's answers" property no longer holds — answers are
+not per-user — so it is replaced by its installation-scoped equivalent, matching
+design Property 9 (Installation data isolation):
 
-For any database state containing Answer_Records from arbitrary Members, and
-any Member requesting a Q&A slug, the ``GET /{slug}/answers`` response contains
-exactly the Answer_Records whose ``user_id`` matches the requesting Member for
-that slug -- no more (other members' records excluded, other slugs excluded)
-and no fewer (empty when the Member has none).
+Property 9 (adapted): Retrieval returns exactly the requested installation's
+answers for the requested slug.
 
-Validates: Requirements 2.1, 2.2, 2.3, 5.1
+For any database state containing Answer_Records across arbitrary Installations
+and slugs, ``GET /installations/{id}/{slug}/answers`` returns exactly the
+Answer_Records for that Installation and slug — no more (other installations'
+records excluded, other slugs excluded) and no fewer (empty when that
+installation has none for the slug).
+
+Feature: vcf-prerequisites-update, Property 9: Installation data isolation
+
+Validates: Requirements 9.3, 7.7
 
 State isolation note: the conftest ``client`` fixture is function-scoped and
 recreates the DB per test, but ``@given`` runs many examples inside a SINGLE
@@ -27,7 +37,7 @@ from fastapi import status
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
-from app.models import User, UserRole
+from app.models import User, UserRole, Installation
 from app.models.prerequisite import PrerequisiteAnswer
 from app.auth.token import create_access_token
 
@@ -59,12 +69,12 @@ _row_id = st.text(
 
 _answer = st.text(max_size=200)
 
-# A single seeded record: (member_index, slug, row_id, answer). member_index
-# selects which of the pre-created members owns the row; it is mapped to a real
-# user_id inside the test. Keeping it an index keeps the strategy independent of
-# DB-assigned ids.
+# A single seeded record: (installation_index, slug, row_id, answer).
+# installation_index selects which of the pre-created installations owns the
+# row; it is mapped to a real installation id inside the test. Keeping it an
+# index keeps the strategy independent of DB-assigned ids.
 _record = st.tuples(
-    st.integers(min_value=0, max_value=2),   # one of 3 members (A, B, C)
+    st.integers(min_value=0, max_value=2),   # one of 3 installations (A, B, C)
     st.sampled_from(QA_SLUGS),
     _row_id,
     _answer,
@@ -72,28 +82,39 @@ _record = st.tuples(
 
 
 @pytest.fixture
-def members(db_session):
-    """Create three distinct member users (A, B, C)."""
+def reader(db_session):
+    """Create a single member used to drive the authenticated reads."""
+    user = User(
+        email="reader@retrieval-isolation.test",
+        password_hash="hashed_password",
+        first_name="Reader",
+        last_name="Member",
+        role=UserRole.MEMBER,
+        is_email_verified=True,
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def installations(db_session):
+    """Create three distinct Installations (A, B, C)."""
     created = []
     for i in range(3):
-        user = User(
-            email=f"member-{i}@retrieval-isolation.test",
-            password_hash="hashed_password",
-            first_name="Member",
-            last_name=f"{i}",
-            role=UserRole.MEMBER,
-            is_email_verified=True,
-        )
-        db_session.add(user)
-        created.append(user)
+        inst = Installation(project_name=f"retrieval-isolation-{i}")
+        db_session.add(inst)
+        created.append(inst)
     db_session.commit()
-    for user in created:
-        db_session.refresh(user)
+    for inst in created:
+        db_session.refresh(inst)
     return created
 
 
 # ===========================================================================
-# Property 4: retrieval returns exactly the requesting member's answers.
+# Property 9 (adapted): retrieval returns exactly the requested installation's
+# answers for the requested slug.
 # ===========================================================================
 @settings(
     max_examples=100,
@@ -102,51 +123,49 @@ def members(db_session):
 )
 @given(
     records=st.lists(_record, min_size=0, max_size=15),
-    requester_index=st.integers(min_value=0, max_value=2),
+    requested_index=st.integers(min_value=0, max_value=2),
     requested_slug=st.sampled_from(QA_SLUGS),
 )
-def test_retrieval_returns_exactly_requesting_members_answers(
-    client, members, records, requester_index, requested_slug
+def test_retrieval_returns_exactly_requested_installation_answers(
+    client, reader, installations, records, requested_index, requested_slug
 ):
-    """Feature: per-user-prerequisites-persistence, Property 4: Retrieval
-    returns exactly the requesting member's answers.
+    """Feature: vcf-prerequisites-update, Property 9: Installation data isolation.
 
-    Seed an arbitrary set of answer rows owned by arbitrary members across the
-    Q&A slugs, then GET one slug as one member. The returned map must equal the
-    last-write-wins reduction of exactly that member's rows for that slug --
-    excluding other members' rows and other slugs, and empty when the member
-    has none.
+    Seed an arbitrary set of answer rows across the installations and slugs, then
+    GET one slug under one installation. The returned map must equal the
+    last-write-wins reduction of exactly that installation's rows for that slug --
+    excluding other installations' rows and other slugs, and empty when that
+    installation has none.
 
-    Validates: Requirements 2.1, 2.2, 2.3, 5.1
+    Validates: Requirements 9.3, 7.7
     """
-    member_ids = [m.id for m in members]
+    installation_ids = [inst.id for inst in installations]
 
-    # Deduplicate to the unique (user_id, slug, row_id) rows that the unique
-    # constraint permits, applying last-write-wins per triple to mirror how the
-    # upsert path would collapse repeated submissions.
+    # Deduplicate to the unique (installation_id, slug, row_id) rows that the
+    # unique constraint permits, applying last-write-wins per triple to mirror
+    # how the upsert path would collapse repeated submissions.
     by_triple: dict[tuple[uuid.UUID, str, str], str] = {}
-    for member_index, slug, row_id, answer in records:
-        by_triple[(member_ids[member_index], slug, row_id)] = answer
+    for installation_index, slug, row_id, answer in records:
+        by_triple[(installation_ids[installation_index], slug, row_id)] = answer
 
-    # Expected map for the requester + requested slug: exactly their rows.
-    requester_id = member_ids[requester_index]
+    # Expected map for the requested installation + slug: exactly its rows.
+    requested_id = installation_ids[requested_index]
     expected = {
         row_id: answer
-        for (uid, slug, row_id), answer in by_triple.items()
-        if uid == requester_id and slug == requested_slug
+        for (iid, slug, row_id), answer in by_triple.items()
+        if iid == requested_id and slug == requested_slug
     }
 
     # --- Seed the generated DB state directly. ---
     db = _session()
     seeded_ids = []
     try:
-        for (uid, slug, row_id), answer in by_triple.items():
+        for (iid, slug, row_id), answer in by_triple.items():
             row = PrerequisiteAnswer(
-                user_id=uid,
+                installation_id=iid,
                 slug=slug,
                 row_id=row_id,
                 answer=answer,
-                updated_by=uid,
             )
             db.add(row)
             db.flush()
@@ -159,8 +178,8 @@ def test_retrieval_returns_exactly_requesting_members_answers(
 
     try:
         resp = client.get(
-            f"/api/prerequisites/{requested_slug}/answers",
-            headers=_headers(members[requester_index]),
+            f"/api/prerequisites/installations/{requested_id}/{requested_slug}/answers",
+            headers=_headers(reader),
         )
         assert resp.status_code == status.HTTP_200_OK
         body = resp.json()
@@ -168,8 +187,8 @@ def test_retrieval_returns_exactly_requesting_members_answers(
 
         got = body["answers"]
         assert got == expected, (
-            "COUNTEREXAMPLE: retrieval isolation violated for "
-            f"member={requester_id} slug={requested_slug!r}: "
+            "COUNTEREXAMPLE: installation isolation violated for "
+            f"installation={requested_id} slug={requested_slug!r}: "
             f"expected {expected!r}, got {got!r}"
         )
     finally:

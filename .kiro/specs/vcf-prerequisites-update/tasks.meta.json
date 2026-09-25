@@ -1,0 +1,277 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Create `app/models/installation.py`": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367013906
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367023971
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367543915
+      }
+    ],
+    "2.1 Revise `PrerequisiteContent` in `app/models/prerequisite.py`": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367014094
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367550777
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367714017
+      }
+    ],
+    "2.2 Revise `PrerequisiteAnswer` in `app/models/prerequisite.py`": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367014301
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367552315
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367715474
+      }
+    ],
+    "3.1 Add Installation schemas to `app/prerequisites/schemas.py`": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367014476
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367741772
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368098903
+      }
+    ],
+    "4.1 Add installations CRUD to `app/prerequisites/router.py`": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367014623
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368100144
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368639377
+      }
+    ],
+    "5.1 Implement installation-scoped content endpoints in `app/prerequisites/router.py`": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367014760
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368103733
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368641229
+      }
+    ],
+    "5.2 Implement installation-scoped answer endpoints in `app/prerequisites/router.py`": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367014897
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368104071
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368642693
+      }
+    ],
+    "6.1 Update the basics-prerequisites-404-fix tests": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367015093
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368643979
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790371991373
+      }
+    ],
+    "7. Checkpoint — backend": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367015254
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790371996731
+      }
+    ],
+    "8.1 Rewrite `vcfConfig` in `frontend/src/components/prerequisites/configs.ts`": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367015388
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367025411
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367545033
+      }
+    ],
+    "8.3 Write vcfConfig content assertions": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367015527
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367553735
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367716865
+      }
+    ],
+    "9.1 Test the installation create flow in the Prerequisites_Frontend": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367015665
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367554647
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367718095
+      }
+    ],
+    "10. Final verification": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367015823
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790371997540
+      },
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790373590551
+      }
+    ],
+    "1. Add the Installation SQLAlchemy model": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367544148
+      }
+    ],
+    "2. Revise the prerequisite models to match the migration": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367715643
+      }
+    ],
+    "8. Replace vcfConfig with the real VCF parameters": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367717020
+      }
+    ],
+    "9. Frontend installation create flow test": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790367718266
+      }
+    ],
+    "3. Add Installation Pydantic schemas": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368099059
+      }
+    ],
+    "4. Implement installations CRUD endpoints": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368639544
+      }
+    ],
+    "5. Re-scope content and answer endpoints under an installation": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790368642877
+      }
+    ],
+    "6. Migrate existing prerequisites 404 tests to the installation-scoped contract": [
+      {
+        "executionId": "88a9d948-3172-4229-994d-3cd508f9a884",
+        "chatSessionId": "sess_4fcddff0-f89c-424d-a7f3-212fedb97395",
+        "timestamp": 1790371991518
+      }
+    ]
+  }
+}

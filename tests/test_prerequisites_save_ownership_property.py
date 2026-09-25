@@ -1,25 +1,31 @@
-"""Property-based test for per-user prerequisites save ownership (task 3.2).
+"""Property-based test for installation-scoped answer persistence.
 
 Spec: .kiro/specs/per-user-prerequisites-persistence
+Migrated by: .kiro/specs/vcf-prerequisites-update (task 6.1)
 
-Property 1: Saved answers are owned by the submitting member.
+The parent spec ``multi-instance-opcp-prerequisites`` re-scoped answers to be
+shared per installation (no ``user_id`` scope). The former "saved answers are
+owned by the submitting member" property no longer holds — there is no per-user
+ownership — so it is replaced by its installation-scoped equivalent, matching
+design Property 8 (Installation-scoped answer round-trip):
 
-For any Member and any Q&A slug, Row_Id, and answer text they submit via PUT,
-after the upsert the persisted Answer_Record for (member, slug, row_id) exists
-and carries user_id equal to the submitting member's id and the submitted
-answer text.
+Property 8 (adapted): Saved answers are persisted under the target installation.
 
-Feature: per-user-prerequisites-persistence, Property 1: Saved answers are owned by the submitting member
+For any Q&A slug, Row_Id, and answer text a member submits via PUT under an
+installation, after the upsert the persisted Answer_Record for
+(installation_id, slug, row_id) exists and carries the submitted answer text.
 
-Validates: Requirements 1.1, 1.3, 3.2, 5.2
+Feature: vcf-prerequisites-update, Property 8: Installation-scoped answer round-trip
+
+Validates: Requirements 9.3, 7.7
 
 State isolation note: the conftest ``client`` fixture is function-scoped and
 recreates the DB per test, but ``@given`` runs many examples inside a SINGLE
 test function (one DB). Each example must therefore be self-isolating. We
-generate a unique member per example (unique email) and clean up the answer
-row(s) the example wrote at the end, so state from one example never corrupts
-another's assertions. Function-scoped-fixture health checks are suppressed as
-recommended by Hypothesis for this pattern.
+generate a fresh installation per example and clean up the answer row(s) the
+example wrote at the end, so state from one example never corrupts another's
+assertions. Function-scoped-fixture health checks are suppressed as recommended
+by Hypothesis for this pattern.
 """
 import uuid
 
@@ -28,7 +34,7 @@ from fastapi import status
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
-from app.models import User, UserRole
+from app.models import User, UserRole, Installation
 from app.models.prerequisite import PrerequisiteAnswer
 from app.auth.token import create_access_token
 
@@ -49,7 +55,7 @@ def _session():
 
 
 def _make_member():
-    """Create a fresh member (unique email) and return their id.
+    """Create a fresh member (unique email) and return the User instance.
 
     Uses a standalone session on the shared test engine so the member is
     persisted independently of any per-example cleanup.
@@ -68,6 +74,19 @@ def _make_member():
         db.commit()
         db.refresh(user)
         return user
+    finally:
+        db.close()
+
+
+def _make_installation():
+    """Create a fresh Installation and return its id (standalone session)."""
+    db = _session()
+    try:
+        inst = Installation(project_name=f"inst-{uuid.uuid4().hex}")
+        db.add(inst)
+        db.commit()
+        db.refresh(inst)
+        return inst.id
     finally:
         db.close()
 
@@ -95,18 +114,21 @@ _answer = st.text(max_size=200)
     row_id=_row_id,
     answer=_answer,
 )
-def test_saved_answer_is_owned_by_submitting_member(client, slug, row_id, answer):
-    """PUT by a member persists an Answer_Record owned by that member.
+def test_saved_answer_is_persisted_under_installation(client, slug, row_id, answer):
+    """A member PUT persists an Answer_Record under the target installation.
 
-    For any member + qa slug + rowId + answer, after the PUT upsert the
-    persisted row for (member.id, slug, row_id) exists, carries
-    user_id == member.id, and holds the submitted answer text.
+    For any qa slug + rowId + answer, after the PUT upsert the persisted row for
+    (installation_id, slug, row_id) exists and holds the submitted answer text.
 
-    Validates: Requirements 1.1, 1.3, 3.2, 5.2
+    Validates: Requirements 9.3, 7.7
     """
     member = _make_member()
+    installation_id = _make_installation()
 
-    put_path = f"/api/prerequisites/{slug}/answers/{row_id}"
+    put_path = (
+        f"/api/prerequisites/installations/{installation_id}"
+        f"/{slug}/answers/{row_id}"
+    )
     put_resp = client.put(
         put_path, json={"answer": answer}, headers=_headers(member)
     )
@@ -115,28 +137,27 @@ def test_saved_answer_is_owned_by_submitting_member(client, slug, row_id, answer
     )
     assert put_resp.json() == {"success": True, "slug": slug}
 
-    # Verify ownership directly against the persistence layer: the record for
-    # (member, slug, row_id) exists, is owned by the submitting member, and
-    # carries the submitted answer text.
+    # Verify persistence directly against the persistence layer: exactly one row
+    # for (installation, slug, row_id), carrying the submitted answer text.
     db = _session()
     try:
         rows = (
             db.query(PrerequisiteAnswer)
             .filter(
-                PrerequisiteAnswer.user_id == member.id,
+                PrerequisiteAnswer.installation_id == installation_id,
                 PrerequisiteAnswer.slug == slug,
                 PrerequisiteAnswer.row_id == row_id,
             )
             .all()
         )
         assert len(rows) == 1, (
-            f"expected exactly one owned Answer_Record for "
-            f"({member.id}, {slug!r}, {row_id!r}), got {len(rows)}"
+            f"expected exactly one Answer_Record for "
+            f"({installation_id}, {slug!r}, {row_id!r}), got {len(rows)}"
         )
         row = rows[0]
-        assert row.user_id == member.id, (
-            f"ownership violated: row.user_id={row.user_id!r} "
-            f"!= submitting member {member.id!r}"
+        assert row.installation_id == installation_id, (
+            f"scoping violated: row.installation_id={row.installation_id!r} "
+            f"!= target installation {installation_id!r}"
         )
         assert row.answer == answer, (
             f"answer text not persisted: wrote {answer!r}, stored {row.answer!r}"
@@ -149,8 +170,13 @@ def test_saved_answer_is_owned_by_submitting_member(client, slug, row_id, answer
     db = _session()
     try:
         db.query(PrerequisiteAnswer).filter(
-            PrerequisiteAnswer.user_id == member.id,
+            PrerequisiteAnswer.installation_id == installation_id,
         ).delete(synchronize_session=False)
+        inst = (
+            db.query(Installation).filter(Installation.id == installation_id).first()
+        )
+        if inst is not None:
+            db.delete(inst)
         db.commit()
     finally:
         db.close()
