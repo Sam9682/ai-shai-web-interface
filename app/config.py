@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
     
     # Database
-    DATABASE_URL: str
+    DATABASE_URL: str = "postgresql://shai_user:shai_password@postgres:5432/shai_db"
     
     # Security
     SECRET_KEY: str
@@ -63,7 +63,7 @@ class Settings(BaseSettings):
     PG_PORT: int = 5432
     PG_DB: str = "shai_db"
     PG_USER: str = "shai_user"
-    PG_PASSWORD: str = ""
+    PG_PASSWORD: str = "shai_password"
     TABLE_NAME: str = "md_embeddings"
     
     model_config = {
