@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, cleanup, waitFor } from '@testing-library/react';
+import { render, cleanup, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -94,7 +94,7 @@ const buildTopic = (content: string): TopicDetail => ({
 
 // Locate the container that renders the stored post HTML via
 // dangerouslySetInnerHTML (the `.prose` display div holding the post content).
-const findDisplayContainer = (root: HTMLElement, content: string): HTMLElement | null => {
+const findDisplayContainer = (root: HTMLElement, _content: string): HTMLElement | null => {
   const proseNodes = Array.from(root.querySelectorAll<HTMLElement>('.prose'));
   // The display container's innerHTML round-trips the stored content; pick the
   // prose node whose markup contains the injected fragment's leading tag.
