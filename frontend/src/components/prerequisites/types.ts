@@ -50,14 +50,14 @@ export interface PrereqNavItem {
   archetype: 'how-to-use' | 'static' | 'qa';
 }
 
+// Content and answers are now installation-scoped, so the per-slug pages can no
+// longer be reached without an Installation. The nav therefore points at the
+// Installation list entry point (`/prerequisites/installations`), from which a
+// user selects an Installation before drilling into a slug. The global
+// how-to-use page (no per-installation data) remains directly reachable.
 export const PREREQ_NAV_ITEMS = [
   { labelKey: 'prereq.nav.howToUse', route: '/prerequisites/how-to-use', archetype: 'how-to-use' },
-  { labelKey: 'prereq.nav.basics', route: '/prerequisites/basics', archetype: 'static' },
-  { labelKey: 'prereq.nav.networkChecklist', route: '/prerequisites/network-checklist', archetype: 'qa' },
-  { labelKey: 'prereq.nav.coreControlPlane', route: '/prerequisites/core-control-plane', archetype: 'qa' },
-  { labelKey: 'prereq.nav.cloudstore', route: '/prerequisites/cloudstore', archetype: 'qa' },
-  { labelKey: 'prereq.nav.vcf', route: '/prerequisites/vcf', archetype: 'qa' },
-  { labelKey: 'prereq.nav.networkFlux', route: '/prerequisites/network-flux', archetype: 'static' },
+  { labelKey: 'prereq.nav.installations', route: '/prerequisites/installations', archetype: 'static' },
 ] as const satisfies readonly PrereqNavItem[];
 
 // Shared marker legend used by the How-to-use legend and per-row markers on

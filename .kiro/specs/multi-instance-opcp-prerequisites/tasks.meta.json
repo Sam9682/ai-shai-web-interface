@@ -1,0 +1,194 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "4. Checkpoint - backend model, schema, and router": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339190749
+      }
+    ],
+    "1.1 Create the `Installation` SQLAlchemy model": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339214088
+      }
+    ],
+    "1.2 Revise `PrerequisiteContent` model for installation scoping": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339218354
+      }
+    ],
+    "1.3 Revise `PrerequisiteAnswer` model for shared per-installation answers": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339219309
+      }
+    ],
+    "1. Backend data model foundation": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339219439
+      }
+    ],
+    "2.1 Add Installation Pydantic schemas": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339223324
+      }
+    ],
+    "2. Backend schemas": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339223491
+      }
+    ],
+    "7.1 Add Installation types and service methods": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339224553
+      }
+    ],
+    "7. Frontend service layer": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339224717
+      }
+    ],
+    "3.1 Implement Installation CRUD endpoints": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339228687
+      }
+    ],
+    "3.2 Re-scope content and answer endpoints under `installations/{installation_id}`": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339233925
+      }
+    ],
+    "3. Backend router: Installation CRUD and re-scoped content/answer endpoints": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339234077
+      }
+    ],
+    "5.1 Create the schema + data migration": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339250422
+      },
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339420381
+      }
+    ],
+    "5. Alembic migration with data migration and collision resolution": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339420562
+      }
+    ],
+    "6. Checkpoint - migration": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790339424649
+      },
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790340631332
+      }
+    ],
+    "8.1 Implement `InstallationListPage`": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790340641203
+      },
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341142218
+      }
+    ],
+    "8.2 Implement `DeleteInstallationDialog`": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341146139
+      },
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341239083
+      }
+    ],
+    "8. Frontend Installation list page and delete dialog": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341239212
+      }
+    ],
+    "9.1 Add installation-scoped routes and update navigation": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341257298
+      },
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341804079
+      }
+    ],
+    "9.2 Pass `installationId` through the content and answer pages": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341258727
+      },
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341805195
+      }
+    ],
+    "9. Frontend routing and page wiring": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341805352
+      }
+    ],
+    "10. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790341810243
+      },
+      {
+        "executionId": "46f0e856-b1b4-4cc7-ab86-7592ad04e395",
+        "chatSessionId": "sess_08322cdc-faf0-4417-865a-4a3d2dd82df2",
+        "timestamp": 1790342075758
+      }
+    ]
+  }
+}

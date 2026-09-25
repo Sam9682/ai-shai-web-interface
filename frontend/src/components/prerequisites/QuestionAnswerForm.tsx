@@ -6,6 +6,7 @@ import { authService } from '../../services/authService';
 import { prerequisitesService } from '../../services/prerequisitesService';
 
 interface QuestionAnswerFormProps {
+  installationId: string;
   slug: string;
   title: string;
   config: QuestionFormConfig;
@@ -50,7 +51,12 @@ const MarkerLegend = () => {
  * everyone else sees it read-only. Answers persist through
  * `prerequisitesService` (no localStorage).
  */
-export const QuestionAnswerForm = ({ slug, title, config }: QuestionAnswerFormProps) => {
+export const QuestionAnswerForm = ({
+  installationId,
+  slug,
+  title,
+  config,
+}: QuestionAnswerFormProps) => {
   const { t } = useTranslation();
   const canAnswer = authService.isAuthenticated() && !authService.isAdmin();
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -60,7 +66,7 @@ export const QuestionAnswerForm = ({ slug, title, config }: QuestionAnswerFormPr
   useEffect(() => {
     let cancelled = false;
     prerequisitesService
-      .loadClientAnswers(slug)
+      .loadClientAnswers(installationId, slug)
       .then((r) => {
         if (!cancelled) setAnswers(r.answers ?? {});
       })
@@ -70,7 +76,7 @@ export const QuestionAnswerForm = ({ slug, title, config }: QuestionAnswerFormPr
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [installationId, slug]);
 
   const handleChange = (rowId: string, value: string) => {
     // Preserve the typed value locally regardless of persistence outcome.
@@ -79,7 +85,7 @@ export const QuestionAnswerForm = ({ slug, title, config }: QuestionAnswerFormPr
 
   const saveAnswer = async (rowId: string, value: string) => {
     try {
-      await prerequisitesService.saveClientAnswer(slug, rowId, value);
+      await prerequisitesService.saveClientAnswer(installationId, slug, rowId, value);
       setErrorRowIds((s) => {
         if (!s.has(rowId)) return s;
         const next = new Set(s);
