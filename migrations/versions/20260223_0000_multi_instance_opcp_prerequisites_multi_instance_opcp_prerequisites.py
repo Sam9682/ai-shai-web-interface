@@ -5,7 +5,7 @@ Creates the ``installations`` table, seeds a ``Default_Installation``, backfills
 existing content/answers into it, resolves cross-user answer collisions
 (last-updated wins), then enforces the new per-installation uniqueness keys.
 
-Revision ID: multi_instance_opcp_prerequisites
+Revision ID: multi_instance_opcp_prereq
 Revises: add_account_security_2fa_fields
 Create Date: 2026-02-23
 
@@ -19,7 +19,7 @@ from sqlalchemy import text
 
 
 # revision identifiers, used by Alembic.
-revision = 'multi_instance_opcp_prerequisites'
+revision = 'multi_instance_opcp_prereq'
 down_revision = 'add_account_security_2fa_fields'
 branch_labels = None
 depends_on = None
