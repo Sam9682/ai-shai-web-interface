@@ -14,12 +14,16 @@ baseline) and must CONTINUE to pass after the fix (proving no regression). No
 application code is modified by this task.
 
 isBugCondition(request): path matches
-    /api/prerequisites/{slug}/content
-    /api/prerequisites/{slug}/answers
-    /api/prerequisites/{slug}/answers/{rowId}
+    /api/prerequisites/installations/{id}/{slug}/content
+    /api/prerequisites/installations/{id}/{slug}/answers
+    /api/prerequisites/installations/{id}/{slug}/answers/{rowId}
 This file exercises the complement: `NOT isBugCondition(request)`.
 
-Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5
+Migrated by: .kiro/specs/vcf-prerequisites-update (task 6.1) to the
+installation-scoped family. The preservation intent is unchanged: non-family
+paths still behave exactly as before.
+
+Validates: Requirements 9.3, 7.7 (preservation intent, formerly 3.1-3.5)
 """
 import pytest
 
@@ -36,14 +40,20 @@ except Exception:  # pragma: no cover - hypothesis is expected to be installed
 # shapes. Preservation only cares about the COMPLEMENT of this predicate.
 # ---------------------------------------------------------------------------
 def _is_bug_condition(path: str) -> bool:
-    """Return True if `path` targets the prerequisites API contract."""
+    """Return True if `path` targets the installation-scoped prerequisites contract.
+
+    The family is now
+    ``/api/prerequisites/installations/{id}/{slug}/content|answers[/{row_id}]``.
+    """
     parts = [p for p in path.split("/") if p]
-    if len(parts) < 4 or parts[0] != "api" or parts[1] != "prerequisites":
+    if len(parts) < 6:
         return False
-    resource = parts[3]
-    if resource == "content" and len(parts) == 4:
+    if parts[0] != "api" or parts[1] != "prerequisites" or parts[2] != "installations":
+        return False
+    resource = parts[5]
+    if resource == "content" and len(parts) == 6:
         return True
-    if resource == "answers" and len(parts) in (4, 5):
+    if resource == "answers" and len(parts) in (6, 7):
         return True
     return False
 

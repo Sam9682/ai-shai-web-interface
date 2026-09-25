@@ -8,6 +8,8 @@ vi.mock('./api', () => ({
   default: {
     get: vi.fn(),
     put: vi.fn(),
+    post: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -18,14 +20,20 @@ import { prerequisitesService } from './prerequisitesService';
 const mockedApi = api as unknown as {
   get: ReturnType<typeof vi.fn>;
   put: ReturnType<typeof vi.fn>;
+  post: ReturnType<typeof vi.fn>;
+  delete: ReturnType<typeof vi.fn>;
 };
 
 beforeEach(() => {
   mockedApi.get.mockReset();
   mockedApi.put.mockReset();
+  mockedApi.post.mockReset();
+  mockedApi.delete.mockReset();
   // Default resolutions so `response.data` reads don't throw.
   mockedApi.get.mockResolvedValue({ data: {} });
   mockedApi.put.mockResolvedValue({ data: {} });
+  mockedApi.post.mockResolvedValue({ data: {} });
+  mockedApi.delete.mockResolvedValue({ data: {} });
 });
 
 describe('prerequisitesService contract', () => {
@@ -88,6 +96,91 @@ describe('prerequisitesService contract', () => {
         { answer: 'val' },
       );
       expect(mockedApi.get).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe('prerequisitesService installations contract', () => {
+  // Feature: vcf-prerequisites-update — installation create flow (task 9.1)
+  // Validates: Requirements 6.1, 6.2, 9.2
+
+  describe('listInstallations', () => {
+    it('issues GET /prerequisites/installations and unwraps { installations }', async () => {
+      const installations = [
+        {
+          id: '11111111-1111-1111-1111-111111111111',
+          project_name: 'Alpha',
+          created_at: '2026-01-01T00:00:00Z',
+          updated_at: '2026-01-01T00:00:00Z',
+        },
+      ];
+      mockedApi.get.mockResolvedValueOnce({ data: { installations } });
+
+      const result = await prerequisitesService.listInstallations();
+
+      expect(mockedApi.get).toHaveBeenCalledTimes(1);
+      expect(mockedApi.get).toHaveBeenCalledWith('/prerequisites/installations');
+      expect(result).toEqual(installations);
+    });
+
+    it('returns [] when the response omits the installations field', async () => {
+      mockedApi.get.mockResolvedValueOnce({ data: {} });
+      await expect(prerequisitesService.listInstallations()).resolves.toEqual([]);
+    });
+  });
+
+  describe('createInstallation', () => {
+    it('issues POST /prerequisites/installations with { project_name } and returns response.data', async () => {
+      const created = {
+        id: '22222222-2222-2222-2222-222222222222',
+        project_name: 'My VCF Project',
+        created_at: '2026-01-01T00:00:00Z',
+        updated_at: '2026-01-01T00:00:00Z',
+      };
+      mockedApi.post.mockResolvedValueOnce({ data: created });
+
+      const result = await prerequisitesService.createInstallation('My VCF Project');
+
+      expect(mockedApi.post).toHaveBeenCalledTimes(1);
+      expect(mockedApi.post).toHaveBeenCalledWith('/prerequisites/installations', {
+        project_name: 'My VCF Project',
+      });
+      expect(mockedApi.get).not.toHaveBeenCalled();
+      expect(result).toEqual(created);
+    });
+  });
+
+  describe('updateInstallation', () => {
+    it('issues PUT /prerequisites/installations/{id} with { project_name }', async () => {
+      const id = '33333333-3333-3333-3333-333333333333';
+      const updated = {
+        id,
+        project_name: 'Renamed',
+        created_at: '2026-01-01T00:00:00Z',
+        updated_at: '2026-01-02T00:00:00Z',
+      };
+      mockedApi.put.mockResolvedValueOnce({ data: updated });
+
+      const result = await prerequisitesService.updateInstallation(id, 'Renamed');
+
+      expect(mockedApi.put).toHaveBeenCalledTimes(1);
+      expect(mockedApi.put).toHaveBeenCalledWith(
+        `/prerequisites/installations/${id}`,
+        { project_name: 'Renamed' },
+      );
+      expect(result).toEqual(updated);
+    });
+  });
+
+  describe('deleteInstallation', () => {
+    it('issues DELETE /prerequisites/installations/{id}', async () => {
+      const id = '44444444-4444-4444-4444-444444444444';
+      await prerequisitesService.deleteInstallation(id);
+
+      expect(mockedApi.delete).toHaveBeenCalledTimes(1);
+      expect(mockedApi.delete).toHaveBeenCalledWith(
+        `/prerequisites/installations/${id}`,
+      );
     });
   });
 });

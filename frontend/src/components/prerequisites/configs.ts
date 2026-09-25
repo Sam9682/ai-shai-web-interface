@@ -377,72 +377,326 @@ export const cloudStoreQuestionConfig: QuestionFormConfig = {
   ],
 };
 
-// VCF — VLANs, DNS, NTP, certificates, automation script.
+// VCF — real customer-input parameters extracted from
+// `docs/to_publish/OPCP - CloudStore VCF parameters_0.2.pdf`.
+// Grouped into the Management and Workload domain sub-sections. Row ids are
+// domain-prefixed (`vcf-mgmt-*` / `vcf-wld-*`) so parameter names that repeat
+// across domains stay unique page-wide and previously saved answers resolve.
+// CloudStore-provided params (`node_uuids`, `bootstrap_node_uuids`) are excluded.
+// `mandatory = false` only for the four Passwords & Secrets rows (generated
+// when left empty) and `vcf-mgmt-esxi-setup-script` (non-Broadcom hardware only).
 export const vcfConfig: QuestionFormConfig = {
   sections: [
     {
-      id: 'vcf-network',
-      title: 'Réseau',
+      id: 'vcf-mgmt-network',
+      title: 'Domaine de management — Réseau',
       rows: [
         {
-          id: 'vcf-management-vlan',
-          questionPrimary: 'VLAN de management ?',
-          questionSecondary: 'ID VLAN',
+          id: 'vcf-mgmt-network-name',
+          questionPrimary: 'Nom du réseau de management',
           mandatory: true,
-          exampleValue: 'ex. VLAN 200',
-          commentsHint: 'Fournissez le VLAN et le sous-réseau associé.',
+          exampleValue: 'vcf_network',
         },
         {
-          id: 'vcf-vmotion-vlan',
-          questionPrimary: 'VLAN vMotion ?',
-          questionSecondary: 'ID VLAN',
-          mandatory: false,
-          exampleValue: 'ex. VLAN 201',
-          commentsHint: 'Optionnel selon la topologie.',
+          id: 'vcf-mgmt-subnet-name',
+          questionPrimary: 'Nom du sous-réseau existant (/22 avec DHCP)',
+          questionSecondary: 'Sous-réseau existant en /22 avec DHCP',
+          mandatory: true,
+          exampleValue: 'mgmt',
+        },
+        {
+          id: 'vcf-mgmt-network-vlan-id',
+          questionPrimary: 'VLAN ID du réseau de management',
+          mandatory: true,
+          exampleValue: '2040',
+        },
+        {
+          id: 'vcf-mgmt-dhcp-ip',
+          questionPrimary: 'IP DHCP du réseau de management',
+          mandatory: true,
+          exampleValue: '10.105.40.1',
+        },
+        {
+          id: 'vcf-mgmt-customer-network-name',
+          questionPrimary: 'Nom du réseau client',
+          mandatory: true,
+          exampleValue: 'customerapi-network',
+        },
+        {
+          id: 'vcf-mgmt-customer-network-dhcp-ip',
+          questionPrimary: 'IP DHCP du réseau client',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-mgmt-external-network-id',
+          questionPrimary: 'ID du réseau externe',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-mgmt-vmotion-network-id',
+          questionPrimary: 'ID du réseau vMotion',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-mgmt-vmotion-subnet-id',
+          questionPrimary: 'ID du sous-réseau vMotion',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-mgmt-vmotion-subnet-range',
+          questionPrimary: 'Plage du sous-réseau vMotion',
+          mandatory: true,
+          exampleValue: '10.105.44.0/24',
+        },
+        {
+          id: 'vcf-mgmt-vmotion-vlan-id',
+          questionPrimary: 'VLAN ID vMotion',
+          mandatory: true,
+          exampleValue: '2044',
+        },
+        {
+          id: 'vcf-mgmt-vsan-network-id',
+          questionPrimary: 'ID du réseau vSAN',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-mgmt-vsan-subnet-id',
+          questionPrimary: 'ID du sous-réseau vSAN',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-mgmt-vsan-subnet-range',
+          questionPrimary: 'Plage du sous-réseau vSAN',
+          mandatory: true,
+          exampleValue: '10.105.45.0/24',
+        },
+        {
+          id: 'vcf-mgmt-vsan-vlan-id',
+          questionPrimary: 'VLAN ID vSAN',
+          mandatory: true,
+          exampleValue: '2045',
+        },
+        {
+          id: 'vcf-mgmt-overlay-network-id',
+          questionPrimary: 'ID du réseau overlay',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-mgmt-overlay-subnet-id',
+          questionPrimary: 'ID du sous-réseau overlay',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-mgmt-overlay-subnet-range',
+          questionPrimary: 'Plage du sous-réseau overlay',
+          mandatory: true,
+          exampleValue: '10.105.46.0/24',
+        },
+        {
+          id: 'vcf-mgmt-overlay-vlan-id',
+          questionPrimary: 'VLAN ID overlay',
+          mandatory: true,
+          exampleValue: '2046',
         },
       ],
     },
     {
-      id: 'vcf-services',
-      title: 'Services',
+      id: 'vcf-mgmt-dns',
+      title: 'Domaine de management — DNS',
       rows: [
         {
-          id: 'vcf-dns-servers',
-          questionPrimary: 'Serveurs DNS ?',
-          questionSecondary: 'Primaire / secondaire',
+          id: 'vcf-mgmt-dns-zone',
+          questionPrimary: 'Zone DNS',
           mandatory: true,
-          exampleValue: 'ex. 10.0.0.53, 10.0.0.54',
-          commentsHint: 'Résolution directe et inverse requise.',
+          exampleValue: 'staging.cloudstore.ovh',
         },
         {
-          id: 'vcf-ntp-servers',
-          questionPrimary: 'Serveurs NTP ?',
-          questionSecondary: 'IP ou nom DNS',
+          id: 'vcf-mgmt-dns-server',
+          questionPrimary: 'Serveur DNS',
           mandatory: true,
-          exampleValue: 'ex. ntp.example.com',
-          commentsHint: 'Synchronisation horaire obligatoire pour VCF.',
         },
         {
-          id: 'vcf-certificates',
-          questionPrimary: 'Certificats fournis ?',
-          questionSecondary: 'Root CA / format PEM',
+          id: 'vcf-mgmt-bootstrap-dns-server',
+          questionPrimary: 'Serveur DNS de bootstrap',
           mandatory: true,
-          exampleValue: 'ex. root-ca.pem',
-          commentsHint: 'Ne collez pas de clé privée ici.',
         },
       ],
     },
     {
-      id: 'vcf-automation',
-      title: 'Automatisation',
+      id: 'vcf-mgmt-auth',
+      title: 'Domaine de management — Authentification & OpenStack',
       rows: [
         {
-          id: 'vcf-automation-script',
-          questionPrimary: "Script d'automatisation validé ?",
-          questionSecondary: 'Version / dépôt',
+          id: 'vcf-mgmt-image-name',
+          questionPrimary: "Nom de l'image",
+          mandatory: true,
+          exampleValue: 'esxi-9.0.1-user-data',
+        },
+        {
+          id: 'vcf-mgmt-flavor-name',
+          questionPrimary: 'Nom du flavor',
+          mandatory: true,
+          exampleValue: 'vcf-flavor',
+        },
+        {
+          id: 'vcf-mgmt-vcf-deployer-url',
+          questionPrimary: 'URL du déployeur VCF (.ova)',
+          mandatory: true,
+          exampleValue: 'https://.../deployer.ova',
+        },
+        {
+          id: 'vcf-mgmt-vcf-deployer-ip',
+          questionPrimary: 'IP du déployeur VCF',
+          mandatory: true,
+        },
+      ],
+    },
+    {
+      id: 'vcf-mgmt-secrets',
+      title: 'Domaine de management — Mots de passe & secrets',
+      rows: [
+        {
+          id: 'vcf-mgmt-master-password',
+          questionPrimary: 'Mot de passe maître VCF',
           mandatory: false,
-          exampleValue: 'ex. deploy-vcf.ps1 v1.2',
-          commentsHint: 'Indiquez la version et l’emplacement du script.',
+          commentsHint:
+            'Lettres, chiffres et au moins un caractère spécial parmi @!#$%?^. Généré si laissé vide.',
+        },
+        {
+          id: 'vcf-mgmt-esxi-root-password',
+          questionPrimary: 'Mot de passe root ESXi',
+          mandatory: false,
+          commentsHint: 'Généré si laissé vide.',
+        },
+        {
+          id: 'vcf-mgmt-appliance-password',
+          questionPrimary: "Mot de passe de l'appliance",
+          mandatory: false,
+          commentsHint: 'Généré si laissé vide.',
+        },
+        {
+          id: 'vcf-mgmt-appliance-xapikey',
+          questionPrimary: "Clé X-API de l'appliance",
+          mandatory: false,
+          commentsHint: 'Généré si laissé vide.',
+        },
+      ],
+    },
+    {
+      id: 'vcf-mgmt-misc',
+      title: 'Domaine de management — Divers',
+      rows: [
+        {
+          id: 'vcf-mgmt-ntp-server',
+          questionPrimary: 'Serveur NTP',
+          mandatory: true,
+          exampleValue: '10.3.2.11',
+        },
+        {
+          id: 'vcf-mgmt-vcf-subdomain',
+          questionPrimary: 'Sous-domaine VCF',
+          mandatory: true,
+          exampleValue: 'vcf',
+        },
+        {
+          id: 'vcf-mgmt-esxi-setup-script',
+          questionPrimary: 'Script de configuration ESXi',
+          mandatory: false,
+          commentsHint: 'Uniquement pour matériel non validé Broadcom.',
+        },
+        {
+          id: 'vcf-mgmt-keycloak-clusterissuer',
+          questionPrimary: 'ClusterIssuer Keycloak',
+          mandatory: true,
+          exampleValue: 'customer-issuer',
+        },
+      ],
+    },
+    {
+      id: 'vcf-wld-general',
+      title: 'Domaine workload — Général',
+      rows: [
+        {
+          id: 'vcf-wld-workload-domain-num',
+          questionPrimary: 'Rang du domaine workload (1..23)',
+          mandatory: true,
+          exampleValue: '1',
+        },
+      ],
+    },
+    {
+      id: 'vcf-wld-network',
+      title: 'Domaine workload — Réseau',
+      rows: [
+        {
+          id: 'vcf-wld-external-network-id',
+          questionPrimary: 'ID du réseau externe',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-wld-vmotion-network-id',
+          questionPrimary: 'ID du réseau vMotion',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-wld-vmotion-subnet-id',
+          questionPrimary: 'ID du sous-réseau vMotion',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-wld-vmotion-subnet-range',
+          questionPrimary: 'Plage du sous-réseau vMotion',
+          mandatory: true,
+          exampleValue: '10.105.47.0/24',
+        },
+        {
+          id: 'vcf-wld-vmotion-vlan-id',
+          questionPrimary: 'VLAN ID vMotion',
+          mandatory: true,
+          exampleValue: '2047',
+        },
+        {
+          id: 'vcf-wld-vsan-network-id',
+          questionPrimary: 'ID du réseau vSAN',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-wld-vsan-subnet-id',
+          questionPrimary: 'ID du sous-réseau vSAN',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-wld-vsan-subnet-range',
+          questionPrimary: 'Plage du sous-réseau vSAN',
+          mandatory: true,
+          exampleValue: '10.105.48.0/24',
+        },
+        {
+          id: 'vcf-wld-vsan-vlan-id',
+          questionPrimary: 'VLAN ID vSAN',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-wld-overlay-network-id',
+          questionPrimary: 'ID du réseau overlay',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-wld-overlay-subnet-id',
+          questionPrimary: 'ID du sous-réseau overlay',
+          mandatory: true,
+        },
+        {
+          id: 'vcf-wld-overlay-subnet-range',
+          questionPrimary: 'Plage du sous-réseau overlay',
+          mandatory: true,
+          exampleValue: '10.105.49.0/24',
+        },
+        {
+          id: 'vcf-wld-overlay-vlan-id',
+          questionPrimary: 'VLAN ID overlay',
+          mandatory: true,
+          exampleValue: '2049',
         },
       ],
     },

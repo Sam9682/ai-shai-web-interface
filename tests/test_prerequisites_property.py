@@ -1,22 +1,25 @@
 """Property-based tests for the prerequisites 404 bugfix (task 4).
 
 Bugfix spec: .kiro/specs/basics-prerequisites-404-fix
+Migrated by: .kiro/specs/vcf-prerequisites-update (task 6.1)
 
 These Hypothesis-driven properties complement the example-based exploration,
-unit, and preservation tests. They exercise the fixed app across many generated
-inputs:
+unit, and preservation tests. They exercise the installation-scoped app across
+many generated inputs (the family is now
+``/api/prerequisites/installations/{id}/{slug}/content|answers[/{row_id}]``):
 
-- **Fix property** (Property 1): for a generated qa slug + rowId + answer, a
-  member PUT-then-GET round-trips (the answers map contains rowId -> answer);
-  for a generated static slug + content, an admin PUT-then-GET round-trips (the
-  returned content matches). No request in the family is ever an unmatched-route
-  404. Validates Requirements 2.5, 3.4.
+- **Fix property** (Property 1): for a generated qa slug + rowId + answer under a
+  valid installation, a member PUT-then-GET round-trips (the answers map contains
+  rowId -> answer); for a generated static slug + content, an admin PUT-then-GET
+  round-trips (the returned content matches). No request in the family is ever an
+  unmatched-route 404. Validates Requirements 9.3, 7.7.
 - **Answer-map property** (Property 3): for a sequence of ``(rowId, answer)``
-  PUTs on one slug, ``GET .../answers`` returns exactly the reduction of the
-  sequence (last write wins per rowId). Validates Requirement 2.5.
+  PUTs on one slug under one installation, ``GET .../answers`` returns exactly the
+  reduction of the sequence (last write wins per rowId; answers are shared per
+  installation). Validates Requirements 9.3, 7.7.
 - **Preservation property** (Property 2): generated paths/verbs OUTSIDE the
   prerequisites family produce the same status/body as the unfixed baseline.
-  Validates Requirements 3.1, 3.2, 3.3, 3.4, 3.5.
+  Validates Requirements 9.3, 7.7.
 
 State isolation note: the conftest ``client`` fixture is function-scoped and
 recreates the DB per test, but ``@given`` runs many examples inside a SINGLE
@@ -26,12 +29,14 @@ property writes at the end of each example, so state from one example never
 corrupts another's assertions. Function-scoped-fixture health checks are
 suppressed as recommended by Hypothesis for this pattern.
 
-Validates: Requirements 2.5, 3.1, 3.2, 3.3, 3.4, 3.5
+Validates: Requirements 9.3, 7.7
 
 Property 1: Bug Condition - Prerequisites API is served, not 404
 Property 2: Preservation - All non-prerequisites behavior unchanged
 Property 3: Answer-map - last write wins per rowId
 """
+import uuid
+
 import pytest
 from fastapi import status
 from hypothesis import HealthCheck, given, settings
@@ -90,14 +95,20 @@ def _headers(user):
 
 
 def _is_bug_condition(path: str) -> bool:
-    """Return True if `path` targets the prerequisites API contract."""
+    """Return True if `path` targets the installation-scoped prerequisites contract.
+
+    The family is now
+    ``/api/prerequisites/installations/{id}/{slug}/content|answers[/{row_id}]``.
+    """
     parts = [p for p in path.split("/") if p]
-    if len(parts) < 4 or parts[0] != "api" or parts[1] != "prerequisites":
+    if len(parts) < 6:
         return False
-    resource = parts[3]
-    if resource == "content" and len(parts) == 4:
+    if parts[0] != "api" or parts[1] != "prerequisites" or parts[2] != "installations":
+        return False
+    resource = parts[5]
+    if resource == "content" and len(parts) == 6:
         return True
-    if resource == "answers" and len(parts) in (4, 5):
+    if resource == "answers" and len(parts) in (6, 7):
         return True
     return False
 
@@ -130,16 +141,21 @@ _content = st.text(max_size=500)
     row_id=_row_id,
     answer=_answer,
 )
-def test_answer_put_then_get_round_trips(client, member_user, slug, row_id, answer):
+def test_answer_put_then_get_round_trips(
+    client, member_user, installation_id, slug, row_id, answer
+):
     """For any qa slug + rowId + answer, a member PUT then GET round-trips.
 
-    The generated request is in the prerequisites family, so it must be SERVED
-    (never an unmatched-route 404), and the answers map must contain the
-    written rowId -> answer.
+    The generated request is in the installation-scoped prerequisites family, so
+    it must be SERVED (never an unmatched-route 404), and the answers map must
+    contain the written rowId -> answer.
 
-    Validates: Requirements 2.5, 3.4
+    Validates: Requirements 9.3, 7.7
     """
-    put_path = f"/api/prerequisites/{slug}/answers/{row_id}"
+    put_path = (
+        f"/api/prerequisites/installations/{installation_id}"
+        f"/{slug}/answers/{row_id}"
+    )
     assert _is_bug_condition(put_path)
 
     put_resp = client.put(
@@ -151,7 +167,7 @@ def test_answer_put_then_get_round_trips(client, member_user, slug, row_id, answ
     assert put_resp.status_code == status.HTTP_200_OK
     assert put_resp.json() == {"success": True, "slug": slug}
 
-    get_path = f"/api/prerequisites/{slug}/answers"
+    get_path = f"/api/prerequisites/installations/{installation_id}/{slug}/answers"
     get_resp = client.get(get_path, headers=_headers(member_user))
     assert get_resp.status_code == status.HTTP_200_OK
     body = get_resp.json()
@@ -162,39 +178,41 @@ def test_answer_put_then_get_round_trips(client, member_user, slug, row_id, answ
 
     # --- Per-example isolation: remove the row this example wrote so the
     # single shared DB does not accumulate state across examples. ---
-    _cleanup_answer(client, slug, row_id)
+    _cleanup_answer(installation_id, slug, row_id)
 
 
-def test_static_content_put_then_get_round_trips_examples(client, admin_user, member_user):
+def test_static_content_put_then_get_round_trips_examples(
+    client, admin_user, member_user, installation_id
+):
     """Admin PUT static content then GET round-trips for generated content.
 
-    Static content is one row per slug (no rowId key), so this uses an inner
-    Hypothesis run over generated content strings and resets the row after each
-    example to keep the shared DB clean.
+    Static content is one row per (installation, slug) (no rowId key), so this
+    uses an inner Hypothesis run over generated content strings and resets the
+    row after each example to keep the shared DB clean.
 
-    Validates: Requirements 2.5, 3.4
+    Validates: Requirements 9.3, 7.7
     """
     slug = "basics"
+    content_path = (
+        f"/api/prerequisites/installations/{installation_id}/{slug}/content"
+    )
 
     @settings(max_examples=30, deadline=None,
               suppress_health_check=[HealthCheck.function_scoped_fixture])
     @given(content=_content)
     def _prop(content):
-        put_path = f"/api/prerequisites/{slug}/content"
-        assert _is_bug_condition(put_path)
+        assert _is_bug_condition(content_path)
 
         put_resp = client.put(
-            put_path, json={"content": content}, headers=_headers(admin_user)
+            content_path, json={"content": content}, headers=_headers(admin_user)
         )
         assert put_resp.status_code != status.HTTP_404_NOT_FOUND, (
-            f"COUNTEREXAMPLE: PUT {put_path} -> unmatched-route 404"
+            f"COUNTEREXAMPLE: PUT {content_path} -> unmatched-route 404"
         )
         assert put_resp.status_code == status.HTTP_200_OK
         assert put_resp.json() == {"success": True, "slug": slug}
 
-        get_resp = client.get(
-            f"/api/prerequisites/{slug}/content", headers=_headers(member_user)
-        )
+        get_resp = client.get(content_path, headers=_headers(member_user))
         assert get_resp.status_code == status.HTTP_200_OK
         body = get_resp.json()
         assert body["slug"] == slug
@@ -204,7 +222,7 @@ def test_static_content_put_then_get_round_trips_examples(client, admin_user, me
 
     _prop()
     # Reset the single static row after the property run.
-    _cleanup_content(client, slug)
+    _cleanup_content(installation_id, slug)
 
 
 # ===========================================================================
@@ -220,18 +238,24 @@ def test_static_content_put_then_get_round_trips_examples(client, admin_user, me
         max_size=12,
     ),
 )
-def test_answer_map_is_last_write_wins_reduction(client, member_user, slug, writes):
+def test_answer_map_is_last_write_wins_reduction(
+    client, member_user, installation_id, slug, writes
+):
     """GET .../answers equals the last-write-wins reduction of the PUT sequence.
 
-    For a sequence of (rowId, answer) PUTs on one slug, the returned answers map
-    must equal, for every rowId touched, the LAST answer written for that rowId.
+    For a sequence of (rowId, answer) PUTs on one slug under one installation,
+    the returned answers map must equal, for every rowId touched, the LAST
+    answer written for that rowId (answers are shared per installation).
 
-    Validates: Requirement 2.5
+    Validates: Requirements 9.3, 7.7
     """
     expected = {}
     touched = []
     for row_id, answer in writes:
-        put_path = f"/api/prerequisites/{slug}/answers/{row_id}"
+        put_path = (
+            f"/api/prerequisites/installations/{installation_id}"
+            f"/{slug}/answers/{row_id}"
+        )
         resp = client.put(
             put_path, json={"answer": answer}, headers=_headers(member_user)
         )
@@ -243,7 +267,8 @@ def test_answer_map_is_last_write_wins_reduction(client, member_user, slug, writ
             touched.append(row_id)
 
     get_resp = client.get(
-        f"/api/prerequisites/{slug}/answers", headers=_headers(member_user)
+        f"/api/prerequisites/installations/{installation_id}/{slug}/answers",
+        headers=_headers(member_user),
     )
     assert get_resp.status_code == status.HTTP_200_OK
     answers = get_resp.json()["answers"]
@@ -256,7 +281,7 @@ def test_answer_map_is_last_write_wins_reduction(client, member_user, slug, writ
 
     # --- Per-example isolation: remove every row this example wrote. ---
     for row_id in touched:
-        _cleanup_answer(client, slug, row_id)
+        _cleanup_answer(installation_id, slug, row_id)
 
 
 # ===========================================================================
@@ -355,11 +380,21 @@ def _session():
     return TestingSessionLocal()
 
 
-def _cleanup_answer(client, slug, row_id):
-    """Delete the (slug, row_id) answer row written by an example."""
+def _as_uuid(installation_id):
+    """Coerce the string ``installation_id`` fixture value to a UUID for the ORM.
+
+    Paths carry the id as a string, but the ``installation_id`` column is a UUID
+    type; comparing against a bare string trips the SQLite UUID processor.
+    """
+    return installation_id if isinstance(installation_id, uuid.UUID) else uuid.UUID(str(installation_id))
+
+
+def _cleanup_answer(installation_id, slug, row_id):
+    """Delete the (installation, slug, row_id) answer row written by an example."""
     db = _session()
     try:
         db.query(PrerequisiteAnswer).filter(
+            PrerequisiteAnswer.installation_id == _as_uuid(installation_id),
             PrerequisiteAnswer.slug == slug,
             PrerequisiteAnswer.row_id == row_id,
         ).delete(synchronize_session=False)
@@ -368,12 +403,13 @@ def _cleanup_answer(client, slug, row_id):
         db.close()
 
 
-def _cleanup_content(client, slug):
-    """Delete the static content row for a slug written by an example."""
+def _cleanup_content(installation_id, slug):
+    """Delete the (installation, slug) static content row written by an example."""
     db = _session()
     try:
         db.query(PrerequisiteContent).filter(
-            PrerequisiteContent.slug == slug
+            PrerequisiteContent.installation_id == _as_uuid(installation_id),
+            PrerequisiteContent.slug == slug,
         ).delete(synchronize_session=False)
         db.commit()
     finally:

@@ -1,20 +1,23 @@
 """Property-based test for per-user upsert idempotency.
 
 Feature spec: .kiro/specs/per-user-prerequisites-persistence (task 3.3)
+Migrated by: .kiro/specs/vcf-prerequisites-update (task 6.1)
 
-Property 2: Repeated submissions for one member do not duplicate
-    For any Member, Q&A slug, and Row_Id, submitting an answer any number of
-    times results in exactly one Answer_Record for that (user_id, slug, row_id)
-    triple, holding the most recently submitted answer.
+Property 2: Repeated submissions do not duplicate
+    For any installation, Q&A slug, and Row_Id, submitting an answer any number
+    of times results in exactly one Answer_Record for that
+    (installation_id, slug, row_id) triple, holding the most recently submitted
+    answer. Answers are shared per installation (no per-user scope).
 
-Validates: Requirements 1.2
+Validates: Requirements 9.3, 7.7
 
-The property drives PUT /api/prerequisites/{slug}/answers/{row_id} through the
-FastAPI TestClient with a real Bearer token (identity is resolved server-side
-from the token), submitting a non-empty sequence of answers for a single
-(member, slug, row_id). It then asserts, via a direct DB session, that exactly
-one PrerequisiteAnswer row exists for the (user_id, slug, row_id) triple and
-that its answer equals the last value submitted.
+The property drives PUT
+/api/prerequisites/installations/{id}/{slug}/answers/{row_id} through the
+FastAPI TestClient with a real Bearer token (a member is authorized to answer),
+submitting a non-empty sequence of answers for a single
+(installation, slug, row_id). It then asserts, via a direct DB session, that
+exactly one PrerequisiteAnswer row exists for the (installation_id, slug,
+row_id) triple and that its answer equals the last value submitted.
 
 State isolation note: the conftest ``client`` fixture is function-scoped and
 recreates the DB per test, but ``@given`` runs many examples inside a SINGLE
@@ -91,13 +94,13 @@ _answers_seq = st.lists(_answer, min_size=1, max_size=12)
 # fixture, bound into the app via the conftest ``get_db`` override) so there is
 # no second SQLite connection to contend for the file lock.
 # ---------------------------------------------------------------------------
-def _count_and_last_answer(db, user_id, slug, row_id):
+def _count_and_last_answer(db, installation_id, slug, row_id):
     """Return (row_count, answer_of_single_row_or_None) for the triple."""
     db.expire_all()  # drop identity-map caching so we observe committed state
     rows = (
         db.query(PrerequisiteAnswer)
         .filter(
-            PrerequisiteAnswer.user_id == user_id,
+            PrerequisiteAnswer.installation_id == installation_id,
             PrerequisiteAnswer.slug == slug,
             PrerequisiteAnswer.row_id == row_id,
         )
@@ -106,9 +109,9 @@ def _count_and_last_answer(db, user_id, slug, row_id):
     return len(rows), (rows[0].answer if len(rows) == 1 else None)
 
 
-def _cleanup_answer(db, user_id, slug, row_id):
+def _cleanup_answer(db, installation_id, slug, row_id):
     db.query(PrerequisiteAnswer).filter(
-        PrerequisiteAnswer.user_id == user_id,
+        PrerequisiteAnswer.installation_id == installation_id,
         PrerequisiteAnswer.slug == slug,
         PrerequisiteAnswer.row_id == row_id,
     ).delete(synchronize_session=False)
@@ -129,22 +132,25 @@ def _cleanup_answer(db, user_id, slug, row_id):
     answers=_answers_seq,
 )
 def test_repeated_submissions_do_not_duplicate(
-    client, db_session, member_user, slug, row_id, answers
+    client, db_session, member_user, installation, slug, row_id, answers
 ):
-    """Feature: per-user-prerequisites-persistence,
-    Property 2: Repeated submissions for one member do not duplicate.
+    """Feature: vcf-prerequisites-update, migrated Property 2:
+    Repeated submissions do not duplicate.
 
-    Submitting an answer for one (member, slug, row_id) any number of times
+    Submitting an answer for one (installation, slug, row_id) any number of times
     yields exactly one persisted Answer_Record holding the most recent answer.
 
-    Validates: Requirements 1.2
+    Validates: Requirements 9.3, 7.7
     """
     # Namespace the row_id per example to guarantee isolation across the many
     # examples that share this single test's database.
     unique_row_id = f"{row_id}-{uuid.uuid4().hex}"
-    user_id = member_user.id
+    installation_id = installation.id
 
-    put_path = f"/api/prerequisites/{slug}/answers/{unique_row_id}"
+    put_path = (
+        f"/api/prerequisites/installations/{installation_id}"
+        f"/{slug}/answers/{unique_row_id}"
+    )
 
     # Submit the same triple repeatedly (>= 1 time); each PUT succeeds.
     for answer in answers:
@@ -158,11 +164,11 @@ def test_repeated_submissions_do_not_duplicate(
 
     # Exactly one row for the triple, holding the LAST submitted answer.
     count, stored_answer = _count_and_last_answer(
-        db_session, user_id, slug, unique_row_id
+        db_session, installation_id, slug, unique_row_id
     )
     assert count == 1, (
         f"COUNTEREXAMPLE: {len(answers)} submissions of "
-        f"({user_id}, {slug!r}, {unique_row_id!r}) produced {count} rows "
+        f"({installation_id}, {slug!r}, {unique_row_id!r}) produced {count} rows "
         f"(expected exactly 1)"
     )
     assert stored_answer == answers[-1], (
@@ -172,10 +178,11 @@ def test_repeated_submissions_do_not_duplicate(
 
     # The GET map likewise reflects a single value for this row_id.
     get_resp = client.get(
-        f"/api/prerequisites/{slug}/answers", headers=_headers(member_user)
+        f"/api/prerequisites/installations/{installation_id}/{slug}/answers",
+        headers=_headers(member_user),
     )
     assert get_resp.status_code == status.HTTP_200_OK
     assert get_resp.json()["answers"].get(unique_row_id) == answers[-1]
 
     # --- Per-example isolation: remove the row this example wrote. ---
-    _cleanup_answer(db_session, user_id, slug, unique_row_id)
+    _cleanup_answer(db_session, installation_id, slug, unique_row_id)

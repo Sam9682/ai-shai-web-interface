@@ -9,6 +9,7 @@ from app.models.audit import AuditLog
 from app.models.token_blacklist import TokenBlacklist
 from app.models.user_deletion import ScheduledUserDeletion
 from app.models.prerequisite import PrerequisiteContent, PrerequisiteAnswer
+from app.models.installation import Installation
 
 __all__ = [
     "User", "UserRole",
@@ -20,6 +21,7 @@ __all__ = [
     "AuditLog",
     "TokenBlacklist",
     "ScheduledUserDeletion",
-    "PrerequisiteContent", "PrerequisiteAnswer"
+    "PrerequisiteContent", "PrerequisiteAnswer",
+    "Installation"
 ]
 from app.models.oracle import OracleQuery

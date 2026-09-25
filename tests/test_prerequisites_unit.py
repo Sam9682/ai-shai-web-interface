@@ -1,24 +1,27 @@
 """Unit tests for the prerequisites route family (models, endpoints, slug
-validation, and authorization).
+validation, and authorization), migrated to the installation-scoped contract.
 
 Bugfix spec: .kiro/specs/basics-prerequisites-404-fix (task 3.6)
+Migrated by: .kiro/specs/vcf-prerequisites-update (task 6.1)
 
-These tests run against the now-fixed app: the router is mounted and the
-persistence models exist. They cover:
+The parent spec ``multi-instance-opcp-prerequisites`` re-scoped the prerequisites
+family under an installation. These tests now exercise:
 
 - Model behavior: defaults, ``updated_at`` default/onupdate, and the
-  ``(slug, row_id)`` unique constraint on ``PrerequisiteAnswer``.
-- Router per-endpoint: correct status/body for each of the four endpoints for
-  known slugs.
-- Slug validation: unknown slug -> resource-specific 404 carrying the error
-  code ``PREREQUISITE_SLUG_NOT_FOUND`` (NOT the framework default
-  ``{"detail": "Not Found"}``); empty-content default for a never-saved known
+  ``(installation_id, slug, row_id)`` unique constraint on ``PrerequisiteAnswer``
+  (answers are shared per installation; there is no ``user_id`` scope). Content
+  is keyed by ``(installation_id, slug)``.
+- Router per-endpoint: correct status/body for each installation-scoped endpoint
+  for known slugs.
+- Slug validation: unknown slug under a valid installation -> resource-specific
+  404 carrying ``PREREQUISITE_SLUG_NOT_FOUND``; unknown installation ->
+  ``INSTALLATION_NOT_FOUND``; empty-content default for a never-saved known
   static slug.
 - Authorization: admin-only static PUT (403 for member), member-only answer PUT
   (403 for admin, code ``ANSWER_NOT_ALLOWED_FOR_ADMIN``), 401 for
   unauthenticated / invalid-token reads.
 
-Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.4
+Validates: Requirements 9.3, 7.7 (and, unchanged in intent, 2.1-2.6, 7.1-7.5)
 """
 import time
 
@@ -30,6 +33,8 @@ from app.models import User, UserRole
 from app.models.prerequisite import PrerequisiteContent, PrerequisiteAnswer
 from app.auth.token import create_access_token
 
+from tests.conftest import create_installation
+
 
 # --- Known slug sets (kept in sync with app/prerequisites/router.py) ---
 STATIC_SLUGS = ("basics", "network-flux")
@@ -37,7 +42,7 @@ QA_SLUGS = ("network-checklist", "core-control-plane", "cloudstore", "vcf")
 
 
 # ---------------------------------------------------------------------------
-# Fixtures (mirror tests/test_prerequisites_exploration.py)
+# Fixtures
 # ---------------------------------------------------------------------------
 @pytest.fixture
 def admin_user(db_session):
@@ -78,14 +83,23 @@ def _headers(user):
     return {"Authorization": f"Bearer {token}"}
 
 
-def _error_code(body: dict) -> str | None:
-    """Extract the structured error code from a router error body.
+def _content_path(installation_id, slug):
+    return f"/api/prerequisites/installations/{installation_id}/{slug}/content"
 
-    The app installs an exception handler that unwraps
-    ``ErrorResponse.create(...)`` to a top-level ``{"error": {"code": ...}}``
-    body. Fall back to the raw ``{"detail": {"error": {...}}}`` shape in case
-    the handler is not applied.
-    """
+
+def _answers_path(installation_id, slug):
+    return f"/api/prerequisites/installations/{installation_id}/{slug}/answers"
+
+
+def _answer_path(installation_id, slug, row_id):
+    return (
+        f"/api/prerequisites/installations/{installation_id}"
+        f"/{slug}/answers/{row_id}"
+    )
+
+
+def _error_code(body: dict) -> str | None:
+    """Extract the structured error code from a router error body."""
     if isinstance(body.get("error"), dict):
         return body["error"].get("code")
     detail = body.get("detail")
@@ -99,8 +113,9 @@ def _error_code(body: dict) -> str | None:
 # ===========================================================================
 class TestPrerequisiteContentModel:
     def test_content_defaults_to_empty_string(self, db_session):
-        """content defaults to "" when not provided (Requirement 2.5)."""
-        row = PrerequisiteContent(slug="basics")
+        """content defaults to "" when not provided."""
+        inst = create_installation(db_session)
+        row = PrerequisiteContent(installation_id=inst.id, slug="basics")
         db_session.add(row)
         db_session.commit()
         db_session.refresh(row)
@@ -108,7 +123,10 @@ class TestPrerequisiteContentModel:
 
     def test_updated_at_set_on_insert(self, db_session):
         """updated_at is populated on insert."""
-        row = PrerequisiteContent(slug="basics", content="hello")
+        inst = create_installation(db_session)
+        row = PrerequisiteContent(
+            installation_id=inst.id, slug="basics", content="hello"
+        )
         db_session.add(row)
         db_session.commit()
         db_session.refresh(row)
@@ -116,13 +134,15 @@ class TestPrerequisiteContentModel:
 
     def test_updated_at_changes_on_update(self, db_session):
         """updated_at advances on update (onupdate)."""
-        row = PrerequisiteContent(slug="basics", content="v1")
+        inst = create_installation(db_session)
+        row = PrerequisiteContent(
+            installation_id=inst.id, slug="basics", content="v1"
+        )
         db_session.add(row)
         db_session.commit()
         db_session.refresh(row)
         first = row.updated_at
 
-        # Ensure a measurable time delta for the onupdate timestamp.
         time.sleep(0.01)
         row.content = "v2"
         db_session.commit()
@@ -131,37 +151,53 @@ class TestPrerequisiteContentModel:
         assert row.updated_at >= first
         assert row.updated_at != first
 
+    def test_installation_slug_unique_constraint(self, db_session):
+        """A second content row for the same (installation_id, slug) is rejected."""
+        inst = create_installation(db_session)
+        db_session.add(
+            PrerequisiteContent(installation_id=inst.id, slug="basics", content="a")
+        )
+        db_session.commit()
+
+        db_session.add(
+            PrerequisiteContent(installation_id=inst.id, slug="basics", content="b")
+        )
+        with pytest.raises(IntegrityError):
+            db_session.commit()
+        db_session.rollback()
+
+    def test_same_slug_different_installation_allowed(self, db_session):
+        """Two installations may each hold their own content for the same slug."""
+        inst_a = create_installation(db_session, "A")
+        inst_b = create_installation(db_session, "B")
+        db_session.add(
+            PrerequisiteContent(installation_id=inst_a.id, slug="basics", content="a")
+        )
+        db_session.add(
+            PrerequisiteContent(installation_id=inst_b.id, slug="basics", content="b")
+        )
+        db_session.commit()  # must not raise
+        rows = db_session.query(PrerequisiteContent).filter(
+            PrerequisiteContent.slug == "basics"
+        ).all()
+        assert len(rows) == 2
+
 
 class TestPrerequisiteAnswerModel:
-    """Model behavior for the per-user answer schema.
+    """Model behavior for the installation-scoped answer schema.
 
-    Per the per-user-prerequisites-persistence feature, ``PrerequisiteAnswer``
-    now carries a non-null ``user_id`` FK and its uniqueness key is
-    ``(user_id, slug, row_id)`` rather than ``(slug, row_id)``. Each test seeds
-    a real owning user so the non-null FK is satisfied.
+    Per the multi-instance re-scope, ``PrerequisiteAnswer`` carries a non-null
+    ``installation_id`` FK and its uniqueness key is
+    ``(installation_id, slug, row_id)`` (answers are shared per installation,
+    last-write-wins; there is no ``user_id`` scope). Each test seeds a real
+    owning Installation so the non-null FK is satisfied.
     """
 
-    @staticmethod
-    def _make_member(db_session, email):
-        """Persist and return a member user to own the answers under test."""
-        user = User(
-            email=email,
-            password_hash="hashed_password",
-            first_name="Member",
-            last_name="Model",
-            role=UserRole.MEMBER,
-            is_email_verified=True,
-        )
-        db_session.add(user)
-        db_session.commit()
-        db_session.refresh(user)
-        return user
-
     def test_answer_defaults_to_empty_string(self, db_session):
-        """answer defaults to "" when not provided (Requirement 2.5)."""
-        user = self._make_member(db_session, "answer-default@prereq.test")
+        """answer defaults to "" when not provided."""
+        inst = create_installation(db_session)
         row = PrerequisiteAnswer(
-            user_id=user.id, slug="cloudstore", row_id="cs-subnet-cidr"
+            installation_id=inst.id, slug="cloudstore", row_id="cs-subnet-cidr"
         )
         db_session.add(row)
         db_session.commit()
@@ -169,9 +205,9 @@ class TestPrerequisiteAnswerModel:
         assert row.answer == ""
 
     def test_updated_at_set_on_insert(self, db_session):
-        user = self._make_member(db_session, "updated-insert@prereq.test")
+        inst = create_installation(db_session)
         row = PrerequisiteAnswer(
-            user_id=user.id, slug="cloudstore", row_id="cs-1", answer="a"
+            installation_id=inst.id, slug="cloudstore", row_id="cs-1", answer="a"
         )
         db_session.add(row)
         db_session.commit()
@@ -179,9 +215,9 @@ class TestPrerequisiteAnswerModel:
         assert row.updated_at is not None
 
     def test_updated_at_changes_on_update(self, db_session):
-        user = self._make_member(db_session, "updated-update@prereq.test")
+        inst = create_installation(db_session)
         row = PrerequisiteAnswer(
-            user_id=user.id, slug="cloudstore", row_id="cs-1", answer="a"
+            installation_id=inst.id, slug="cloudstore", row_id="cs-1", answer="a"
         )
         db_session.add(row)
         db_session.commit()
@@ -196,45 +232,45 @@ class TestPrerequisiteAnswerModel:
         assert row.updated_at >= first
         assert row.updated_at != first
 
-    def test_user_slug_row_id_unique_constraint(self, db_session):
-        """A second insert with the same (user_id, slug, row_id) raises IntegrityError.
+    def test_installation_slug_row_id_unique_constraint(self, db_session):
+        """A second insert with the same (installation_id, slug, row_id) raises.
 
-        Uniqueness is now keyed per user, so a duplicate for the SAME owner is
-        rejected (Requirement 1.2).
+        Uniqueness is keyed per installation, so a duplicate for the SAME
+        installation is rejected.
         """
-        user = self._make_member(db_session, "unique-key@prereq.test")
+        inst = create_installation(db_session)
         db_session.add(
             PrerequisiteAnswer(
-                user_id=user.id, slug="cloudstore", row_id="cs-1", answer="a"
+                installation_id=inst.id, slug="cloudstore", row_id="cs-1", answer="a"
             )
         )
         db_session.commit()
 
         db_session.add(
             PrerequisiteAnswer(
-                user_id=user.id, slug="cloudstore", row_id="cs-1", answer="b"
+                installation_id=inst.id, slug="cloudstore", row_id="cs-1", answer="b"
             )
         )
         with pytest.raises(IntegrityError):
             db_session.commit()
         db_session.rollback()
 
-    def test_same_slug_row_id_different_user_allowed(self, db_session):
-        """Two members may each hold their own answer for the same (slug, row_id).
+    def test_same_slug_row_id_different_installation_allowed(self, db_session):
+        """Two installations may each hold their own answer for the same (slug, row_id).
 
-        The uniqueness key includes ``user_id``, so per-user rows for an
-        identical (slug, row_id) coexist (Requirements 1.1, 1.2).
+        The uniqueness key includes ``installation_id``, so per-installation rows
+        for an identical (slug, row_id) coexist.
         """
-        user_a = self._make_member(db_session, "owner-a@prereq.test")
-        user_b = self._make_member(db_session, "owner-b@prereq.test")
+        inst_a = create_installation(db_session, "A")
+        inst_b = create_installation(db_session, "B")
         db_session.add(
             PrerequisiteAnswer(
-                user_id=user_a.id, slug="cloudstore", row_id="shared", answer="a"
+                installation_id=inst_a.id, slug="cloudstore", row_id="shared", answer="a"
             )
         )
         db_session.add(
             PrerequisiteAnswer(
-                user_id=user_b.id, slug="cloudstore", row_id="shared", answer="b"
+                installation_id=inst_b.id, slug="cloudstore", row_id="shared", answer="b"
             )
         )
         db_session.commit()  # must not raise
@@ -246,15 +282,15 @@ class TestPrerequisiteAnswerModel:
 
     def test_same_row_id_different_slug_allowed(self, db_session):
         """The unique constraint is on the tuple, not row_id alone."""
-        user = self._make_member(db_session, "diff-slug@prereq.test")
+        inst = create_installation(db_session)
         db_session.add(
             PrerequisiteAnswer(
-                user_id=user.id, slug="cloudstore", row_id="shared", answer="a"
+                installation_id=inst.id, slug="cloudstore", row_id="shared", answer="a"
             )
         )
         db_session.add(
             PrerequisiteAnswer(
-                user_id=user.id, slug="vcf", row_id="shared", answer="b"
+                installation_id=inst.id, slug="vcf", row_id="shared", answer="b"
             )
         )
         db_session.commit()  # must not raise
@@ -268,10 +304,10 @@ class TestPrerequisiteAnswerModel:
 # Router: per-endpoint happy paths for known slugs
 # ===========================================================================
 class TestEndpointsKnownSlugs:
-    def test_get_content_returns_shape(self, client, member_user):
+    def test_get_content_returns_shape(self, client, member_user, installation_id):
         """GET content -> 200 with {slug, content, updated_at}."""
         resp = client.get(
-            "/api/prerequisites/basics/content", headers=_headers(member_user)
+            _content_path(installation_id, "basics"), headers=_headers(member_user)
         )
         assert resp.status_code == status.HTTP_200_OK
         body = resp.json()
@@ -279,10 +315,10 @@ class TestEndpointsKnownSlugs:
         assert "content" in body
         assert "updated_at" in body
 
-    def test_get_answers_returns_shape(self, client, member_user):
+    def test_get_answers_returns_shape(self, client, member_user, installation_id):
         """GET answers -> 200 with {slug, answers} (empty map when none)."""
         resp = client.get(
-            "/api/prerequisites/network-checklist/answers",
+            _answers_path(installation_id, "network-checklist"),
             headers=_headers(member_user),
         )
         assert resp.status_code == status.HTTP_200_OK
@@ -290,10 +326,12 @@ class TestEndpointsKnownSlugs:
         assert body["slug"] == "network-checklist"
         assert body["answers"] == {}
 
-    def test_put_content_success_by_admin(self, client, admin_user, member_user):
+    def test_put_content_success_by_admin(
+        self, client, admin_user, member_user, installation_id
+    ):
         """PUT content by admin -> 200 success; GET reflects the saved value."""
         resp = client.put(
-            "/api/prerequisites/basics/content",
+            _content_path(installation_id, "basics"),
             json={"content": "<p>saved</p>"},
             headers=_headers(admin_user),
         )
@@ -302,17 +340,16 @@ class TestEndpointsKnownSlugs:
         assert body["success"] is True
         assert body["slug"] == "basics"
 
-        # A subsequent GET returns the persisted value.
         get_resp = client.get(
-            "/api/prerequisites/basics/content", headers=_headers(member_user)
+            _content_path(installation_id, "basics"), headers=_headers(member_user)
         )
         assert get_resp.status_code == status.HTTP_200_OK
         assert get_resp.json()["content"] == "<p>saved</p>"
 
-    def test_put_answer_success_by_member(self, client, member_user):
+    def test_put_answer_success_by_member(self, client, member_user, installation_id):
         """PUT answer by member -> 200 success; GET reflects the saved map."""
         resp = client.put(
-            "/api/prerequisites/cloudstore/answers/cs-subnet-cidr",
+            _answer_path(installation_id, "cloudstore", "cs-subnet-cidr"),
             json={"answer": "10.0.0.0/24"},
             headers=_headers(member_user),
         )
@@ -322,15 +359,17 @@ class TestEndpointsKnownSlugs:
         assert body["slug"] == "cloudstore"
 
         get_resp = client.get(
-            "/api/prerequisites/cloudstore/answers",
+            _answers_path(installation_id, "cloudstore"),
             headers=_headers(member_user),
         )
         assert get_resp.status_code == status.HTTP_200_OK
         assert get_resp.json()["answers"] == {"cs-subnet-cidr": "10.0.0.0/24"}
 
-    def test_put_answer_upsert_updates_in_place(self, client, member_user):
-        """A second PUT for the same (slug, row_id) updates rather than dupes."""
-        base = "/api/prerequisites/cloudstore/answers/cs-1"
+    def test_put_answer_upsert_updates_in_place(
+        self, client, member_user, installation_id
+    ):
+        """A second PUT for the same (installation, slug, row_id) updates in place."""
+        base = _answer_path(installation_id, "cloudstore", "cs-1")
         client.put(base, json={"answer": "first"}, headers=_headers(member_user))
         resp = client.put(
             base, json={"answer": "second"}, headers=_headers(member_user)
@@ -338,22 +377,22 @@ class TestEndpointsKnownSlugs:
         assert resp.status_code == status.HTTP_200_OK
 
         get_resp = client.get(
-            "/api/prerequisites/cloudstore/answers",
+            _answers_path(installation_id, "cloudstore"),
             headers=_headers(member_user),
         )
         assert get_resp.json()["answers"] == {"cs-1": "second"}
 
 
 # ===========================================================================
-# Slug validation
+# Slug validation (and installation validation)
 # ===========================================================================
 class TestSlugValidation:
     def test_unknown_static_slug_get_content_resource_specific_404(
-        self, client, member_user
+        self, client, member_user, installation_id
     ):
         """Unknown slug -> resource-specific 404 with PREREQUISITE_SLUG_NOT_FOUND."""
         resp = client.get(
-            "/api/prerequisites/does-not-exist/content",
+            _content_path(installation_id, "does-not-exist"),
             headers=_headers(member_user),
         )
         assert resp.status_code == status.HTTP_404_NOT_FOUND
@@ -362,30 +401,32 @@ class TestSlugValidation:
         assert _error_code(body) == "PREREQUISITE_SLUG_NOT_FOUND"
 
     def test_unknown_qa_slug_get_answers_resource_specific_404(
-        self, client, member_user
+        self, client, member_user, installation_id
     ):
         resp = client.get(
-            "/api/prerequisites/nope/answers", headers=_headers(member_user)
+            _answers_path(installation_id, "nope"), headers=_headers(member_user)
         )
         assert resp.status_code == status.HTTP_404_NOT_FOUND
         body = resp.json()
         assert body != {"detail": "Not Found"}
         assert _error_code(body) == "PREREQUISITE_SLUG_NOT_FOUND"
 
-    def test_qa_slug_rejected_on_content_endpoint(self, client, member_user):
+    def test_qa_slug_rejected_on_content_endpoint(
+        self, client, member_user, installation_id
+    ):
         """A qa slug is not a valid static-content slug -> 404."""
         resp = client.get(
-            "/api/prerequisites/cloudstore/content",
+            _content_path(installation_id, "cloudstore"),
             headers=_headers(member_user),
         )
         assert resp.status_code == status.HTTP_404_NOT_FOUND
         assert _error_code(resp.json()) == "PREREQUISITE_SLUG_NOT_FOUND"
 
     def test_unknown_slug_put_content_resource_specific_404(
-        self, client, admin_user
+        self, client, admin_user, installation_id
     ):
         resp = client.put(
-            "/api/prerequisites/does-not-exist/content",
+            _content_path(installation_id, "does-not-exist"),
             json={"content": "x"},
             headers=_headers(admin_user),
         )
@@ -393,11 +434,11 @@ class TestSlugValidation:
         assert _error_code(resp.json()) == "PREREQUISITE_SLUG_NOT_FOUND"
 
     def test_never_saved_known_static_slug_returns_empty_content(
-        self, client, member_user
+        self, client, member_user, installation_id
     ):
         """Known static slug never saved -> 200 with content:"" default."""
         resp = client.get(
-            "/api/prerequisites/network-flux/content",
+            _content_path(installation_id, "network-flux"),
             headers=_headers(member_user),
         )
         assert resp.status_code == status.HTTP_200_OK
@@ -406,49 +447,75 @@ class TestSlugValidation:
         assert body["content"] == ""
         assert body["updated_at"] is None
 
+    def test_unknown_installation_get_content_is_installation_not_found(
+        self, client, member_user, unknown_installation_id
+    ):
+        """Unknown installation id on content GET -> INSTALLATION_NOT_FOUND (Req 7.6)."""
+        resp = client.get(
+            _content_path(unknown_installation_id, "basics"),
+            headers=_headers(member_user),
+        )
+        assert resp.status_code == status.HTTP_404_NOT_FOUND
+        assert _error_code(resp.json()) == "INSTALLATION_NOT_FOUND"
+
+    def test_unknown_installation_get_answers_is_installation_not_found(
+        self, client, member_user, unknown_installation_id
+    ):
+        """Unknown installation id on answers GET -> INSTALLATION_NOT_FOUND (Req 7.6)."""
+        resp = client.get(
+            _answers_path(unknown_installation_id, "cloudstore"),
+            headers=_headers(member_user),
+        )
+        assert resp.status_code == status.HTTP_404_NOT_FOUND
+        assert _error_code(resp.json()) == "INSTALLATION_NOT_FOUND"
+
 
 # ===========================================================================
 # Authorization
 # ===========================================================================
 class TestAuthorization:
-    def test_put_content_forbidden_for_member(self, client, member_user):
+    def test_put_content_forbidden_for_member(
+        self, client, member_user, installation_id
+    ):
         """Static PUT is admin-only -> 403 for a member."""
         resp = client.put(
-            "/api/prerequisites/basics/content",
+            _content_path(installation_id, "basics"),
             json={"content": "x"},
             headers=_headers(member_user),
         )
         assert resp.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_put_answer_forbidden_for_admin(self, client, admin_user):
+    def test_put_answer_forbidden_for_admin(
+        self, client, admin_user, installation_id
+    ):
         """Answer PUT is member-only -> 403 for an admin with the right code."""
         resp = client.put(
-            "/api/prerequisites/cloudstore/answers/cs-1",
+            _answer_path(installation_id, "cloudstore", "cs-1"),
             json={"answer": "x"},
             headers=_headers(admin_user),
         )
         assert resp.status_code == status.HTTP_403_FORBIDDEN
         assert _error_code(resp.json()) == "ANSWER_NOT_ALLOWED_FOR_ADMIN"
 
-    def test_get_content_unauthenticated_401(self, client):
+    def test_get_content_unauthenticated_401(self, client, installation_id):
         """No bearer token -> 401 on a read."""
-        resp = client.get("/api/prerequisites/basics/content")
+        resp = client.get(_content_path(installation_id, "basics"))
         assert resp.status_code in (
             status.HTTP_401_UNAUTHORIZED,
             status.HTTP_403_FORBIDDEN,
         )
 
-    def test_get_answers_unauthenticated_401(self, client):
-        resp = client.get("/api/prerequisites/network-checklist/answers")
+    def test_get_answers_unauthenticated_401(self, client, installation_id):
+        resp = client.get(_answers_path(installation_id, "network-checklist"))
         assert resp.status_code in (
             status.HTTP_401_UNAUTHORIZED,
             status.HTTP_403_FORBIDDEN,
         )
 
-    def test_get_content_invalid_token_401(self, client):
+    def test_get_content_invalid_token_401(self, client, installation_id):
         """Invalid bearer token -> 401 on a read."""
         resp = client.get(
-            "/api/prerequisites/basics/content",
+            _content_path(installation_id, "basics"),
             headers={"Authorization": "Bearer not-a-real-token"},
         )
         assert resp.status_code == status.HTTP_401_UNAUTHORIZED
