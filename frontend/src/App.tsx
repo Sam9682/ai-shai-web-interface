@@ -13,12 +13,8 @@ import { AdminUsersPage } from './pages/AdminUsersPage';
 import { AdminEventsPage } from './pages/AdminEventsPage';
 import { OraclePage } from './pages/OraclePage';
 import { HowToUsePage } from './pages/HowToUsePage';
-import { BasicsPage } from './pages/BasicsPage';
-import { NetworkChecklistPage } from './pages/NetworkChecklistPage';
-import { CoreControlPlanePage } from './pages/CoreControlPlanePage';
-import { CloudStorePage } from './pages/CloudStorePage';
-import { VcfPage } from './pages/VcfPage';
-import { NetworkFluxPage } from './pages/NetworkFluxPage';
+import { InstallationListPage } from './components/prerequisites/InstallationListPage';
+import { InstallationPrereqPage } from './pages/InstallationPrereqPage';
 import { DocumentsPage } from './pages/DocumentsPage';
 import { SecurityPage } from './pages/SecurityPage';
 import { LanguageProvider } from './hooks/useLanguage';
@@ -95,50 +91,18 @@ function App() {
                   }
                 />
                 <Route
-                  path="/prerequisites/basics"
+                  path="/prerequisites/installations"
                   element={
                     <ProtectedRoute>
-                      <BasicsPage />
+                      <InstallationListPage />
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  path="/prerequisites/network-checklist"
+                  path="/prerequisites/installations/:installationId/:slug"
                   element={
                     <ProtectedRoute>
-                      <NetworkChecklistPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/prerequisites/core-control-plane"
-                  element={
-                    <ProtectedRoute>
-                      <CoreControlPlanePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/prerequisites/cloudstore"
-                  element={
-                    <ProtectedRoute>
-                      <CloudStorePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/prerequisites/vcf"
-                  element={
-                    <ProtectedRoute>
-                      <VcfPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/prerequisites/network-flux"
-                  element={
-                    <ProtectedRoute>
-                      <NetworkFluxPage />
+                      <InstallationPrereqPage />
                     </ProtectedRoute>
                   }
                 />

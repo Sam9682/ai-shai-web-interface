@@ -105,6 +105,9 @@ function totalRows(config: QuestionFormConfig): number {
   return config.sections.reduce((sum, s) => sum + s.rows.length, 0);
 }
 
+// Installation-scoped id threaded through every render + service assertion.
+const INSTALL_ID = '11111111-1111-1111-1111-111111111111';
+
 // ---------------------------------------------------------------------------
 // Property 6: Question pages show read-only questions and an editable member
 // answer. Validates: Requirements 5.1, 5.2, 5.3
@@ -119,7 +122,14 @@ describe('Property 6: read-only questions + editable member answer', () => {
         cleanup();
         setAuth(isMember);
 
-        renderForm(<QuestionAnswerForm slug="network-checklist" title="Test" config={config} />);
+        renderForm(
+          <QuestionAnswerForm
+            installationId={INSTALL_ID}
+            slug="network-checklist"
+            title="Test"
+            config={config}
+          />,
+        );
 
         const canAnswer = isMember; // authenticated && !admin
 
@@ -177,7 +187,14 @@ describe('Property 7: required row annotations', () => {
         cleanup();
         setAuth(isMember);
 
-        renderForm(<QuestionAnswerForm slug="vcf" title="Test" config={config} />);
+        renderForm(
+          <QuestionAnswerForm
+            installationId={INSTALL_ID}
+            slug="vcf"
+            title="Test"
+            config={config}
+          />,
+        );
 
         // Under the default French language the markers resolve to their French
         // labels; the mandatory marker uses the 🔴 icon and the optional ⚪.
@@ -241,7 +258,7 @@ const FIXED_LABEL = 'Réponse client — Question 0-0';
 // Feature: opcp-prerequisites-tabs, Property 9: Saving a client answer forwards
 // it to the service.
 describe('Property 9: saving a client answer forwards it to the service', () => {
-  it('calls saveClientAnswer(slug, rowId, value) on blur for a member', async () => {
+  it('calls saveClientAnswer(installationId, slug, rowId, value) on blur for a member', async () => {
     // fast-check varies the typed value across the input space. A member
     // changes the answer, then blurs to trigger the onBlur save.
     await fc.assert(
@@ -253,7 +270,14 @@ describe('Property 9: saving a client answer forwards it to the service', () => 
         setAuth(true);
 
         const slug = 'core-control-plane';
-        renderForm(<QuestionAnswerForm slug={slug} title="Test" config={fixedConfig} />);
+        renderForm(
+          <QuestionAnswerForm
+            installationId={INSTALL_ID}
+            slug={slug}
+            title="Test"
+            config={fixedConfig}
+          />,
+        );
 
         // Let the mount-time loadClientAnswers promise resolve before typing.
         await act(async () => {
@@ -268,6 +292,7 @@ describe('Property 9: saving a client answer forwards it to the service', () => 
         });
 
         expect(mockedPrereq.saveClientAnswer).toHaveBeenCalledWith(
+          INSTALL_ID,
           slug,
           FIXED_ROW_ID,
           value,
@@ -299,7 +324,12 @@ describe('Property 11: a failed save shows an error indication', () => {
         setAuth(true);
 
         renderForm(
-          <QuestionAnswerForm slug="cloudstore" title="Test" config={fixedConfig} />,
+          <QuestionAnswerForm
+            installationId={INSTALL_ID}
+            slug="cloudstore"
+            title="Test"
+            config={fixedConfig}
+          />,
         );
 
         // Let the mount-time loadClientAnswers promise resolve first; otherwise

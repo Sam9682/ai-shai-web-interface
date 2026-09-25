@@ -60,6 +60,7 @@ vi.mock('../RichTextEditor', () => ({
 const mockedAuth = vi.mocked(authService);
 const mockedService = vi.mocked(prerequisitesService);
 
+const INSTALL_ID = '11111111-1111-1111-1111-111111111111';
 const SLUG = 'basics';
 const TITLE = 'Basics';
 
@@ -84,11 +85,11 @@ describe('Property 5: static-content edit controls appear exactly for admins', (
         mockedAuth.isAdmin.mockReturnValue(isAdmin);
         mockedAuth.isAuthenticated.mockReturnValue(true);
 
-        render(<StaticContentPage slug={SLUG} title={TITLE} />);
+        render(<StaticContentPage installationId={INSTALL_ID} slug={SLUG} title={TITLE} />);
 
         // Wait for the load to settle so the read-only branch shows content.
         await waitFor(() => {
-          expect(mockedService.loadStaticContent).toHaveBeenCalledWith(SLUG);
+          expect(mockedService.loadStaticContent).toHaveBeenCalledWith(INSTALL_ID, SLUG);
         });
 
         const saveButton = screen.queryByRole('button', { name: /enregistrer/i });
@@ -112,7 +113,7 @@ describe('Property 5: static-content edit controls appear exactly for admins', (
 // Feature: opcp-prerequisites-tabs, Property 8: Saving static content forwards it to the service
 // Validates: Requirements 4.4
 describe('Property 8: saving static content forwards it to the service', () => {
-  it('calls saveStaticContent with (slug, typed content)', async () => {
+  it('calls saveStaticContent with (installationId, slug, typed content)', async () => {
     // DOM interaction (type + click) per run is too slow for 100 full-render
     // cycles, so drive a representative sample of content strings through the
     // real type/save flow. Each run still asserts the forwarded args equal the
@@ -128,10 +129,10 @@ describe('Property 8: saving static content forwards it to the service', () => {
       mockedAuth.isAdmin.mockReturnValue(true);
 
       const user = userEvent.setup();
-      render(<StaticContentPage slug={SLUG} title={TITLE} />);
+      render(<StaticContentPage installationId={INSTALL_ID} slug={SLUG} title={TITLE} />);
 
       await waitFor(() => {
-        expect(mockedService.loadStaticContent).toHaveBeenCalledWith(SLUG);
+        expect(mockedService.loadStaticContent).toHaveBeenCalledWith(INSTALL_ID, SLUG);
       });
 
       const editor = screen.getByTestId('editor');
@@ -146,7 +147,7 @@ describe('Property 8: saving static content forwards it to the service', () => {
       await waitFor(() => {
         expect(mockedService.saveStaticContent).toHaveBeenCalledTimes(1);
       });
-      expect(mockedService.saveStaticContent).toHaveBeenCalledWith(SLUG, text);
+      expect(mockedService.saveStaticContent).toHaveBeenCalledWith(INSTALL_ID, SLUG, text);
     }
   });
 });
@@ -180,11 +181,13 @@ describe('Property 10: opening a page loads persisted data through the service',
             mockedAuth.isAdmin.mockReturnValue(false); // read-only branch renders content
             mockedService.loadStaticContent.mockResolvedValue({ slug, content });
 
-            const { container } = render(<StaticContentPage slug={slug} title={TITLE} />);
+            const { container } = render(
+              <StaticContentPage installationId={INSTALL_ID} slug={slug} title={TITLE} />,
+            );
 
-            // The service is queried with the exact slug on mount.
+            // The service is queried with the exact installationId + slug on mount.
             await waitFor(() => {
-              expect(mockedService.loadStaticContent).toHaveBeenCalledWith(slug);
+              expect(mockedService.loadStaticContent).toHaveBeenCalledWith(INSTALL_ID, slug);
             });
 
             // The returned content is rendered (read-only branch uses innerHTML).
@@ -221,10 +224,10 @@ describe('Property 11: a failed save shows an error indication', () => {
       mockedAuth.isAdmin.mockReturnValue(true);
 
       const user = userEvent.setup();
-      render(<StaticContentPage slug={SLUG} title={TITLE} />);
+      render(<StaticContentPage installationId={INSTALL_ID} slug={SLUG} title={TITLE} />);
 
       await waitFor(() => {
-        expect(mockedService.loadStaticContent).toHaveBeenCalledWith(SLUG);
+        expect(mockedService.loadStaticContent).toHaveBeenCalledWith(INSTALL_ID, SLUG);
       });
 
       const editor = screen.getByTestId('editor') as HTMLTextAreaElement;

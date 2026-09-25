@@ -8,29 +8,29 @@ Backend: Python 3 / FastAPI / SQLAlchemy 2.0 / Alembic. Frontend: TypeScript / R
 
 ## Tasks
 
-- [ ] 1. Backend data model foundation
-  - [ ] 1.1 Create the `Installation` SQLAlchemy model
+- [x] 1. Backend data model foundation
+  - [x] 1.1 Create the `Installation` SQLAlchemy model
     - Add `app/models/installation.py` with the `Installation` model: UUID `id` PK, `project_name` (String(255), NOT NULL), `created_at`/`updated_at` (TIMESTAMPTZ, NOT NULL, default/onupdate now-UTC), nullable `created_by`/`updated_by` FKs to `users.id`
     - Add `content` and `answers` relationships with `cascade="all, delete-orphan"`
     - Register the model in the models package `__init__` so Alembic autogenerate and metadata see it
     - _Requirements: 1.1, 3.1_
 
-  - [ ] 1.2 Revise `PrerequisiteContent` model for installation scoping
+  - [x] 1.2 Revise `PrerequisiteContent` model for installation scoping
     - Add surrogate UUID `id` PK; demote `slug` from PK to a plain NOT NULL column
     - Add `installation_id` UUID FK to `installations.id`, NOT NULL, `ON DELETE CASCADE`, indexed, with `installation` relationship (`back_populates="content"`)
     - Add `UniqueConstraint("installation_id", "slug", name="uq_prerequisite_content_installation_slug")`
     - Keep `content`, `updated_at`, `updated_by`
     - _Requirements: 1.2, 1.5_
 
-  - [ ] 1.3 Revise `PrerequisiteAnswer` model for shared per-installation answers
+  - [x] 1.3 Revise `PrerequisiteAnswer` model for shared per-installation answers
     - Add `installation_id` UUID FK to `installations.id`, NOT NULL, `ON DELETE CASCADE`, indexed, with `installation` relationship (`back_populates="answers"`)
     - Remove `user_id` from the identity key and drop `uq_prerequisite_answers_user_slug_row`; author/editor tracking is carried by `updated_by` only
     - Add `UniqueConstraint("installation_id", "slug", "row_id", name="uq_prerequisite_answers_installation_slug_row")` and an index on `(installation_id, slug)`
     - Keep `answer`, `updated_at`, `updated_by`
     - _Requirements: 1.3, 1.4, 1.6, 2.3_
 
-- [ ] 2. Backend schemas
-  - [ ] 2.1 Add Installation Pydantic schemas
+- [x] 2. Backend schemas
+  - [x] 2.1 Add Installation Pydantic schemas
     - In `app/prerequisites/schemas.py` add `InstallationCreateRequest` (with `project_name` min_length 1 and a `field_validator` that strips and rejects blank/whitespace-only), `InstallationUpdateRequest`, `InstallationResponse` (`from_attributes`), and `InstallationListResponse`
     - Add an optional `installation_id` field to `StaticContentResponse`; leave `ClientAnswersResponse` shape unchanged
     - _Requirements: 1.1, 3.4_
@@ -45,14 +45,14 @@ Backend: Python 3 / FastAPI / SQLAlchemy 2.0 / Alembic. Frontend: TypeScript / R
     - Assert blank and whitespace-only `project_name` are rejected on create and edit
     - _Requirements: 3.4_
 
-- [ ] 3. Backend router: Installation CRUD and re-scoped content/answer endpoints
-  - [ ] 3.1 Implement Installation CRUD endpoints
+- [x] 3. Backend router: Installation CRUD and re-scoped content/answer endpoints
+  - [x] 3.1 Implement Installation CRUD endpoints
     - In `app/prerequisites/router.py` add `GET /installations` (`get_current_user`), `POST /installations` (`get_administrator`), `PUT /installations/{installation_id}` (`get_administrator`), `DELETE /installations/{installation_id}` (`get_administrator`)
     - Add `_get_installation_or_404(db, installation_id)` returning a structured `INSTALLATION_NOT_FOUND` 404
     - Create sets `created_by`/`updated_by`; edit updates `project_name` and `updated_by`/`updated_at` while preserving the id; delete uses `db.delete(installation)` relying on cascade
     - _Requirements: 3.1, 3.2, 3.3, 3.5, 4.1_
 
-  - [ ] 3.2 Re-scope content and answer endpoints under `installations/{installation_id}`
+  - [x] 3.2 Re-scope content and answer endpoints under `installations/{installation_id}`
     - Change routes to `GET/PUT /installations/{installation_id}/{slug}/content` and `GET /installations/{installation_id}/{slug}/answers`, `PUT /installations/{installation_id}/{slug}/answers/{row_id}`
     - Each endpoint calls `_get_installation_or_404` first; GET content (`get_current_user`), PUT content (`get_administrator`), GET answers (`get_current_user`), PUT answer (`get_answering_member`)
     - Answer read filters on `installation_id` + `slug` only (drop `user_id`), returning every stored row (shared read)
@@ -89,11 +89,11 @@ Backend: Python 3 / FastAPI / SQLAlchemy 2.0 / Alembic. Frontend: TypeScript / R
     - Random non-existent `installation_id` returns 404 `INSTALLATION_NOT_FOUND`; unknown slug returns 404
     - _Requirements: 3.5_
 
-- [ ] 4. Checkpoint - backend model, schema, and router
+- [x] 4. Checkpoint - backend model, schema, and router
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Alembic migration with data migration and collision resolution
-  - [ ] 5.1 Create the schema + data migration
+- [x] 5. Alembic migration with data migration and collision resolution
+  - [x] 5.1 Create the schema + data migration
     - Add `migrations/versions/*_multi_instance_opcp_prerequisites.py` with `down_revision = 'add_account_security_2fa_fields'`
     - upgrade(): create `installations`; insert one `Default_Installation` (fixed UUID, project name) capturing its id; add nullable `installation_id` to `prerequisite_content` and `prerequisite_answers`; backfill both to the default id; resolve answer collisions with the `ROW_NUMBER() OVER (PARTITION BY installation_id, slug, row_id ORDER BY updated_at DESC, id DESC)` delete; drop `user_id` (FK/index/unique constraint); replace content `slug` PK with a surrogate `id` UUID PK; set `installation_id` NOT NULL on both; create FKs with `ON DELETE CASCADE`, the two unique constraints, and supporting indexes
     - downgrade(): reverse the above (restore `slug` PK on content and per-user answer shape, drop installation columns/constraints, drop `installations`)
@@ -108,11 +108,11 @@ Backend: Python 3 / FastAPI / SQLAlchemy 2.0 / Alembic. Frontend: TypeScript / R
     - Seed legacy content and answers, run `alembic upgrade`, assert a `Default_Installation` exists and every legacy row carries its id; run `alembic downgrade` to confirm reversibility
     - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 6. Checkpoint - migration
+- [x] 6. Checkpoint - migration
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Frontend service layer
-  - [ ] 7.1 Add Installation types and service methods
+- [x] 7. Frontend service layer
+  - [x] 7.1 Add Installation types and service methods
     - In `frontend/src/services/prerequisitesService.ts` add the `Installation` interface and `listInstallations`, `createInstallation`, `updateInstallation`, `deleteInstallation`
     - Re-scope `loadStaticContent`, `saveStaticContent`, `loadClientAnswers`, `saveClientAnswer` to take `installationId` and target the installation-scoped URLs
     - _Requirements: 3.1, 3.2, 3.3, 5.3_
@@ -121,13 +121,13 @@ Backend: Python 3 / FastAPI / SQLAlchemy 2.0 / Alembic. Frontend: TypeScript / R
     - Assert each method issues a request to the correct installation-scoped URL and method
     - _Requirements: 2.1, 2.2, 5.3_
 
-- [ ] 8. Frontend Installation list page and delete dialog
-  - [ ] 8.1 Implement `InstallationListPage`
+- [x] 8. Frontend Installation list page and delete dialog
+  - [x] 8.1 Implement `InstallationListPage`
     - Add `frontend/src/components/prerequisites/InstallationListPage.tsx`: fetch via `listInstallations`, render each Installation by `project_name`, each row links to `/prerequisites/installations/{id}/{firstSlug}`
     - Render create/edit/delete controls only when `authService.isAdmin()`
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-  - [ ] 8.2 Implement `DeleteInstallationDialog`
+  - [x] 8.2 Implement `DeleteInstallationDialog`
     - Add `frontend/src/components/prerequisites/DeleteInstallationDialog.tsx`: confirmation dialog whose text contains the target `project_name`; confirm calls `deleteInstallation(id)`; cancel closes without calling the service
     - Wire the dialog into `InstallationListPage`
     - _Requirements: 6.1, 6.2, 6.3_
@@ -142,13 +142,13 @@ Backend: Python 3 / FastAPI / SQLAlchemy 2.0 / Alembic. Frontend: TypeScript / R
     - **Property 15: Delete dialog identifies the installation by name** — Validates: Requirements 6.1
     - Example tests: confirm invokes `deleteInstallation` (Req 6.2); cancel does not call the service (Req 6.3)
 
-- [ ] 9. Frontend routing and page wiring
-  - [ ] 9.1 Add installation-scoped routes and update navigation
+- [x] 9. Frontend routing and page wiring
+  - [x] 9.1 Add installation-scoped routes and update navigation
     - In `frontend/src/App.tsx` (and `types.ts`): add `/prerequisites/installations` → `InstallationListPage` as the entry point, and `/prerequisites/installations/:installationId/:slug` → `StaticContentPage` or `QuestionAnswerForm` by archetype
     - Update `PREREQ_NAV_ITEMS` so the prerequisites entry points at `/prerequisites/installations`
     - _Requirements: 5.1, 5.3_
 
-  - [ ] 9.2 Pass `installationId` through the content and answer pages
+  - [x] 9.2 Pass `installationId` through the content and answer pages
     - Update `StaticContentPage.tsx` and `QuestionAnswerForm.tsx` to read `installationId` from the route and pass it through every service call
     - _Requirements: 2.1, 2.2, 2.3_
 
@@ -156,7 +156,7 @@ Backend: Python 3 / FastAPI / SQLAlchemy 2.0 / Alembic. Frontend: TypeScript / R
     - Assert the prerequisites entry route mounts `InstallationListPage`
     - _Requirements: 5.1_
 
-- [ ] 10. Final checkpoint - Ensure all tests pass
+- [x] 10. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass (`pytest` for backend, `vitest --run` for frontend), ask the user if questions arise.
 
 ## Notes

@@ -46,6 +46,7 @@ export const fr: TranslationDictionary = {
   'lang.en': 'EN',
   // Prerequisites navigation labels (retain current authored text for fr).
   'prereq.nav.howToUse': 'How to use',
+  'prereq.nav.installations': 'Installations',
   'prereq.nav.basics': 'Basics',
   'prereq.nav.networkChecklist': 'Network Checklist',
   'prereq.nav.coreControlPlane': 'Core Control Plane',
@@ -60,6 +61,28 @@ export const fr: TranslationDictionary = {
   // Prerequisites marker legend labels.
   'prereq.marker.mandatory': 'Obligatoire',
   'prereq.marker.optional': 'Optionnel',
+
+  // Prerequisites installations list page.
+  'prereq.installations.title': 'Installations',
+  'prereq.installations.loading': 'Chargement des installations…',
+  'prereq.installations.empty': 'Aucune installation pour le moment.',
+  'prereq.installations.create.label': 'Nom du projet',
+  'prereq.installations.create.placeholder': 'Nom du projet',
+  'prereq.installations.create.button': 'Créer',
+  'prereq.installations.create.saving': 'Création…',
+  'prereq.installations.edit.label': 'Nom du projet',
+  'prereq.installations.edit.button': 'Modifier',
+  'prereq.installations.edit.save': 'Enregistrer',
+  'prereq.installations.edit.cancel': 'Annuler',
+  'prereq.installations.delete.button': 'Supprimer',
+  'prereq.installations.delete.confirm': 'Confirmer la suppression de l’installation',
+  'prereq.installations.delete.confirmButton': 'Supprimer définitivement',
+  'prereq.installations.delete.deleting': 'Suppression…',
+  'prereq.installations.error.load':
+    'Impossible de charger les installations. Veuillez réessayer plus tard.',
+  'prereq.installations.error.action':
+    "L'opération a échoué. Veuillez réessayer.",
+  'prereq.installations.error.emptyName': 'Le nom du projet ne peut pas être vide.',
 
   // ---- Login page ----
   'page.login.title': 'Connexion',
@@ -374,6 +397,7 @@ export const en: TranslationDictionary = {
   'lang.en': 'EN',
   // Prerequisites navigation labels.
   'prereq.nav.howToUse': 'How to use',
+  'prereq.nav.installations': 'Installations',
   'prereq.nav.basics': 'Basics',
   'prereq.nav.networkChecklist': 'Network Checklist',
   'prereq.nav.coreControlPlane': 'Core Control Plane',
@@ -388,6 +412,27 @@ export const en: TranslationDictionary = {
   // Prerequisites marker legend labels.
   'prereq.marker.mandatory': 'Mandatory',
   'prereq.marker.optional': 'Optional',
+
+  // Prerequisites installations list page.
+  'prereq.installations.title': 'Installations',
+  'prereq.installations.loading': 'Loading installations…',
+  'prereq.installations.empty': 'No installations yet.',
+  'prereq.installations.create.label': 'Project name',
+  'prereq.installations.create.placeholder': 'Project name',
+  'prereq.installations.create.button': 'Create',
+  'prereq.installations.create.saving': 'Creating…',
+  'prereq.installations.edit.label': 'Project name',
+  'prereq.installations.edit.button': 'Edit',
+  'prereq.installations.edit.save': 'Save',
+  'prereq.installations.edit.cancel': 'Cancel',
+  'prereq.installations.delete.button': 'Delete',
+  'prereq.installations.delete.confirm': 'Confirm deletion of the installation',
+  'prereq.installations.delete.confirmButton': 'Delete permanently',
+  'prereq.installations.delete.deleting': 'Deleting…',
+  'prereq.installations.error.load':
+    'Unable to load installations. Please try again later.',
+  'prereq.installations.error.action': 'The operation failed. Please try again.',
+  'prereq.installations.error.emptyName': 'The project name cannot be empty.',
 
   // ---- Login page ----
   'page.login.title': 'Log in',

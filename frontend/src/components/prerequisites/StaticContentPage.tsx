@@ -4,6 +4,7 @@ import { prerequisitesService } from '../../services/prerequisitesService';
 import { RichTextEditor } from '../RichTextEditor';
 
 interface StaticContentPageProps {
+  installationId: string;
   slug: string;
   title: string;
 }
@@ -16,7 +17,11 @@ type SaveStatus = 'idle' | 'saving' | 'error';
  * Save button; members see the content read-only. Save failures surface a
  * visible error banner while preserving the value the admin typed.
  */
-export const StaticContentPage = ({ slug, title }: StaticContentPageProps) => {
+export const StaticContentPage = ({
+  installationId,
+  slug,
+  title,
+}: StaticContentPageProps) => {
   const canEdit = authService.isAdmin();
   const [content, setContent] = useState('');
   const [draft, setDraft] = useState('');
@@ -26,7 +31,7 @@ export const StaticContentPage = ({ slug, title }: StaticContentPageProps) => {
   useEffect(() => {
     let cancelled = false;
     prerequisitesService
-      .loadStaticContent(slug)
+      .loadStaticContent(installationId, slug)
       .then((res) => {
         if (cancelled) return;
         setContent(res.content);
@@ -40,12 +45,12 @@ export const StaticContentPage = ({ slug, title }: StaticContentPageProps) => {
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [installationId, slug]);
 
   const handleSave = async () => {
     setStatus('saving');
     try {
-      await prerequisitesService.saveStaticContent(slug, draft);
+      await prerequisitesService.saveStaticContent(installationId, slug, draft);
       setContent(draft);
       setStatus('idle');
     } catch {
