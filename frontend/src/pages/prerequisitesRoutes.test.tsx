@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import fc from 'fast-check';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from '../components/ProtectedRoute';
@@ -7,6 +7,7 @@ import { LanguageProvider } from '../hooks/useLanguage';
 import { HowToUsePage } from './HowToUsePage';
 import { InstallationListPage } from '../components/prerequisites/InstallationListPage';
 import { InstallationPrereqPage } from './InstallationPrereqPage';
+import { prerequisitesService } from '../services/prerequisitesService';
 
 // The installation-scoped pages call prerequisitesService on mount
 // (loadStaticContent / loadClientAnswers) and the list page calls
@@ -188,6 +189,221 @@ describe('unauthenticated access redirects to login', () => {
         expect(screen.getByText(LOGIN_PLACEHOLDER)).toBeInTheDocument();
         // ...and the protected page title is not rendered.
         expect(screen.queryByText(title)).not.toBeInTheDocument();
+      }),
+      { numRuns: NUM_RUNS },
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Bugfix: default-installation-checklists
+// Property 1: Bug Condition — Default Installation Renders Only Network Checklist
+//
+// The default-installation entry route (InstallationListPage.FIRST_PREREQ_SLUG =
+// 'network-checklist') should render ALL FOUR checklist categories. On the
+// UNFIXED code it renders only the "Network Checklist" section, so this test is
+// EXPECTED TO FAIL — the failure confirms the bug exists. Do NOT change the code
+// or the test to make it pass at this stage.
+//
+// Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3
+// ---------------------------------------------------------------------------
+
+// The entry slug an installation row links to (from InstallationListPage.FIRST_PREREQ_SLUG).
+const DEFAULT_INSTALLATION_ENTRY_SLUG = 'network-checklist';
+
+// The full set of category headings a default-installation entry view must show.
+const REQUIRED_CATEGORY_HEADINGS = [
+  'Network Checklist',
+  'Core Control Plane',
+  'CloudStore',
+  'VCF',
+] as const;
+
+describe('default-installation entry view renders all four checklist categories', () => {
+  it('shows Network Checklist, Core Control Plane, CloudStore, and VCF for an authenticated member', () => {
+    // Authenticated as a non-admin member so the auth guard lets the route
+    // through, matching the existing authenticated-member setup.
+    localStorage.setItem('access_token', 'test-token');
+    localStorage.setItem('user_role', 'member');
+
+    renderPrereqRoutes(
+      `/prerequisites/installations/${INSTALL_ID}/${DEFAULT_INSTALLATION_ENTRY_SLUG}`,
+    );
+
+    // Quantify over the set of the four required category headings: every one
+    // of them must be present on the default-installation entry view.
+    for (const heading of REQUIRED_CATEGORY_HEADINGS) {
+      expect(screen.getByText(heading)).toBeInTheDocument();
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Bugfix: default-installation-checklists
+// Property 2: Preservation — Non-Entry Views Behave Identically
+//
+// Observation-first: these tests assert behavior observed on the UNFIXED code
+// for inputs where the bug condition does NOT hold. They MUST PASS on the
+// unfixed code, establishing the baseline the fix must preserve.
+//
+// Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5
+// ---------------------------------------------------------------------------
+
+// The slugs InstallationPrereqPage recognizes (static + question archetypes).
+// Any slug OUTSIDE this set must render the not-found message.
+const RECOGNIZED_SLUGS = [
+  'basics',
+  'network-flux',
+  'network-checklist',
+  'core-control-plane',
+  'cloudstore',
+  'vcf',
+] as const;
+
+// The not-found message rendered for an unknown/unrecognized slug (Req 3.2).
+const NOT_FOUND_MESSAGE = 'Page de prérequis introuvable.';
+
+// Feature: default-installation-checklists, Property 2: Preservation — unknown-slug not-found
+// Validates: Requirements 3.2
+describe('unknown-slug preservation: any unrecognized slug renders the not-found message', () => {
+  it('renders "Page de prérequis introuvable." for any slug outside the recognized set', async () => {
+    await fc.assert(
+      fc.property(
+        // Generate arbitrary URL-path slug segments, then constrain to the
+        // input space that matters here: non-empty slugs that are NOT one of
+        // the recognized archetype slugs. This quantifies over the whole
+        // "unknown slug" domain rather than a single hand-picked example.
+        fc
+          .stringMatching(/^[a-z0-9-]+$/)
+          .filter(
+            (s) =>
+              s.length > 0 &&
+              !(RECOGNIZED_SLUGS as readonly string[]).includes(s),
+          ),
+        (slug) => {
+          // Reset DOM + storage each run so state never leaks between draws.
+          cleanup();
+          localStorage.clear();
+          // Authenticated as a non-admin member so the auth guard lets the
+          // route through and the page itself (not the login redirect) renders.
+          localStorage.setItem('access_token', 'test-token');
+          localStorage.setItem('user_role', 'member');
+
+          // Query within THIS render's own container (not the global `screen`)
+          // and unmount at the end of the iteration, so async mount effects
+          // from a prior draw can never bleed into this assertion.
+          const { getByText, queryByText, unmount } = renderPrereqRoutes(
+            `/prerequisites/installations/${INSTALL_ID}/${slug}`,
+          );
+          try {
+            // The not-found message is shown for the unrecognized slug...
+            expect(getByText(NOT_FOUND_MESSAGE)).toBeInTheDocument();
+            // ...and the auth guard did not redirect to /login.
+            expect(queryByText(LOGIN_PLACEHOLDER)).not.toBeInTheDocument();
+          } finally {
+            unmount();
+          }
+        },
+      ),
+      { numRuns: NUM_RUNS },
+    );
+  });
+});
+
+// A single question category, identified by its canonical slug plus one of its
+// row ids. On the UNFIXED code, navigating to a category slug renders exactly
+// that category via QuestionAnswerForm and persists answers keyed on
+// (installationId, slug). We generate arbitrary (rowId, value) for a chosen
+// category and assert the persistence key is that category's own slug.
+const PERSISTENCE_CATEGORIES: Array<{
+  slug: string;
+  // The primary question text used to locate the row's answer input, paired
+  // with the row id the component persists under.
+  rows: Array<{ rowId: string; questionPrimary: string }>;
+}> = [
+  {
+    slug: 'network-checklist',
+    rows: [
+      { rowId: 'nc-datacenter-access', questionPrimary: 'Accès au datacenter accordé ?' },
+      { rowId: 'nc-uplink-vlan', questionPrimary: 'VLAN uplink attribué ?' },
+    ],
+  },
+  {
+    slug: 'core-control-plane',
+    rows: [
+      { rowId: 'ccp-api-vip', questionPrimary: 'VIP du plan de contrôle ?' },
+      { rowId: 'ccp-dns-servers', questionPrimary: 'Serveurs DNS ?' },
+    ],
+  },
+  {
+    slug: 'cloudstore',
+    rows: [
+      { rowId: 'cs-subnet-cidr', questionPrimary: 'CIDR du sous-réseau ?' },
+      { rowId: 'cs-ingress-vip', questionPrimary: 'Ingress VIP réservée ?' },
+    ],
+  },
+  {
+    slug: 'vcf',
+    rows: [
+      { rowId: 'vcf-mgmt-network-name', questionPrimary: 'Nom du réseau de management' },
+      { rowId: 'vcf-wld-workload-domain-num', questionPrimary: 'Rang du domaine workload (1..23)' },
+    ],
+  },
+];
+
+// Draws a category and one of its rows together so the (slug, rowId) pair is
+// always internally consistent, then pairs it with an arbitrary answer value.
+const persistenceInputArb = fc
+  .constantFrom(...PERSISTENCE_CATEGORIES)
+  .chain((category) =>
+    fc.record({
+      slug: fc.constant(category.slug),
+      row: fc.constantFrom(...category.rows),
+      value: fc.string(),
+    }),
+  );
+
+// Feature: default-installation-checklists, Property 2: Preservation — persistence keys
+// Validates: Requirements 3.4, 3.5
+describe('persistence-key preservation: editing a client answer saves under that category\'s own slug', () => {
+  it('calls saveClientAnswer(installationId, slug, rowId, value) with the category slug for arbitrary (rowId, value)', async () => {
+    await fc.assert(
+      fc.property(persistenceInputArb, ({ slug, row, value }) => {
+        // Reset DOM + storage + mock calls each run so state never leaks.
+        cleanup();
+        localStorage.clear();
+        vi.mocked(prerequisitesService.saveClientAnswer).mockClear();
+        // Authenticated as a non-admin member: canAnswer is true, so the
+        // client answer input is editable and blur persists it.
+        localStorage.setItem('access_token', 'test-token');
+        localStorage.setItem('user_role', 'member');
+
+        // On the UNFIXED code, a category slug renders exactly that category.
+        // Query within THIS render's own container and unmount at the end so
+        // async mount effects from a prior draw cannot bleed in.
+        const { getByLabelText, unmount } = renderPrereqRoutes(
+          `/prerequisites/installations/${INSTALL_ID}/${slug}`,
+        );
+        try {
+          // Locate the editable client-answer input for the chosen row via its
+          // accessible label ("Réponse client — <question>") and its per-row
+          // markers/example/hints render alongside it (Req 3.5).
+          const input = getByLabelText(`Réponse client — ${row.questionPrimary}`);
+
+          // Type an arbitrary value and blur to trigger persistence.
+          fireEvent.change(input, { target: { value } });
+          fireEvent.blur(input);
+
+          // The answer persists under this category's OWN slug and rowId (Req 3.4).
+          expect(prerequisitesService.saveClientAnswer).toHaveBeenCalledWith(
+            INSTALL_ID,
+            slug,
+            row.rowId,
+            value,
+          );
+        } finally {
+          unmount();
+        }
       }),
       { numRuns: NUM_RUNS },
     );

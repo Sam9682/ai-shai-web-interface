@@ -43,6 +43,11 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789065636888
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790408876879
       }
     ],
     "2.1 Add `assigned_user_id` to the event request/response schemas": [
@@ -60,6 +65,11 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789065638043
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790408997155
       }
     ],
     "3.1 Add the `_validate_assigned_user` helper": [
@@ -72,6 +82,16 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789061986084
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409013006
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409268145
       }
     ],
     "3.2 Wire assignment into the create endpoint": [
@@ -84,6 +104,16 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789061986184
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409275742
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409510426
       }
     ],
     "4.1 Implement set/change/clear logic on the update endpoint": [
@@ -96,6 +126,16 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789061986268
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409511472
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409671753
       }
     ],
     "5.1 Add role-aware visibility filtering to the list endpoint": [
@@ -108,6 +148,16 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789061986356
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409672925
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409768973
       }
     ],
     "6. Checkpoint - Ensure all backend tests pass": [
@@ -120,6 +170,16 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789061986442
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409773531
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790410414053
       }
     ],
     "7.1 Extend event service interfaces with `assigned_user_id`": [
@@ -186,6 +246,16 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789061986720
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409014009
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409269771
       }
     ],
     "10. Final checkpoint - Ensure all tests pass": [
@@ -198,6 +268,16 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789061986814
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790410418811
+      },
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790410536206
       }
     ],
     "7. Frontend event service": [
@@ -212,6 +292,48 @@
         "executionId": "2abd14aa-6e6d-4f59-9f38-7f631755a22e",
         "chatSessionId": "sess_f75eebf1-60ab-4d77-be58-3fb28353b2af",
         "timestamp": 1789065631875
+      }
+    ],
+    "1. Data model and migration": [
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790408876992
+      }
+    ],
+    "2. Backend schemas": [
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790408997265
+      }
+    ],
+    "9. Frontend admin events page wiring": [
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409269876
+      }
+    ],
+    "3. Backend validation and create endpoint": [
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409510527
+      }
+    ],
+    "4. Backend update endpoint": [
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409671851
+      }
+    ],
+    "5. Backend list endpoint visibility": [
+      {
+        "executionId": "3c905cfc-ae27-4624-96db-cf4804384330",
+        "chatSessionId": "sess_bc503b09-e114-433f-a931-2a721dfc37da",
+        "timestamp": 1790409769096
       }
     ]
   }

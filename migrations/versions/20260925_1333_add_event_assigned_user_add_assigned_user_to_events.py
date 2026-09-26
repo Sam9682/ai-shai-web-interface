@@ -1,11 +1,14 @@
-"""Add assigned_user_id to events
+"""add assigned_user_id to events
 
 Adds a nullable ``assigned_user_id`` foreign key on the ``events`` table
 pointing at ``users.id`` (private-event owner; NULL => public event), together
 with the supporting FK constraint and index. This aligns the database schema
 with the Event model (app/models/event.py).
 
-Revision ID: a1b2c3d4e5f6
+Existing rows get ``assigned_user_id = NULL`` and are therefore treated as
+public events; no data backfill is required.
+
+Revision ID: add_event_assigned_user
 Revises: multi_instance_opcp_prereq
 Create Date: 2026-09-25 13:33
 
@@ -15,7 +18,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a1b2c3d4e5f6'
+revision = 'add_event_assigned_user'
 down_revision = 'multi_instance_opcp_prereq'
 branch_labels = None
 depends_on = None
