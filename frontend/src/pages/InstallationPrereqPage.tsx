@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { StaticContentPage } from '../components/prerequisites/StaticContentPage';
 import { QuestionAnswerForm } from '../components/prerequisites/QuestionAnswerForm';
+import { ChecklistTabs } from '../components/prerequisites/ChecklistTabs';
 import { FIRST_PREREQ_SLUG } from '../components/prerequisites/InstallationListPage';
 import {
   cloudStoreQuestionConfig,
@@ -99,22 +100,12 @@ export const InstallationPrereqPage = () => {
     );
   }
 
-  // Default-installation entry: render all four checklist categories as
-  // stacked sections, each keyed on its own canonical slug.
+  // Default-installation entry: render all four checklist categories in a
+  // tabbed notebook (one tab per category) instead of stacking them. Each tab
+  // is keyed on its own canonical slug so answer persistence stays scoped to
+  // `(installationId, slug)`.
   if (slug === FIRST_PREREQ_SLUG) {
-    return (
-      <div className="space-y-6">
-        {CHECKLIST_CATEGORIES.map((category) => (
-          <QuestionAnswerForm
-            key={category.slug}
-            installationId={installationId}
-            slug={category.slug}
-            title={category.title}
-            config={category.config}
-          />
-        ))}
-      </div>
-    );
+    return <ChecklistTabs installationId={installationId} tabs={CHECKLIST_CATEGORIES} />;
   }
 
   if (config.archetype === 'static') {

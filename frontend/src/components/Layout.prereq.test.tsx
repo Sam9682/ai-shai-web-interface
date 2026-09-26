@@ -11,7 +11,7 @@ import { fr } from '../i18n/translations';
 // Minimum property-test iterations mandated by the design (>= 100).
 const NUM_RUNS = 100;
 
-const PREREQ_TRIGGER_LABEL = 'OPCP installation prerequisites';
+const PREREQ_TRIGGER_LABEL = 'OPCP installations';
 
 // Nav entries carry a translation key (labelKey); links render their resolved
 // text via t(labelKey). Under the default French language the accessible name

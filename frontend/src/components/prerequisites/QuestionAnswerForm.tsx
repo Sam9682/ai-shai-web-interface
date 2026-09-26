@@ -10,6 +10,12 @@ interface QuestionAnswerFormProps {
   slug: string;
   title: string;
   config: QuestionFormConfig;
+  /**
+   * `card` (default) renders the standalone card wrapper and page heading.
+   * `embedded` drops the outer card and `<h1>` so the form can be hosted
+   * inside another container (e.g. a tab panel that already provides both).
+   */
+  variant?: 'card' | 'embedded';
 }
 
 const FIELD_CLASS =
@@ -56,6 +62,7 @@ export const QuestionAnswerForm = ({
   slug,
   title,
   config,
+  variant = 'card',
 }: QuestionAnswerFormProps) => {
   const { t } = useTranslation();
   const canAnswer = authService.isAuthenticated() && !authService.isAdmin();
@@ -98,9 +105,15 @@ export const QuestionAnswerForm = ({
     }
   };
 
-  return (
-    <div className="card p-6">
-      <h1 className="text-2xl font-bold text-[#000E9C] mb-5">{title}</h1>
+  const embedded = variant === 'embedded';
+
+  const body = (
+    <>
+      {embedded ? (
+        <h2 className="text-2xl font-bold text-[#000E9C] mb-5">{title}</h2>
+      ) : (
+        <h1 className="text-2xl font-bold text-[#000E9C] mb-5">{title}</h1>
+      )}
 
       <MarkerLegend />
 
@@ -200,6 +213,12 @@ export const QuestionAnswerForm = ({
           </div>
         </section>
       ))}
-    </div>
+    </>
   );
+
+  if (embedded) {
+    return body;
+  }
+
+  return <div className="card p-6">{body}</div>;
 };
