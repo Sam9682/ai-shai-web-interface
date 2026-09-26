@@ -1,8 +1,27 @@
 import { useState, useEffect } from 'react';
 import { eventService, type Event } from '../services/eventService';
 import { adminService, type User } from '../services/adminService';
-import { UserPicker } from '../components/UserPicker';
+import { MultiUserPicker } from '../components/MultiUserPicker';
 import { useTranslation } from '../hooks/useLanguage';
+
+/**
+ * Extract a human-readable message from an axios error raised by the events
+ * API. The backend returns either { detail: { error: { message } } } for
+ * business errors or { detail: [ { msg } ] } for Pydantic validation (422).
+ * Falls back to the provided default message.
+ */
+function extractApiError(error: unknown, fallback: string): string {
+  const detail = (error as { response?: { data?: { detail?: unknown } } })
+    ?.response?.data?.detail;
+  if (typeof detail === 'string') return detail;
+  if (Array.isArray(detail)) {
+    const first = detail[0] as { msg?: string } | undefined;
+    if (first?.msg) return first.msg;
+  }
+  const nested = (detail as { error?: { message?: string } } | undefined)?.error?.message;
+  if (nested) return nested;
+  return fallback;
+}
 
 export const AdminEventsPage = () => {
   const { t } = useTranslation();
@@ -11,6 +30,8 @@ export const AdminEventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [editError, setEditError] = useState<string | null>(null);
   const [formData, setFormData] = useState<{
     title: string;
     description: string;
@@ -18,7 +39,7 @@ export const AdminEventsPage = () => {
     end_date: string;
     location: string;
     max_participants: string;
-    assigned_user_id: string | null;
+    assigned_user_ids: string[];
   }>({
     title: '',
     description: '',
@@ -26,8 +47,18 @@ export const AdminEventsPage = () => {
     end_date: '',
     location: '',
     max_participants: '',
-    assigned_user_id: null,
+    assigned_user_ids: [],
   });
+
+  const emptyForm = {
+    title: '',
+    description: '',
+    start_date: '',
+    end_date: '',
+    location: '',
+    max_participants: '',
+    assigned_user_ids: [] as string[],
+  };
 
   useEffect(() => {
     loadEvents();
@@ -56,6 +87,7 @@ export const AdminEventsPage = () => {
   };
 
   const handleEdit = (event: Event) => {
+    setEditError(null);
     setEditingEvent(event);
     setFormData({
       title: event.title,
@@ -64,12 +96,13 @@ export const AdminEventsPage = () => {
       end_date: event.end_date.slice(0, 16),
       location: event.location || '',
       max_participants: event.max_participants?.toString() || '',
-      assigned_user_id: event.assigned_user_id,
+      assigned_user_ids: event.assigned_user_ids ?? [],
     });
   };
 
   const handleSave = async () => {
     if (!editingEvent) return;
+    setEditError(null);
     try {
       await eventService.updateEvent(editingEvent.id, {
         title: formData.title,
@@ -78,12 +111,13 @@ export const AdminEventsPage = () => {
         end_date: formData.end_date,
         location: formData.location || undefined,
         max_participants: formData.max_participants ? parseInt(formData.max_participants) : undefined,
-        assigned_user_id: formData.assigned_user_id,
+        assigned_user_ids: formData.assigned_user_ids,
       });
       setEditingEvent(null);
       loadEvents();
     } catch (error) {
       console.error('Failed to update event:', error);
+      setEditError(extractApiError(error, t('page.adminEvents.error.update')));
     }
   };
 
@@ -98,6 +132,7 @@ export const AdminEventsPage = () => {
   };
 
   const handleCreate = async () => {
+    setCreateError(null);
     try {
       await eventService.createEvent({
         title: formData.title,
@@ -106,13 +141,14 @@ export const AdminEventsPage = () => {
         end_date: formData.end_date,
         location: formData.location || undefined,
         max_participants: formData.max_participants ? parseInt(formData.max_participants) : undefined,
-        assigned_user_id: formData.assigned_user_id,
+        assigned_user_ids: formData.assigned_user_ids,
       });
       setShowCreateModal(false);
-      setFormData({ title: '', description: '', start_date: '', end_date: '', location: '', max_participants: '', assigned_user_id: null });
+      setFormData({ ...emptyForm });
       loadEvents();
     } catch (error) {
       console.error('Failed to create event:', error);
+      setCreateError(extractApiError(error, t('page.adminEvents.error.create')));
     }
   };
 
@@ -126,7 +162,8 @@ export const AdminEventsPage = () => {
         <h1 className="text-2xl font-bold text-[#000E9C]">{t('page.adminEvents.title')}</h1>
         <button
           onClick={() => {
-            setFormData({ title: '', description: '', start_date: '', end_date: '', location: '', max_participants: '', assigned_user_id: null });
+            setCreateError(null);
+            setFormData({ ...emptyForm });
             setShowCreateModal(true);
           }}
           className="px-4 py-2 text-sm font-medium bg-[#000E9C] text-white rounded hover:bg-[#4949FF] transition-colors"
@@ -182,6 +219,11 @@ export const AdminEventsPage = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-[#000E9C] mb-4">{t('page.adminEvents.edit.title')}</h2>
+            {editError && (
+              <div role="alert" className="mb-4 px-3 py-2 rounded bg-red-100 text-red-800 text-sm">
+                {editError}
+              </div>
+            )}
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.title')}</label>
@@ -210,14 +252,17 @@ export const AdminEventsPage = () => {
                 <input type="number" value={formData.max_participants} onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <UserPicker
+                <MultiUserPicker
                   users={members}
-                  value={formData.assigned_user_id}
-                  onChange={(userId) => setFormData({ ...formData, assigned_user_id: userId })}
+                  value={formData.assigned_user_ids}
+                  onChange={(userIds) => setFormData({ ...formData, assigned_user_ids: userIds })}
+                  label={t('page.adminEvents.field.assignees')}
+                  placeholder={t('page.adminEvents.assignees.placeholder')}
+                  emptyText={t('page.adminEvents.assignees.none')}
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
-                <button onClick={() => setEditingEvent(null)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+                <button onClick={() => { setEditError(null); setEditingEvent(null); }} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                   {t('page.adminEvents.cancel')}
                 </button>
                 <button onClick={handleSave} className="px-4 py-2 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors">
@@ -234,6 +279,11 @@ export const AdminEventsPage = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-[#000E9C] mb-4">{t('page.adminEvents.create.title')}</h2>
+            {createError && (
+              <div role="alert" className="mb-4 px-3 py-2 rounded bg-red-100 text-red-800 text-sm">
+                {createError}
+              </div>
+            )}
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.title')}</label>
@@ -262,14 +312,17 @@ export const AdminEventsPage = () => {
                 <input type="number" value={formData.max_participants} onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
               <div>
-                <UserPicker
+                <MultiUserPicker
                   users={members}
-                  value={formData.assigned_user_id}
-                  onChange={(userId) => setFormData({ ...formData, assigned_user_id: userId })}
+                  value={formData.assigned_user_ids}
+                  onChange={(userIds) => setFormData({ ...formData, assigned_user_ids: userIds })}
+                  label={t('page.adminEvents.field.assignees')}
+                  placeholder={t('page.adminEvents.assignees.placeholder')}
+                  emptyText={t('page.adminEvents.assignees.none')}
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
-                <button onClick={() => setShowCreateModal(false)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+                <button onClick={() => { setCreateError(null); setShowCreateModal(false); }} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                   {t('page.adminEvents.cancel')}
                 </button>
                 <button onClick={handleCreate} className="px-4 py-2 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors">

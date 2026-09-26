@@ -4,6 +4,28 @@ import type { QuestionFormConfig } from './types';
 import { useTranslation } from '../../hooks/useLanguage';
 import { authService } from '../../services/authService';
 import { prerequisitesService } from '../../services/prerequisitesService';
+import { buildVcfDomainJson, type VcfDomain } from './vcfDomainTemplates';
+
+// Slug of the VCF checklist tab. The two "generate domain JSON" download
+// buttons are surfaced only on this form.
+const VCF_SLUG = 'vcf';
+
+/**
+ * Trigger a browser download of `content` as a file named `filename`.
+ * Uses an object URL + synthetic anchor click, which is the portable way to
+ * offer a client-generated file for download without a server round-trip.
+ */
+const downloadTextFile = (filename: string, content: string, mimeType: string) => {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+};
 
 interface QuestionAnswerFormProps {
   installationId: string;
@@ -105,6 +127,14 @@ export const QuestionAnswerForm = ({
     }
   };
 
+  const isVcf = slug === VCF_SLUG;
+
+  const downloadDomainJson = (domain: VcfDomain) => {
+    const json = buildVcfDomainJson(domain, answers);
+    const filename = domain === 'management' ? 'management.json' : 'workload.json';
+    downloadTextFile(filename, `${JSON.stringify(json, null, 2)}\n`, 'application/json');
+  };
+
   const embedded = variant === 'embedded';
 
   const body = (
@@ -116,6 +146,25 @@ export const QuestionAnswerForm = ({
       )}
 
       <MarkerLegend />
+
+      {isVcf && (
+        <div className="mb-6 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => downloadDomainJson('management')}
+            className="rounded bg-[#000E9C] px-4 py-2 text-sm font-semibold text-white hover:bg-[#000B7A] focus:outline-none focus:ring-2 focus:ring-[#4949FF] focus:ring-offset-1"
+          >
+            Générer le fichier JSON du domaine de management
+          </button>
+          <button
+            type="button"
+            onClick={() => downloadDomainJson('workload')}
+            className="rounded bg-[#000E9C] px-4 py-2 text-sm font-semibold text-white hover:bg-[#000B7A] focus:outline-none focus:ring-2 focus:ring-[#4949FF] focus:ring-offset-1"
+          >
+            Générer le fichier JSON du domaine workload
+          </button>
+        </div>
+      )}
 
       {loadError && (
         <div

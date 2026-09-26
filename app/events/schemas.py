@@ -21,7 +21,19 @@ class EventCreateRequest(BaseModel):
     location: Optional[str] = Field(None, max_length=255, description="Event location")
     max_participants: Optional[int] = Field(None, ge=1, description="Maximum number of participants")
     assigned_user_id: Optional[UUID] = Field(
-        None, description="Existing user to assign the event to (private). Null => public."
+        None,
+        description=(
+            "Deprecated single-user assignment. Prefer assigned_user_ids. When "
+            "provided and assigned_user_ids is omitted, it is treated as a "
+            "one-element assignment list."
+        ),
+    )
+    assigned_user_ids: Optional[list[UUID]] = Field(
+        None,
+        description=(
+            "Existing users to assign the event to (private). Empty list or "
+            "null => public event visible to everyone."
+        ),
     )
     
     @field_validator('end_date')
@@ -52,9 +64,17 @@ class EventUpdateRequest(BaseModel):
     assigned_user_id: Optional[UUID] = Field(
         None,
         description=(
-            "Assigned user id; send an explicit null to clear the assignment. "
-            "Relies on exclude_unset in the update handler: an omitted field "
-            "leaves the assignment unchanged, while an explicit null clears it."
+            "Deprecated single-user assignment; send an explicit null to clear. "
+            "Prefer assigned_user_ids. Relies on exclude_unset in the update "
+            "handler: an omitted field leaves the assignment unchanged."
+        ),
+    )
+    assigned_user_ids: Optional[list[UUID]] = Field(
+        None,
+        description=(
+            "Full replacement set of assigned users. Send an empty list to "
+            "clear all assignments (make the event public). Omit the field to "
+            "leave assignments unchanged (relies on exclude_unset)."
         ),
     )
 
@@ -70,6 +90,7 @@ class EventResponse(BaseModel):
     max_participants: Optional[int]
     created_by: UUID
     assigned_user_id: Optional[UUID] = None
+    assigned_user_ids: list[UUID] = Field(default_factory=list)
     status: str
     created_at: datetime
     updated_at: datetime

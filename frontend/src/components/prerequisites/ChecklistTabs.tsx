@@ -1,12 +1,25 @@
 import { useId, useState } from 'react';
 import { QuestionAnswerForm } from './QuestionAnswerForm';
+import { ServersTable } from './ServersTable';
 import type { QuestionFormConfig } from './types';
 
-export interface ChecklistTab {
-  slug: string;
-  title: string;
-  config: QuestionFormConfig;
-}
+/**
+ * A checklist tab is either a question/answer category (driven by a
+ * `QuestionFormConfig`) or a special-purpose tab (`kind: 'servers'`) that
+ * renders reference data instead of an editable form.
+ */
+export type ChecklistTab =
+  | {
+      kind?: 'qa';
+      slug: string;
+      title: string;
+      config: QuestionFormConfig;
+    }
+  | {
+      kind: 'servers';
+      slug: string;
+      title: string;
+    };
 
 interface ChecklistTabsProps {
   installationId: string;
@@ -107,13 +120,17 @@ export const ChecklistTabs = ({ installationId, tabs }: ChecklistTabsProps) => {
           aria-labelledby={tabId(index)}
           hidden={index !== clampedActive}
         >
-          <QuestionAnswerForm
-            installationId={installationId}
-            slug={tab.slug}
-            title={tab.title}
-            config={tab.config}
-            variant="embedded"
-          />
+          {tab.kind === 'servers' ? (
+            <ServersTable title={tab.title} variant="embedded" />
+          ) : (
+            <QuestionAnswerForm
+              installationId={installationId}
+              slug={tab.slug}
+              title={tab.title}
+              config={tab.config}
+              variant="embedded"
+            />
+          )}
         </div>
       ))}
     </div>

@@ -324,35 +324,47 @@ const PERSISTENCE_CATEGORIES: Array<{
   {
     slug: 'network-checklist',
     rows: [
-      { rowId: 'nc-datacenter-access', questionPrimary: 'Accès au datacenter accordé ?' },
-      { rowId: 'nc-uplink-vlan', questionPrimary: 'VLAN uplink attribué ?' },
+      {
+        rowId: 'nc-deploy-remote-access',
+        questionPrimary: 'Can we access OPCP racks remotely ? If yes, how ? (VPN, Bastion)',
+      },
+      {
+        rowId: 'nc-svc-dns-servers',
+        questionPrimary: 'Are internal DNS servers available? If yes, provide IPs.',
+      },
     ],
   },
   {
     slug: 'core-control-plane',
     rows: [
-      { rowId: 'ccp-api-vip', questionPrimary: 'VIP du plan de contrôle ?' },
-      { rowId: 'ccp-dns-servers', questionPrimary: 'Serveurs DNS ?' },
+      { rowId: 'ccp-ntp', questionPrimary: 'NTP' },
+      { rowId: 'ccp-ldap', questionPrimary: 'LDAP' },
     ],
   },
   {
     slug: 'cloudstore',
     rows: [
-      { rowId: 'cs-subnet-cidr', questionPrimary: 'CIDR du sous-réseau ?' },
-      { rowId: 'cs-ingress-vip', questionPrimary: 'Ingress VIP réservée ?' },
+      { rowId: 'cs-network-subnet-creation', questionPrimary: 'Network & Subnet creation' },
+      { rowId: 'cs-ingress-vip', questionPrimary: 'Ingress VIP (customer)' },
     ],
   },
   {
     slug: 'vcf',
     rows: [
-      { rowId: 'vcf-mgmt-network-name', questionPrimary: 'Nom du réseau de management' },
-      { rowId: 'vcf-wld-workload-domain-num', questionPrimary: 'Rang du domaine workload (1..23)' },
+      { rowId: 'vcf-mgmt-network-name', questionPrimary: 'vcf_mgmt_network_name' },
+      { rowId: 'vcf-wld-workload-domain-num', questionPrimary: 'workload_domain_num' },
     ],
   },
 ];
 
 // Draws a category and one of its rows together so the (slug, rowId) pair is
 // always internally consistent, then pairs it with an arbitrary answer value.
+// The persistence property renders all four checklist categories on the
+// network-checklist entry slug; with the full network checklist config that
+// render is heavy, so this property uses a reduced (still meaningful) run
+// count to stay within the default test timeout while preserving coverage.
+const PERSISTENCE_NUM_RUNS = 25;
+
 const persistenceInputArb = fc
   .constantFrom(...PERSISTENCE_CATEGORIES)
   .chain((category) =>
@@ -405,7 +417,7 @@ describe('persistence-key preservation: editing a client answer saves under that
           unmount();
         }
       }),
-      { numRuns: NUM_RUNS },
+      { numRuns: PERSISTENCE_NUM_RUNS },
     );
   });
 });

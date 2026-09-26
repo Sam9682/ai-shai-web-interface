@@ -113,6 +113,15 @@ class Event(Base):
         back_populates="event",
         cascade="all, delete-orphan"
     )
+    # Multi-user assignment (Requirements: an event can be assigned to several
+    # users). An empty collection => public event (visible to everyone). The
+    # legacy single ``assigned_user_id`` column is retained for backward
+    # compatibility but the assignment source of truth is this collection.
+    assignments: Mapped[list["EventAssignment"]] = relationship(
+        "EventAssignment",
+        back_populates="event",
+        cascade="all, delete-orphan"
+    )
     
     def __repr__(self) -> str:
         return f"<Event(id={self.id}, title={self.title}, status={self.status})>"
@@ -173,3 +182,54 @@ class EventRegistration(Base):
     
     def __repr__(self) -> str:
         return f"<EventRegistration(id={self.id}, event_id={self.event_id}, user_id={self.user_id})>"
+
+
+class EventAssignment(Base):
+    """Assignment of an event to a user (many-to-many join table).
+
+    An event can be assigned to multiple users, and a user can be assigned to
+    multiple events. When an event has no assignment rows it is considered a
+    public event, visible to every authenticated user. Administrators always
+    see every event regardless of assignment.
+    """
+    __tablename__ = "event_assignments"
+
+    # Primary key
+    id: Mapped[uuid.UUID] = mapped_column(
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default="gen_random_uuid()"
+    )
+
+    # Event relationship (cascade delete assignments with the event)
+    event_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("events.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    # Assigned user
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    # Timestamp
+    assigned_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+    # Prevent duplicate assignments and speed up lookups by event / by user.
+    __table_args__ = (
+        UniqueConstraint('event_id', 'user_id', name='uq_event_user_assignment'),
+        Index('idx_assignments_event', 'event_id'),
+        Index('idx_assignments_user', 'user_id'),
+    )
+
+    # Relationships
+    event: Mapped["Event"] = relationship("Event", back_populates="assignments")
+    user: Mapped["User"] = relationship("User")
+
+    def __repr__(self) -> str:
+        return f"<EventAssignment(id={self.id}, event_id={self.event_id}, user_id={self.user_id})>"

@@ -1,7 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { StaticContentPage } from '../components/prerequisites/StaticContentPage';
 import { QuestionAnswerForm } from '../components/prerequisites/QuestionAnswerForm';
-import { ChecklistTabs } from '../components/prerequisites/ChecklistTabs';
+import { ServersTable } from '../components/prerequisites/ServersTable';
+import { ChecklistTabs, type ChecklistTab } from '../components/prerequisites/ChecklistTabs';
 import { FIRST_PREREQ_SLUG } from '../components/prerequisites/InstallationListPage';
 import {
   cloudStoreQuestionConfig,
@@ -17,17 +18,12 @@ import type { QuestionFormConfig } from '../components/prerequisites/types';
  * lookup, so the two paths cannot drift. Each entry pairs a canonical slug
  * (the persistence key) with its display title and question config.
  */
-type ChecklistCategory = {
-  slug: string;
-  title: string;
-  config: QuestionFormConfig;
-};
-
-const CHECKLIST_CATEGORIES: ReadonlyArray<ChecklistCategory> = [
+const CHECKLIST_CATEGORIES: ReadonlyArray<ChecklistTab> = [
   { slug: 'network-checklist', title: 'Network Checklist', config: networkChecklistConfig },
   { slug: 'core-control-plane', title: 'Core Control Plane', config: coreControlPlaneConfig },
   { slug: 'cloudstore', title: 'CloudStore', config: cloudStoreQuestionConfig },
   { slug: 'vcf', title: 'VCF', config: vcfConfig },
+  { kind: 'servers', slug: 'servers-nodes', title: 'Servers nodes' },
 ];
 
 /**
@@ -38,20 +34,29 @@ const CHECKLIST_CATEGORIES: ReadonlyArray<ChecklistCategory> = [
  */
 type PrereqSlugConfig =
   | { archetype: 'static'; title: string }
-  | { archetype: 'qa'; title: string; config: QuestionFormConfig };
+  | { archetype: 'qa'; title: string; config: QuestionFormConfig }
+  | { archetype: 'servers'; title: string };
 
 const STATIC_SLUG_CONFIG: Record<string, PrereqSlugConfig> = {
   basics: { archetype: 'static', title: 'Basics' },
   'network-flux': { archetype: 'static', title: 'Network Flux' },
 };
 
-// Question-archetype slugs are derived from the ordered checklist set so the
-// aggregate render and the single-category lookup share one definition.
+// Checklist-tab slugs are derived from the ordered checklist set so the
+// aggregate render and the single-category lookup share one definition. The
+// servers tab maps to the 'servers' archetype; every other tab is a question
+// archetype.
 const QUESTION_SLUG_CONFIG: Record<string, PrereqSlugConfig> =
   Object.fromEntries(
     CHECKLIST_CATEGORIES.map((category) => [
       category.slug,
-      { archetype: 'qa', title: category.title, config: category.config } as PrereqSlugConfig,
+      category.kind === 'servers'
+        ? ({ archetype: 'servers', title: category.title } as PrereqSlugConfig)
+        : ({
+            archetype: 'qa',
+            title: category.title,
+            config: category.config,
+          } as PrereqSlugConfig),
     ]),
   );
 
@@ -116,6 +121,10 @@ export const InstallationPrereqPage = () => {
         title={config.title}
       />
     );
+  }
+
+  if (config.archetype === 'servers') {
+    return <ServersTable title={config.title} />;
   }
 
   return (
