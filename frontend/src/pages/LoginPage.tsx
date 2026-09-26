@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService, isLogin2FAChallenge } from '../services/authService';
 import { validateEmail } from '../utils/validation';
@@ -15,12 +15,60 @@ export const LoginPage = () => {
   const [code, setCode] = useState('');
   const navigate = useNavigate();
 
+  // How long an error message stays on screen before auto-dismissing (ms).
+  const ERROR_VISIBLE_MS = 6000;
+  const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Show an error and keep it visible long enough for the user to read it.
+  const showError = (message: string) => {
+    if (errorTimerRef.current) {
+      clearTimeout(errorTimerRef.current);
+    }
+    setError(message);
+    errorTimerRef.current = setTimeout(() => {
+      setError('');
+      errorTimerRef.current = null;
+    }, ERROR_VISIBLE_MS);
+  };
+
+  const clearError = () => {
+    if (errorTimerRef.current) {
+      clearTimeout(errorTimerRef.current);
+      errorTimerRef.current = null;
+    }
+    setError('');
+  };
+
+  // Clean up any pending timer on unmount.
+  useEffect(() => {
+    return () => {
+      if (errorTimerRef.current) {
+        clearTimeout(errorTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Build a user-facing message from a thrown request error. A missing
+  // `response` means the request never reached the server (network down,
+  // DNS failure, timeout, CORS), i.e. the connection could not be established.
+  const resolveLoginError = (err: any): string => {
+    if (!err?.response) {
+      return t('page.login.error.connection');
+    }
+    return (
+      err.response?.data?.detail?.message
+      || err.response?.data?.detail
+      || err.response?.data?.error?.message
+      || t('page.login.error.failed')
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    clearError();
 
     if (!validateEmail(email)) {
-      setError(t('page.login.error.invalidEmail'));
+      showError(t('page.login.error.invalidEmail'));
       return;
     }
 
@@ -36,12 +84,7 @@ export const LoginPage = () => {
       navigate('/');
     } catch (err: any) {
       console.error('Login error:', err);
-      const errorMessage = err.response?.data?.detail?.message 
-        || err.response?.data?.detail 
-        || err.response?.data?.error?.message 
-        || err.message 
-        || t('page.login.error.failed');
-      setError(errorMessage);
+      showError(resolveLoginError(err));
     } finally {
       setLoading(false);
     }
@@ -49,7 +92,7 @@ export const LoginPage = () => {
 
   const handleVerifySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    clearError();
 
     if (!challengeToken) {
       return;
@@ -61,7 +104,9 @@ export const LoginPage = () => {
       navigate('/');
     } catch (err: any) {
       console.error('2FA verification error:', err);
-      setError(t('page.login.error.invalidCode'));
+      // A missing response means the server was unreachable; otherwise the
+      // code was rejected.
+      showError(err?.response ? t('page.login.error.invalidCode') : t('page.login.error.connection'));
     } finally {
       setLoading(false);
     }
@@ -80,8 +125,8 @@ export const LoginPage = () => {
           {challengeToken ? (
             <form className="space-y-5" onSubmit={handleVerifySubmit}>
               {error && (
-                <div className="rounded bg-red-50 border border-red-200 p-3">
-                  <p className="text-sm text-red-800">{error}</p>
+                <div role="alert" aria-live="assertive" className="rounded bg-red-100 border border-red-400 p-3">
+                  <p className="text-sm font-semibold text-red-700">{error}</p>
                 </div>
               )}
               <p className="text-sm text-gray-600">
@@ -118,7 +163,7 @@ export const LoginPage = () => {
                 onClick={() => {
                   setChallengeToken(null);
                   setCode('');
-                  setError('');
+                  clearError();
                 }}
                 className="w-full text-sm text-[#4949FF] hover:underline"
               >
@@ -128,8 +173,8 @@ export const LoginPage = () => {
           ) : (
             <form className="space-y-5" onSubmit={handleSubmit}>
               {error && (
-                <div className="rounded bg-red-50 border border-red-200 p-3">
-                  <p className="text-sm text-red-800">{error}</p>
+                <div role="alert" aria-live="assertive" className="rounded bg-red-100 border border-red-400 p-3">
+                  <p className="text-sm font-semibold text-red-700">{error}</p>
                 </div>
               )}
               <div>

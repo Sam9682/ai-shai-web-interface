@@ -103,6 +103,7 @@ export const fr: TranslationDictionary = {
   'page.login.error.invalidEmail': 'Adresse email invalide',
   'page.login.error.failed': 'Échec de la connexion',
   'page.login.error.invalidCode': 'Code de vérification invalide.',
+  'page.login.error.connection': 'Impossible de se connecter au serveur. Veuillez vérifier votre connexion et réessayer.',
 
   // ---- Register page ----
   'page.register.title': 'Inscription',
@@ -309,6 +310,11 @@ export const fr: TranslationDictionary = {
   'page.adminEvents.create.title': 'Nouvel événement',
   'page.adminEvents.create': 'Créer',
   'page.adminEvents.confirm.cancel': 'Êtes-vous sûr de vouloir annuler cet événement ?',
+  'page.adminEvents.field.assignees': 'Assigner à des utilisateurs',
+  'page.adminEvents.assignees.placeholder': 'Rechercher un utilisateur...',
+  'page.adminEvents.assignees.none': 'Aucun (événement public)',
+  'page.adminEvents.error.create': 'Échec de la création de l\'événement.',
+  'page.adminEvents.error.update': 'Échec de la mise à jour de l\'événement.',
 
   // ---- Documents page ----
   'page.documents.category.statutes': 'Statuts',
@@ -453,6 +459,7 @@ export const en: TranslationDictionary = {
   'page.login.error.invalidEmail': 'Invalid email address',
   'page.login.error.failed': 'Sign-in failed',
   'page.login.error.invalidCode': 'Invalid verification code.',
+  'page.login.error.connection': 'Unable to reach the server. Please check your connection and try again.',
 
   // ---- Register page ----
   'page.register.title': 'Sign up',
@@ -659,6 +666,11 @@ export const en: TranslationDictionary = {
   'page.adminEvents.create.title': 'New event',
   'page.adminEvents.create': 'Create',
   'page.adminEvents.confirm.cancel': 'Are you sure you want to cancel this event?',
+  'page.adminEvents.field.assignees': 'Assign to users',
+  'page.adminEvents.assignees.placeholder': 'Search for a user...',
+  'page.adminEvents.assignees.none': 'None (public event)',
+  'page.adminEvents.error.create': 'Failed to create the event.',
+  'page.adminEvents.error.update': 'Failed to update the event.',
 
   // ---- Documents page ----
   'page.documents.category.statutes': 'Statutes',

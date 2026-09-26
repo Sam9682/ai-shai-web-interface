@@ -25,11 +25,27 @@ api.interceptors.request.use(
   }
 );
 
+// Endpoints where a 401 is an expected, caller-handled outcome (e.g. bad
+// credentials or an invalid 2FA code). For these we must NOT trigger the
+// global "session expired" redirect, otherwise the login page reroutes to
+// itself and the error message the page just displayed is wiped instantly.
+const AUTH_ENDPOINTS = ['/auth/login', '/auth/login/2fa'];
+
+function isAuthEndpoint(url?: string): boolean {
+  if (!url) {
+    return false;
+  }
+  return AUTH_ENDPOINTS.some((endpoint) => url.includes(endpoint));
+}
+
 // Response interceptor to handle errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // Only force a redirect when an authenticated session has actually expired
+    // on a protected request. Login/2FA 401s are surfaced to the caller so the
+    // login page can show the error message and keep the user in place.
+    if (error.response?.status === 401 && !isAuthEndpoint(error.config?.url)) {
       // Clear token and redirect to login
       localStorage.removeItem('access_token');
       window.location.href = '/login';

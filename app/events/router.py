@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, or_
 from datetime import datetime, timezone
 from app.database import get_db
-from app.models import User, Event, EventStatus, EventRegistration, NotificationPreferences, UserRole
+from app.models import User, Event, EventStatus, EventRegistration, EventAssignment, NotificationPreferences, UserRole
 from app.events.schemas import EventCreateRequest, EventCreateResponse, EventResponse, EventListResponse, EventRegistrationResponse, EventUnregistrationResponse, EventCancellationResponse, EventUpdateRequest
 from app.events.dependencies import require_admin
 from app.auth.dependencies import get_current_user
@@ -53,6 +53,70 @@ def _validate_assigned_user(db: Session, assigned_user_id: uuid.UUID | None) -> 
         )
 
 
+def _validate_assigned_users(db: Session, user_ids: list[uuid.UUID]) -> list[uuid.UUID]:
+    """Validate a list of assigned user ids, returning a de-duplicated list.
+
+    Every id must reference an existing user. An empty list is valid and means
+    the event is public. Raises 400 INVALID_ASSIGNED_USER listing any ids that
+    do not correspond to an existing user, so a bad assignment prevents the
+    create/update from mutating any state.
+    """
+    # De-duplicate while preserving order.
+    unique_ids: list[uuid.UUID] = list(dict.fromkeys(user_ids))
+    if not unique_ids:
+        return []
+
+    found = {
+        row[0]
+        for row in db.query(User.id).filter(User.id.in_(unique_ids)).all()
+    }
+    missing = [uid for uid in unique_ids if uid not in found]
+    if missing:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=ErrorResponse.create(
+                code="INVALID_ASSIGNED_USER",
+                message="One or more assigned users do not exist",
+                details={"assigned_user_ids": [str(uid) for uid in missing]},
+            ),
+        )
+    return unique_ids
+
+
+def _get_assigned_user_ids(db: Session, event_id: uuid.UUID) -> list[uuid.UUID]:
+    """Return the list of user ids assigned to an event (empty => public)."""
+    rows = db.query(EventAssignment.user_id).filter(
+        EventAssignment.event_id == event_id
+    ).all()
+    return [row[0] for row in rows]
+
+
+def _build_event_response(db: Session, event: Event) -> EventResponse:
+    """Build an EventResponse including participant count and assigned users."""
+    participant_count = db.query(func.count(EventRegistration.id)).filter(
+        EventRegistration.event_id == event.id
+    ).scalar() or 0
+    assigned_ids = _get_assigned_user_ids(db, event.id)
+    return EventResponse(
+        id=event.id,
+        title=event.title,
+        description=event.description,
+        start_date=event.start_date,
+        end_date=event.end_date,
+        location=event.location,
+        max_participants=event.max_participants,
+        created_by=event.created_by,
+        # Keep the legacy single-value field populated with the first assignee
+        # for backward compatibility with older clients.
+        assigned_user_id=assigned_ids[0] if assigned_ids else None,
+        assigned_user_ids=assigned_ids,
+        status=event.status.value,
+        created_at=event.created_at,
+        updated_at=event.updated_at,
+        participant_count=participant_count,
+    )
+
+
 @router.post("", response_model=EventCreateResponse, status_code=status.HTTP_201_CREATED)
 async def create_event(
     event_data: EventCreateRequest,
@@ -79,11 +143,21 @@ async def create_event(
         HTTPException 400: If event data is invalid
     """
     try:
-        # Validate the assigned user (if any) before creating the event so a
-        # failure prevents creation (Requirement 1.4). Returns early when null.
-        _validate_assigned_user(db, event_data.assigned_user_id)
+        # Resolve the requested assignees. Prefer the multi-user field; fall
+        # back to the deprecated single-user field when only that is provided.
+        if event_data.assigned_user_ids is not None:
+            requested_ids = list(event_data.assigned_user_ids)
+        elif event_data.assigned_user_id is not None:
+            requested_ids = [event_data.assigned_user_id]
+        else:
+            requested_ids = []
 
-        # Create event
+        # Validate all assignees before creating the event so a failure
+        # prevents creation (Requirement 1.4). Empty list => public event.
+        assigned_ids = _validate_assigned_users(db, requested_ids)
+
+        # Create event. The legacy single column mirrors the first assignee for
+        # backward compatibility; the join table is the source of truth.
         new_event = Event(
             title=event_data.title,
             description=event_data.description,
@@ -92,11 +166,16 @@ async def create_event(
             location=event_data.location,
             max_participants=event_data.max_participants,
             created_by=current_user.id,
-            assigned_user_id=event_data.assigned_user_id,
+            assigned_user_id=assigned_ids[0] if assigned_ids else None,
             status=EventStatus.SCHEDULED
         )
         
         db.add(new_event)
+        db.flush()  # obtain new_event.id before inserting assignment rows
+
+        for uid in assigned_ids:
+            db.add(EventAssignment(event_id=new_event.id, user_id=uid))
+
         db.commit()
         db.refresh(new_event)
         
@@ -217,21 +296,7 @@ L'équipe OPCP
         )
         
         # Prepare response
-        event_response = EventResponse(
-            id=new_event.id,
-            title=new_event.title,
-            description=new_event.description,
-            start_date=new_event.start_date,
-            end_date=new_event.end_date,
-            location=new_event.location,
-            max_participants=new_event.max_participants,
-            created_by=new_event.created_by,
-            assigned_user_id=new_event.assigned_user_id,
-            status=new_event.status.value,
-            created_at=new_event.created_at,
-            updated_at=new_event.updated_at,
-            participant_count=0
-        )
+        event_response = _build_event_response(db, new_event)
         
         return EventCreateResponse(
             success=True,
@@ -309,10 +374,16 @@ async def list_events(
         # and events assigned to themselves; events assigned to other users are
         # excluded. Legacy rows with NULL assignment behave as public (Req 5.3).
         if current_user.role != UserRole.ADMINISTRATOR:
+            # An event is visible to a non-admin when it is public (no
+            # assignment rows) OR the current user is one of its assignees.
+            assigned_to_me = db.query(EventAssignment.event_id).filter(
+                EventAssignment.user_id == current_user.id
+            )
+            has_any_assignment = db.query(EventAssignment.event_id)
             events_query = events_query.filter(
                 or_(
-                    Event.assigned_user_id.is_(None),           # public
-                    Event.assigned_user_id == current_user.id,  # assigned to me
+                    ~Event.id.in_(has_any_assignment),   # public: no assignees
+                    Event.id.in_(assigned_to_me),        # assigned to me
                 )
             )
 
@@ -320,30 +391,8 @@ async def list_events(
 
         events = events_query.all()
         
-        # Build response with participant counts
-        event_responses = []
-        for event in events:
-            # Count participants for this event
-            participant_count = db.query(func.count(EventRegistration.id)).filter(
-                EventRegistration.event_id == event.id
-            ).scalar() or 0
-            
-            event_response = EventResponse(
-                id=event.id,
-                title=event.title,
-                description=event.description,
-                start_date=event.start_date,
-                end_date=event.end_date,
-                location=event.location,
-                max_participants=event.max_participants,
-                created_by=event.created_by,
-                assigned_user_id=event.assigned_user_id,
-                status=event.status.value,
-                created_at=event.created_at,
-                updated_at=event.updated_at,
-                participant_count=participant_count
-            )
-            event_responses.append(event_response)
+        # Build response with participant counts and assigned users
+        event_responses = [_build_event_response(db, event) for event in events]
         
         logger.info(
             f"User {current_user.id} ({current_user.email}) listed {len(event_responses)} "
@@ -658,16 +707,31 @@ async def update_event(
             event.max_participants = event_data.max_participants
 
         # Assignment set/change/clear logic (Requirements 2.1, 2.2, 2.3).
-        # Use exclude_unset so an explicitly sent assigned_user_id (UUID or null)
-        # is distinguished from an omitted field. Presence of the key means the
-        # client intends to set/change (UUID) or clear (None); omission leaves
-        # the current assignment unchanged.
+        # Use exclude_unset so an explicitly sent field is distinguished from an
+        # omitted one. Presence of the key means the client intends to replace
+        # the assignment set; omission leaves the current assignment unchanged.
+        # assigned_user_ids (list) takes precedence over the deprecated
+        # single-value assigned_user_id.
         provided = event_data.model_dump(exclude_unset=True)
-        if "assigned_user_id" in provided:
-            # Validate before mutating so a failure leaves the stored value
-            # unchanged (Requirement 2.3). Returns early for None (clear).
-            _validate_assigned_user(db, provided["assigned_user_id"])
-            event.assigned_user_id = provided["assigned_user_id"]
+        new_assignment: list[uuid.UUID] | None = None
+        if "assigned_user_ids" in provided:
+            ids = provided["assigned_user_ids"] or []
+            new_assignment = _validate_assigned_users(db, ids)
+        elif "assigned_user_id" in provided:
+            single = provided["assigned_user_id"]
+            new_assignment = _validate_assigned_users(db, [single] if single else [])
+
+        if new_assignment is not None:
+            # Replace the assignment set atomically: clear existing rows, then
+            # insert the validated new ones. Validation ran first, so a bad id
+            # aborts before any mutation.
+            db.query(EventAssignment).filter(
+                EventAssignment.event_id == event.id
+            ).delete(synchronize_session=False)
+            for uid in new_assignment:
+                db.add(EventAssignment(event_id=event.id, user_id=uid))
+            # Keep the legacy single column in sync with the first assignee.
+            event.assigned_user_id = new_assignment[0] if new_assignment else None
 
         event.updated_at = datetime.now(timezone.utc)
         db.commit()
@@ -677,27 +741,9 @@ async def update_event(
         # validation failure is not masked as a 500 by a generic handler.
         raise
 
-    participant_count = db.query(func.count(EventRegistration.id)).filter(
-        EventRegistration.event_id == event_uuid
-    ).scalar() or 0
-    
     logger.info(f"Event {event.id} updated by admin {current_user.id}")
     
-    return EventResponse(
-        id=event.id,
-        title=event.title,
-        description=event.description,
-        start_date=event.start_date,
-        end_date=event.end_date,
-        location=event.location,
-        max_participants=event.max_participants,
-        created_by=event.created_by,
-        assigned_user_id=event.assigned_user_id,
-        status=event.status.value,
-        created_at=event.created_at,
-        updated_at=event.updated_at,
-        participant_count=participant_count
-    )
+    return _build_event_response(db, event)
 
 
 @router.put("/{event_id}/cancel", response_model=EventCancellationResponse, status_code=status.HTTP_200_OK)
@@ -876,24 +922,8 @@ L'équipe OPCP
             f"to {len(participants)} registered participants"
         )
         
-        # Get participant count
-        participant_count = len(participants)
-        
-        # Prepare response
-        event_response = EventResponse(
-            id=event.id,
-            title=event.title,
-            description=event.description,
-            start_date=event.start_date,
-            end_date=event.end_date,
-            location=event.location,
-            max_participants=event.max_participants,
-            created_by=event.created_by,
-            status=event.status.value,
-            created_at=event.created_at,
-            updated_at=event.updated_at,
-            participant_count=participant_count
-        )
+        # Prepare response (includes assigned users and participant count)
+        event_response = _build_event_response(db, event)
         
         return EventCancellationResponse(
             success=True,

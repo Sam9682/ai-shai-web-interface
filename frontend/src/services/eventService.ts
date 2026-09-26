@@ -10,6 +10,7 @@ export interface Event {
   max_participants: number | null;
   created_by: string;
   assigned_user_id: string | null;
+  assigned_user_ids: string[];
   status: string;
   created_at: string;
   updated_at: string;
@@ -23,7 +24,8 @@ export interface CreateEventRequest {
   end_date: string;
   location?: string;
   max_participants?: number;
-  assigned_user_id?: string | null;
+  // Full set of users to assign; empty array => public event.
+  assigned_user_ids?: string[];
 }
 
 export interface UpdateEventRequest {
@@ -33,7 +35,8 @@ export interface UpdateEventRequest {
   end_date?: string;
   location?: string;
   max_participants?: number;
-  assigned_user_id?: string | null; // send null to clear the assignment
+  // Full replacement set; send [] to clear all assignments (make public).
+  assigned_user_ids?: string[];
 }
 
 export const eventService = {
