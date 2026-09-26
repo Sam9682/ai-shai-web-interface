@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { StaticContentPage } from '../components/prerequisites/StaticContentPage';
 import { QuestionAnswerForm } from '../components/prerequisites/QuestionAnswerForm';
+import { FIRST_PREREQ_SLUG } from '../components/prerequisites/InstallationListPage';
 import {
   cloudStoreQuestionConfig,
   coreControlPlaneConfig,
@@ -8,6 +9,25 @@ import {
   vcfConfig,
 } from '../components/prerequisites/configs';
 import type { QuestionFormConfig } from '../components/prerequisites/types';
+
+/**
+ * Ordered checklist set for the question archetype. This is the single source
+ * of truth for both the aggregate default-installation view and the per-slug
+ * lookup, so the two paths cannot drift. Each entry pairs a canonical slug
+ * (the persistence key) with its display title and question config.
+ */
+type ChecklistCategory = {
+  slug: string;
+  title: string;
+  config: QuestionFormConfig;
+};
+
+const CHECKLIST_CATEGORIES: ReadonlyArray<ChecklistCategory> = [
+  { slug: 'network-checklist', title: 'Network Checklist', config: networkChecklistConfig },
+  { slug: 'core-control-plane', title: 'Core Control Plane', config: coreControlPlaneConfig },
+  { slug: 'cloudstore', title: 'CloudStore', config: cloudStoreQuestionConfig },
+  { slug: 'vcf', title: 'VCF', config: vcfConfig },
+];
 
 /**
  * Per-slug prerequisites descriptor. Static slugs render the
@@ -19,33 +39,38 @@ type PrereqSlugConfig =
   | { archetype: 'static'; title: string }
   | { archetype: 'qa'; title: string; config: QuestionFormConfig };
 
-const PREREQ_SLUG_CONFIG: Record<string, PrereqSlugConfig> = {
+const STATIC_SLUG_CONFIG: Record<string, PrereqSlugConfig> = {
   basics: { archetype: 'static', title: 'Basics' },
   'network-flux': { archetype: 'static', title: 'Network Flux' },
-  'network-checklist': {
-    archetype: 'qa',
-    title: 'Network Checklist',
-    config: networkChecklistConfig,
-  },
-  'core-control-plane': {
-    archetype: 'qa',
-    title: 'Core Control Plane',
-    config: coreControlPlaneConfig,
-  },
-  cloudstore: {
-    archetype: 'qa',
-    title: 'CloudStore',
-    config: cloudStoreQuestionConfig,
-  },
-  vcf: { archetype: 'qa', title: 'VCF', config: vcfConfig },
+};
+
+// Question-archetype slugs are derived from the ordered checklist set so the
+// aggregate render and the single-category lookup share one definition.
+const QUESTION_SLUG_CONFIG: Record<string, PrereqSlugConfig> =
+  Object.fromEntries(
+    CHECKLIST_CATEGORIES.map((category) => [
+      category.slug,
+      { archetype: 'qa', title: category.title, config: category.config } as PrereqSlugConfig,
+    ]),
+  );
+
+const PREREQ_SLUG_CONFIG: Record<string, PrereqSlugConfig> = {
+  ...STATIC_SLUG_CONFIG,
+  ...QUESTION_SLUG_CONFIG,
 };
 
 /**
  * Installation-scoped prerequisites page (Req 5.3). Reads `installationId` and
  * `slug` from the route (`/prerequisites/installations/:installationId/:slug`),
  * looks up the archetype/title/config for the slug, and renders the matching
- * page component with the `installationId` threaded through. An unknown slug
- * renders a not-found message.
+ * page component with the `installationId` threaded through.
+ *
+ * When the slug is the default-installation entry slug (`FIRST_PREREQ_SLUG`),
+ * the page renders the aggregate view: one `QuestionAnswerForm` per checklist
+ * category in order, each stacked as its own section and keyed on its own
+ * canonical slug so answer persistence stays scoped to `(installationId, slug)`
+ * exactly as for single-category access. An unknown slug renders a not-found
+ * message.
  */
 export const InstallationPrereqPage = () => {
   const { installationId, slug } = useParams<{
@@ -53,7 +78,13 @@ export const InstallationPrereqPage = () => {
     slug: string;
   }>();
 
-  const config = slug ? PREREQ_SLUG_CONFIG[slug] : undefined;
+  // Guard with `Object.hasOwn` so prototype-inherited keys (e.g. "constructor",
+  // "hasOwnProperty", "toString") do not resolve to inherited values and
+  // instead fall through to the not-found path like any other unknown slug.
+  const config =
+    slug && Object.hasOwn(PREREQ_SLUG_CONFIG, slug)
+      ? PREREQ_SLUG_CONFIG[slug]
+      : undefined;
 
   if (!installationId || !slug || !config) {
     return (
@@ -64,6 +95,24 @@ export const InstallationPrereqPage = () => {
         >
           Page de prérequis introuvable.
         </div>
+      </div>
+    );
+  }
+
+  // Default-installation entry: render all four checklist categories as
+  // stacked sections, each keyed on its own canonical slug.
+  if (slug === FIRST_PREREQ_SLUG) {
+    return (
+      <div className="space-y-6">
+        {CHECKLIST_CATEGORIES.map((category) => (
+          <QuestionAnswerForm
+            key={category.slug}
+            installationId={installationId}
+            slug={category.slug}
+            title={category.title}
+            config={category.config}
+          />
+        ))}
       </div>
     );
   }

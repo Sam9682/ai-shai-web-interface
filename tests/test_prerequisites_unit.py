@@ -519,3 +519,119 @@ class TestAuthorization:
             headers={"Authorization": "Bearer not-a-real-token"},
         )
         assert resp.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+# ===========================================================================
+# Installations CRUD (create/update/delete HTTP endpoints)
+#
+# Regression coverage for the "operation failed" create bug: the Installation
+# model previously relied on a PostgreSQL ``server_default=func.now()`` for
+# created_at/updated_at, but the multi-instance migration built those columns
+# NOT NULL without any DB default, so every INSERT emitted NULL and hit a
+# NotNullViolation. The model now sets them Python-side (like User/Topic/Post).
+# These tests exercise the HTTP create path end-to-end.
+# ===========================================================================
+def _installations_path() -> str:
+    return "/api/prerequisites/installations"
+
+
+def _installation_path(installation_id) -> str:
+    return f"/api/prerequisites/installations/{installation_id}"
+
+
+class TestInstallationsCrud:
+    def test_create_installation_by_admin_returns_201_with_timestamps(
+        self, client, admin_user
+    ):
+        """POST /installations by admin -> 201 with a populated, valid body.
+
+        Guards the create regression: created_at/updated_at must be populated
+        without depending on a DB server default.
+        """
+        resp = client.post(
+            _installations_path(),
+            json={"project_name": "DEMO"},
+            headers=_headers(admin_user),
+        )
+        assert resp.status_code == status.HTTP_201_CREATED
+        body = resp.json()
+        assert body["project_name"] == "DEMO"
+        assert body["id"]
+        # The two fields the NotNullViolation was raised on must be present.
+        assert body["created_at"] is not None
+        assert body["updated_at"] is not None
+
+    def test_created_installation_appears_in_list(self, client, admin_user):
+        """A freshly created installation is returned by the list endpoint."""
+        create = client.post(
+            _installations_path(),
+            json={"project_name": "DEMO"},
+            headers=_headers(admin_user),
+        )
+        assert create.status_code == status.HTTP_201_CREATED
+        new_id = create.json()["id"]
+
+        listing = client.get(_installations_path(), headers=_headers(admin_user))
+        assert listing.status_code == status.HTTP_200_OK
+        ids = [row["id"] for row in listing.json()["installations"]]
+        assert new_id in ids
+
+    def test_create_installation_forbidden_for_member(self, client, member_user):
+        """POST /installations is admin-only -> 403 for a member."""
+        resp = client.post(
+            _installations_path(),
+            json={"project_name": "DEMO"},
+            headers=_headers(member_user),
+        )
+        assert resp.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_create_installation_blank_name_rejected(self, client, admin_user):
+        """A blank/whitespace-only project_name is rejected as a validation error.
+
+        The app registers a custom request-validation handler that returns 400
+        (rather than FastAPI's default 422), so accept either.
+        """
+        resp = client.post(
+            _installations_path(),
+            json={"project_name": "   "},
+            headers=_headers(admin_user),
+        )
+        assert resp.status_code in (
+            status.HTTP_400_BAD_REQUEST,
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
+
+    def test_update_installation_changes_project_name(self, client, admin_user):
+        """PUT /installations/{id} by admin -> 200 with the renamed project."""
+        create = client.post(
+            _installations_path(),
+            json={"project_name": "DEMO"},
+            headers=_headers(admin_user),
+        )
+        new_id = create.json()["id"]
+
+        resp = client.put(
+            _installation_path(new_id),
+            json={"project_name": "RENAMED"},
+            headers=_headers(admin_user),
+        )
+        assert resp.status_code == status.HTTP_200_OK
+        assert resp.json()["project_name"] == "RENAMED"
+
+    def test_delete_installation_removes_it(self, client, admin_user):
+        """DELETE /installations/{id} by admin -> 204 and it leaves the list."""
+        create = client.post(
+            _installations_path(),
+            json={"project_name": "DEMO"},
+            headers=_headers(admin_user),
+        )
+        new_id = create.json()["id"]
+
+        resp = client.delete(
+            _installation_path(new_id), headers=_headers(admin_user)
+        )
+        assert resp.status_code == status.HTTP_204_NO_CONTENT
+
+        listing = client.get(_installations_path(), headers=_headers(admin_user))
+        ids = [row["id"] for row in listing.json()["installations"]]
+        assert new_id not in ids

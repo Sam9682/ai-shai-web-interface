@@ -20,6 +20,9 @@ class EventCreateRequest(BaseModel):
     end_date: datetime = Field(..., description="Event end date and time")
     location: Optional[str] = Field(None, max_length=255, description="Event location")
     max_participants: Optional[int] = Field(None, ge=1, description="Maximum number of participants")
+    assigned_user_id: Optional[UUID] = Field(
+        None, description="Existing user to assign the event to (private). Null => public."
+    )
     
     @field_validator('end_date')
     @classmethod
@@ -46,6 +49,14 @@ class EventUpdateRequest(BaseModel):
     end_date: Optional[datetime] = Field(None, description="Event end date and time")
     location: Optional[str] = Field(None, max_length=255, description="Event location")
     max_participants: Optional[int] = Field(None, ge=1, description="Maximum number of participants")
+    assigned_user_id: Optional[UUID] = Field(
+        None,
+        description=(
+            "Assigned user id; send an explicit null to clear the assignment. "
+            "Relies on exclude_unset in the update handler: an omitted field "
+            "leaves the assignment unchanged, while an explicit null clears it."
+        ),
+    )
 
 
 class EventResponse(BaseModel):
@@ -58,6 +69,7 @@ class EventResponse(BaseModel):
     location: Optional[str]
     max_participants: Optional[int]
     created_by: UUID
+    assigned_user_id: Optional[UUID] = None
     status: str
     created_at: datetime
     updated_at: datetime

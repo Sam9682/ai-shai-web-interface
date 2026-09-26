@@ -6,7 +6,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from datetime import datetime, timezone
 from app.database import get_db
 from app.models import User, Event, EventStatus, EventRegistration, NotificationPreferences, UserRole
@@ -21,6 +21,36 @@ from icalendar import vText
 
 
 router = APIRouter(prefix="/api/events", tags=["events"])
+
+
+def _validate_assigned_user(db: Session, assigned_user_id: uuid.UUID | None) -> None:
+    """Validate that a non-null assigned user id references an existing user.
+
+    Used by the create and update endpoints. Returns early when no user is
+    assigned (public event). Raises 400 INVALID_ASSIGNED_USER when the id does
+    not match an existing user.
+
+    Validates Requirements 1.4, 2.3
+
+    Args:
+        db: Database session
+        assigned_user_id: The assigned user id to validate, or None for a public event
+
+    Raises:
+        HTTPException 400: If assigned_user_id does not correspond to an existing user
+    """
+    if assigned_user_id is None:
+        return
+    exists = db.query(User.id).filter(User.id == assigned_user_id).first()
+    if not exists:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=ErrorResponse.create(
+                code="INVALID_ASSIGNED_USER",
+                message="Assigned user does not exist",
+                details={"assigned_user_id": str(assigned_user_id)},
+            ),
+        )
 
 
 @router.post("", response_model=EventCreateResponse, status_code=status.HTTP_201_CREATED)
@@ -49,6 +79,10 @@ async def create_event(
         HTTPException 400: If event data is invalid
     """
     try:
+        # Validate the assigned user (if any) before creating the event so a
+        # failure prevents creation (Requirement 1.4). Returns early when null.
+        _validate_assigned_user(db, event_data.assigned_user_id)
+
         # Create event
         new_event = Event(
             title=event_data.title,
@@ -58,6 +92,7 @@ async def create_event(
             location=event_data.location,
             max_participants=event_data.max_participants,
             created_by=current_user.id,
+            assigned_user_id=event_data.assigned_user_id,
             status=EventStatus.SCHEDULED
         )
         
@@ -191,6 +226,7 @@ L'équipe OPCP
             location=new_event.location,
             max_participants=new_event.max_participants,
             created_by=new_event.created_by,
+            assigned_user_id=new_event.assigned_user_id,
             status=new_event.status.value,
             created_at=new_event.created_at,
             updated_at=new_event.updated_at,
@@ -203,6 +239,10 @@ L'équipe OPCP
             event=event_response
         )
     
+    except HTTPException:
+        # Re-raise HTTP errors (e.g. 400 INVALID_ASSIGNED_USER) unchanged so the
+        # validation failure is not masked as a 500 by the generic handler.
+        raise
     except ValueError as e:
         # Validation errors from Pydantic
         logger.warning(f"Event creation validation error: {str(e)}")
@@ -261,8 +301,23 @@ async def list_events(
         events_query = db.query(Event).filter(
             Event.start_date >= now,
             Event.status == EventStatus.SCHEDULED
-        ).order_by(Event.start_date.asc())
-        
+        )
+
+        # Role-aware visibility filtering (Requirements 3.1, 3.2, 3.3, 3.4).
+        # Administrators see every upcoming scheduled event (no assignment
+        # filter). Non-administrators only see public events (null assignment)
+        # and events assigned to themselves; events assigned to other users are
+        # excluded. Legacy rows with NULL assignment behave as public (Req 5.3).
+        if current_user.role != UserRole.ADMINISTRATOR:
+            events_query = events_query.filter(
+                or_(
+                    Event.assigned_user_id.is_(None),           # public
+                    Event.assigned_user_id == current_user.id,  # assigned to me
+                )
+            )
+
+        events_query = events_query.order_by(Event.start_date.asc())
+
         events = events_query.all()
         
         # Build response with participant counts
@@ -282,6 +337,7 @@ async def list_events(
                 location=event.location,
                 max_participants=event.max_participants,
                 created_by=event.created_by,
+                assigned_user_id=event.assigned_user_id,
                 status=event.status.value,
                 created_at=event.created_at,
                 updated_at=event.updated_at,
@@ -587,23 +643,40 @@ async def update_event(
             )
         )
     
-    if event_data.title is not None:
-        event.title = event_data.title
-    if event_data.description is not None:
-        event.description = event_data.description
-    if event_data.start_date is not None:
-        event.start_date = event_data.start_date
-    if event_data.end_date is not None:
-        event.end_date = event_data.end_date
-    if event_data.location is not None:
-        event.location = event_data.location
-    if event_data.max_participants is not None:
-        event.max_participants = event_data.max_participants
-    
-    event.updated_at = datetime.now(timezone.utc)
-    db.commit()
-    db.refresh(event)
-    
+    try:
+        if event_data.title is not None:
+            event.title = event_data.title
+        if event_data.description is not None:
+            event.description = event_data.description
+        if event_data.start_date is not None:
+            event.start_date = event_data.start_date
+        if event_data.end_date is not None:
+            event.end_date = event_data.end_date
+        if event_data.location is not None:
+            event.location = event_data.location
+        if event_data.max_participants is not None:
+            event.max_participants = event_data.max_participants
+
+        # Assignment set/change/clear logic (Requirements 2.1, 2.2, 2.3).
+        # Use exclude_unset so an explicitly sent assigned_user_id (UUID or null)
+        # is distinguished from an omitted field. Presence of the key means the
+        # client intends to set/change (UUID) or clear (None); omission leaves
+        # the current assignment unchanged.
+        provided = event_data.model_dump(exclude_unset=True)
+        if "assigned_user_id" in provided:
+            # Validate before mutating so a failure leaves the stored value
+            # unchanged (Requirement 2.3). Returns early for None (clear).
+            _validate_assigned_user(db, provided["assigned_user_id"])
+            event.assigned_user_id = provided["assigned_user_id"]
+
+        event.updated_at = datetime.now(timezone.utc)
+        db.commit()
+        db.refresh(event)
+    except HTTPException:
+        # Re-raise HTTP errors (e.g. 400 INVALID_ASSIGNED_USER) unchanged so the
+        # validation failure is not masked as a 500 by a generic handler.
+        raise
+
     participant_count = db.query(func.count(EventRegistration.id)).filter(
         EventRegistration.event_id == event_uuid
     ).scalar() or 0
@@ -619,6 +692,7 @@ async def update_event(
         location=event.location,
         max_participants=event.max_participants,
         created_by=event.created_by,
+        assigned_user_id=event.assigned_user_id,
         status=event.status.value,
         created_at=event.created_at,
         updated_at=event.updated_at,

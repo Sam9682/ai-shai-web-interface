@@ -1,0 +1,120 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Counterexample (bug confirmed): rendering InstallationPrereqPage at the default-installation entry route `/prerequisites/installations/11111111-1111-1111-1111-111111111111/network-checklist` for an authenticated member renders ONLY the \"Network Checklist\" heading. The required headings \"Core Control Plane\", \"CloudStore\", and \"VCF\" are absent from the document.\n\nTestingLibraryElementError: Unable to find an element with the text: Core Control Plane. The rendered DOM contains a single card with <h1>Network Checklist</h1> and its sections; no other category headings are present.\n\nRoot cause confirmed: the entry route resolves to the single `network-checklist` slug and InstallationPrereqPage renders exactly one QuestionAnswerForm config (single-slug entry + one-config render).",
+      "lastRunTimestamp": 1790413226398
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413141577
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413148478
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413248410
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413141746
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413252180
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413618304
+      }
+    ],
+    "3.1 Implement the aggregate default-installation view": [
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413141862
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413621945
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413743278
+      }
+    ],
+    "3.2 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413142032
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413750587
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413800557
+      }
+    ],
+    "3.3 Verify preservation tests still pass": [
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413142146
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413804055
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413966916
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413142286
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413971022
+      },
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790414054565
+      }
+    ],
+    "3. Fix for default installation showing only the Network Checklist": [
+      {
+        "executionId": "c77862d6-bca8-4bf6-a1ed-92d28d786957",
+        "chatSessionId": "sess_5d68c9ac-09e2-45e7-beaa-9bd3b7270523",
+        "timestamp": 1790413967042
+      }
+    ]
+  }
+}

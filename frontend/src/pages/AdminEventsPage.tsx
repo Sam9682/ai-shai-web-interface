@@ -1,24 +1,37 @@
 import { useState, useEffect } from 'react';
 import { eventService, type Event } from '../services/eventService';
+import { adminService, type User } from '../services/adminService';
+import { UserPicker } from '../components/UserPicker';
 import { useTranslation } from '../hooks/useLanguage';
 
 export const AdminEventsPage = () => {
   const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
+  const [members, setMembers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    start_date: string;
+    end_date: string;
+    location: string;
+    max_participants: string;
+    assigned_user_id: string | null;
+  }>({
     title: '',
     description: '',
     start_date: '',
     end_date: '',
     location: '',
     max_participants: '',
+    assigned_user_id: null,
   });
 
   useEffect(() => {
     loadEvents();
+    loadMembers();
   }, []);
 
   const loadEvents = async () => {
@@ -33,6 +46,15 @@ export const AdminEventsPage = () => {
     }
   };
 
+  const loadMembers = async () => {
+    try {
+      const data = await adminService.listUsers();
+      setMembers(data.members);
+    } catch (error) {
+      console.error('Failed to load members:', error);
+    }
+  };
+
   const handleEdit = (event: Event) => {
     setEditingEvent(event);
     setFormData({
@@ -42,6 +64,7 @@ export const AdminEventsPage = () => {
       end_date: event.end_date.slice(0, 16),
       location: event.location || '',
       max_participants: event.max_participants?.toString() || '',
+      assigned_user_id: event.assigned_user_id,
     });
   };
 
@@ -55,6 +78,7 @@ export const AdminEventsPage = () => {
         end_date: formData.end_date,
         location: formData.location || undefined,
         max_participants: formData.max_participants ? parseInt(formData.max_participants) : undefined,
+        assigned_user_id: formData.assigned_user_id,
       });
       setEditingEvent(null);
       loadEvents();
@@ -82,9 +106,10 @@ export const AdminEventsPage = () => {
         end_date: formData.end_date,
         location: formData.location || undefined,
         max_participants: formData.max_participants ? parseInt(formData.max_participants) : undefined,
+        assigned_user_id: formData.assigned_user_id,
       });
       setShowCreateModal(false);
-      setFormData({ title: '', description: '', start_date: '', end_date: '', location: '', max_participants: '' });
+      setFormData({ title: '', description: '', start_date: '', end_date: '', location: '', max_participants: '', assigned_user_id: null });
       loadEvents();
     } catch (error) {
       console.error('Failed to create event:', error);
@@ -100,7 +125,10 @@ export const AdminEventsPage = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-[#000E9C]">{t('page.adminEvents.title')}</h1>
         <button
-          onClick={() => setShowCreateModal(true)}
+          onClick={() => {
+            setFormData({ title: '', description: '', start_date: '', end_date: '', location: '', max_participants: '', assigned_user_id: null });
+            setShowCreateModal(true);
+          }}
           className="px-4 py-2 text-sm font-medium bg-[#000E9C] text-white rounded hover:bg-[#4949FF] transition-colors"
         >
           {t('page.adminEvents.newEvent')}
@@ -181,6 +209,13 @@ export const AdminEventsPage = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.maxParticipants')}</label>
                 <input type="number" value={formData.max_participants} onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
               </div>
+              <div>
+                <UserPicker
+                  users={members}
+                  value={formData.assigned_user_id}
+                  onChange={(userId) => setFormData({ ...formData, assigned_user_id: userId })}
+                />
+              </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button onClick={() => setEditingEvent(null)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                   {t('page.adminEvents.cancel')}
@@ -225,6 +260,13 @@ export const AdminEventsPage = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('page.adminEvents.field.maxParticipants')}</label>
                 <input type="number" value={formData.max_participants} onChange={(e) => setFormData({ ...formData, max_participants: e.target.value })} className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent" />
+              </div>
+              <div>
+                <UserPicker
+                  users={members}
+                  value={formData.assigned_user_id}
+                  onChange={(userId) => setFormData({ ...formData, assigned_user_id: userId })}
+                />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button onClick={() => setShowCreateModal(false)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors">

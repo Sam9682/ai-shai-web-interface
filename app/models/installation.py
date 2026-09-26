@@ -1,7 +1,7 @@
 """Installation persistence model for the prerequisites route family"""
 import uuid
-from datetime import datetime
-from sqlalchemy import String, DateTime, ForeignKey, func, text
+from datetime import datetime, timezone
+from sqlalchemy import String, DateTime, ForeignKey, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
@@ -33,16 +33,23 @@ class Installation(Base):
     )
 
     # Timestamps
+    #
+    # Use Python-side defaults (matching User/Topic/Post) rather than a DB
+    # ``server_default``. The multi-instance migration created these columns as
+    # NOT NULL *without* a ``DEFAULT now()`` server default, so relying on a
+    # server default here made every INSERT emit NULL and hit a
+    # NotNullViolation. Populating the value in Python keeps the model working
+    # against the existing schema and matches the rest of the codebase.
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        server_default=func.now()
+        default=lambda: datetime.now(timezone.utc)
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        server_default=func.now(),
-        onupdate=func.now()
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
     )
 
     # Editor tracking
