@@ -7,6 +7,7 @@ import type { QuestionFormConfig } from './types';
 import { LanguageProvider } from '../../hooks/useLanguage';
 import { authService } from '../../services/authService';
 import { prerequisitesService } from '../../services/prerequisitesService';
+import { buildVcfDomainJson, MANAGEMENT_DOMAIN_TEMPLATE } from './vcfDomainTemplates';
 
 // Minimum property-test iterations mandated by the design (>= 100).
 const NUM_RUNS = 100;
@@ -32,9 +33,13 @@ vi.mock('../../services/prerequisitesService', () => ({
 const mockedAuth = vi.mocked(authService);
 const mockedPrereq = vi.mocked(prerequisitesService);
 
-// Configure authService for a given member/non-member flag.
+// Configure authService for a given member/non-member flag. After the
+// opcp-installations-response-fields-editable fix, canAnswer === isAuthenticated(),
+// so BOTH branches are authenticated and therefore editable:
 // - member: authenticated && !admin  -> canAnswer === true
-// - non-member: modeled here as an authenticated admin -> canAnswer === false
+// - non-member: modeled here as an authenticated admin -> canAnswer === true
+//   (authenticated admins are now editable; only unauthenticated visitors are
+//   read-only — see setAuthUnauthenticated below).
 function setAuth(isMember: boolean) {
   mockedAuth.isAuthenticated.mockReturnValue(true);
   mockedAuth.isAdmin.mockReturnValue(!isMember);
@@ -114,9 +119,13 @@ const INSTALL_ID = '11111111-1111-1111-1111-111111111111';
 // ---------------------------------------------------------------------------
 
 // Feature: opcp-prerequisites-tabs, Property 6: Question pages show read-only
-// questions and an editable member answer.
-describe('Property 6: read-only questions + editable member answer', () => {
-  it('renders both question columns as non-editable text and exactly one Client answer control per row, editable iff the user is a member', () => {
+// questions and an editable answer for any authenticated user.
+// Updated by opcp-installations-response-fields-editable (task 3.3): the answer
+// control is editable iff the user is authenticated (canAnswer === isAuthenticated),
+// so an authenticated administrator is now editable, not read-only. Since setAuth
+// keeps isAuthenticated() === true for both branches, every row is editable here.
+describe('Property 6: read-only questions + editable answer for any authenticated user', () => {
+  it('renders both question columns as non-editable text and exactly one Client answer control per row, editable for any authenticated user (member or admin)', () => {
     fc.assert(
       fc.property(questionConfigArb, fc.boolean(), (config, isMember) => {
         cleanup();
@@ -131,7 +140,9 @@ describe('Property 6: read-only questions + editable member answer', () => {
           />,
         );
 
-        const canAnswer = isMember; // authenticated && !admin
+        // Post-fix: canAnswer === isAuthenticated(). setAuth always authenticates
+        // (member and admin alike), so the control is editable in both branches.
+        const canAnswer = true;
 
         for (const section of config.sections) {
           for (const row of section.rows) {
@@ -151,14 +162,11 @@ describe('Property 6: read-only questions + editable member answer', () => {
             ) as HTMLInputElement;
             expect(answer.tagName).toBe('INPUT');
 
-            // Editable iff the user is a member; otherwise read-only/disabled.
-            if (canAnswer) {
-              expect(answer).not.toHaveAttribute('readonly');
-              expect(answer).not.toBeDisabled();
-            } else {
-              expect(answer).toHaveAttribute('readonly');
-              expect(answer).toBeDisabled();
-            }
+            // Editable for any authenticated user (member or admin) after the
+            // fix. Unauthenticated read-only behavior is covered by Property 2.
+            expect(canAnswer).toBe(true);
+            expect(answer).not.toHaveAttribute('readonly');
+            expect(answer).not.toBeDisabled();
           }
         }
 
@@ -363,4 +371,282 @@ describe('Property 11: a failed save shows an error indication', () => {
       { numRuns: NUM_RUNS },
     );
   });
+});
+
+// ===========================================================================
+// Bugfix spec: opcp-installations-response-fields-editable (task 1)
+// Property 1: Bug Condition — Editable "Réponse client" for Any Authenticated User
+//
+// EXPLORATION / FIX-CHECKING TEST. These assertions encode the EXPECTED
+// (post-fix) behavior: an authenticated administrator on a QA tab must see every
+// "Réponse client" input editable. On the UNFIXED code they MUST FAIL, because
+// `canAnswer = isAuthenticated() && !isAdmin()` renders the admin's input
+// readOnly/disabled with the `cursor-not-allowed` (READONLY_FIELD_CLASS) style.
+//
+// Scoped PBT: the bug condition is deterministic
+// (X.tab.kind = 'qa' AND isAuthenticated(X.user) AND NOT canAnswer(X.user), i.e.
+// authenticated administrators). We scope to the concrete failing cases: an
+// authenticated administrator across the four QA slugs.
+// ===========================================================================
+
+// The `cursor-not-allowed` class is the tell-tale of READONLY_FIELD_CLASS in
+// QuestionAnswerForm.tsx; an editable field uses FIELD_CLASS which never carries
+// it. Asserting on this class keeps the test resilient to the rest of the class
+// string while pinning the observable "not-allowed cursor" defect.
+const NOT_ALLOWED_CLASS = 'cursor-not-allowed';
+
+// The four question/answer slugs backed by QuestionAnswerForm.
+const QA_SLUGS = ['network-checklist', 'core-control-plane', 'cloudstore', 'vcf'] as const;
+
+// Configure authService as an authenticated administrator (the bug condition):
+// isAuthenticated() === true, isAdmin() === true.
+function setAuthAdmin() {
+  mockedAuth.isAuthenticated.mockReturnValue(true);
+  mockedAuth.isAdmin.mockReturnValue(true);
+}
+
+describe('Property 1 (bug condition): authenticated admin can edit "Réponse client" across QA slugs', () => {
+  it.each(QA_SLUGS)(
+    'renders every "Réponse client" input editable for an authenticated admin on the %s tab',
+    (slug) => {
+      // Scoped-PBT config: exercise arbitrary QuestionFormConfig shapes so the
+      // property holds for every row on the tab, not one hand-picked row.
+      fc.assert(
+        fc.property(questionConfigArb, (config) => {
+          cleanup();
+          setAuthAdmin();
+
+          renderForm(
+            <QuestionAnswerForm
+              installationId={INSTALL_ID}
+              slug={slug}
+              title="Test"
+              config={config}
+            />,
+          );
+
+          for (const section of config.sections) {
+            for (const row of section.rows) {
+              const answer = screen.getByLabelText(
+                `Réponse client — ${row.questionPrimary}`,
+              ) as HTMLInputElement;
+
+              // Expected (post-fix): editable — not readOnly, not disabled, and
+              // without the not-allowed cursor style.
+              expect(answer).not.toHaveAttribute('readonly');
+              expect(answer).not.toBeDisabled();
+              expect(answer.className).not.toContain(NOT_ALLOWED_CLASS);
+            }
+          }
+
+          cleanup();
+        }),
+        { numRuns: NUM_RUNS },
+      );
+    },
+  );
+});
+
+// ===========================================================================
+// Bugfix spec: opcp-installations-response-fields-editable (task 1)
+// Property 1 (VCF overlay): an admin-entered "Réponse client" value flows into
+// the generated domain JSON via buildVcfDomainJson.
+//
+// buildVcfDomainJson is a pure overlay; the defect is INDIRECT — on the unfixed
+// code an authenticated admin cannot type into the VCF field (it is
+// disabled/readOnly), so no value ever reaches component state and the overlay
+// falls back to the template default. This test renders the VCF form as an
+// admin, types a value into a MAPPED VCF row, then asserts the overlay picks it
+// up. On the unfixed code the change is rejected (disabled input) so the
+// generated value stays at the template default and the assertion FAILS.
+// ===========================================================================
+
+// A management-domain row that maps to a VCF JSON key
+// (`vcf_mgmt_network_name` -> row id `vcf-mgmt-network-name`).
+const VCF_MAPPED_ROW_ID = 'vcf-mgmt-network-name';
+const VCF_MAPPED_JSON_KEY = 'vcf_mgmt_network_name';
+
+// Minimal VCF config whose single row is the mapped management row above.
+const vcfMappedConfig: QuestionFormConfig = {
+  sections: [
+    {
+      id: 'section-0',
+      title: 'Section 0',
+      rows: [
+        {
+          id: VCF_MAPPED_ROW_ID,
+          questionPrimary: 'vcf_mgmt_network_name',
+          questionSecondary: 'VCF Network',
+          mandatory: true,
+          exampleValue: 'vcf_network',
+          commentsHint: '—',
+        },
+      ],
+    },
+  ],
+};
+const VCF_MAPPED_LABEL = 'Réponse client — vcf_mgmt_network_name';
+
+describe('Property 1 (bug condition, VCF overlay): admin-entered value flows into buildVcfDomainJson', () => {
+  it('overlays the admin-typed value onto the management domain template for the mapped key', async () => {
+    cleanup();
+    vi.clearAllMocks();
+    mockedPrereq.loadClientAnswers.mockResolvedValue({ slug: '', answers: {} });
+    mockedPrereq.saveClientAnswer.mockResolvedValue(undefined);
+    setAuthAdmin();
+
+    const adminValue = 'admin-custom-network';
+
+    renderForm(
+      <QuestionAnswerForm
+        installationId={INSTALL_ID}
+        slug="vcf"
+        title="Test"
+        config={vcfMappedConfig}
+      />,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    const input = screen.getByLabelText(VCF_MAPPED_LABEL) as HTMLInputElement;
+
+    // The VCF overlay defect is INDIRECT: buildVcfDomainJson is a correct pure
+    // overlay, but on the unfixed code an admin cannot enter a value because the
+    // input is disabled/readOnly, so no admin answer ever reaches state and the
+    // overlay can only emit the template default. The real, reliable gate for
+    // "an admin can supply a value" is the field's editability — assert it here.
+    // (In jsdom `fireEvent.change` bypasses the `disabled` guard a real browser
+    // enforces, so we must not rely on simulated typing to detect the bug.)
+    //
+    // EXPECTED OUTCOME on unfixed code: FAILS — the input is disabled/readOnly,
+    // so the admin cannot provide the value the overlay would need.
+    expect(input).not.toBeDisabled();
+    expect(input).not.toHaveAttribute('readonly');
+    expect(input.className).not.toContain(NOT_ALLOWED_CLASS);
+
+    // Given the admin CAN type (post-fix), that value flows into the overlay for
+    // the mapped key rather than falling back to the template default.
+    const generated = buildVcfDomainJson('management', {
+      [VCF_MAPPED_ROW_ID]: adminValue,
+    });
+    expect(generated[VCF_MAPPED_JSON_KEY]).toBe(adminValue);
+    expect(generated[VCF_MAPPED_JSON_KEY]).not.toBe(
+      MANAGEMENT_DOMAIN_TEMPLATE[VCF_MAPPED_JSON_KEY],
+    );
+
+    cleanup();
+  });
+});
+
+// ===========================================================================
+// Bugfix spec: opcp-installations-response-fields-editable (task 2)
+// Property 2: Preservation — Non-Buggy Inputs Behave Identically
+//
+// PRESERVATION / observation-first. These assertions encode behavior OBSERVED
+// on the UNFIXED code for NON-bug-condition inputs and must CONTINUE to hold
+// after the fix. isBugCondition(X) = X.tab.kind='qa' AND isAuthenticated(X.user)
+// AND NOT canAnswer(X.user). The complement covered here:
+//   (a) authenticated non-admin members (already correct: editable + save),
+//   (b) unauthenticated visitors (must STAY read-only after the fix, because
+//       canAnswer will become just isAuthenticated()).
+//
+// EXPECTED OUTCOME on unfixed code: PASS (baseline to preserve).
+//
+// Note on reuse: the "authenticated non-admin member is editable and can save on
+// blur" preservation cases are already covered by Property 6 (editable-iff-member
+// rendering) and Property 9 (blur forwards the save to the service) above; those
+// tests are kept as the member-editing preservation coverage rather than
+// duplicated here. This block adds the case those do NOT exercise — a genuinely
+// UNAUTHENTICATED visitor (isAuthenticated() === false).
+// ===========================================================================
+
+// Configure authService as an unauthenticated visitor: isAuthenticated() is
+// false, so canAnswer is false both before (isAuthenticated && !isAdmin) and
+// after (isAuthenticated) the fix. isAdmin() is irrelevant here but stubbed for
+// completeness.
+function setAuthUnauthenticated() {
+  mockedAuth.isAuthenticated.mockReturnValue(false);
+  mockedAuth.isAdmin.mockReturnValue(false);
+}
+
+describe('Property 2 (preservation): unauthenticated visitor keeps read-only "Réponse client" across QA slugs', () => {
+  it.each(QA_SLUGS)(
+    'renders every "Réponse client" input read-only/disabled for an unauthenticated visitor on the %s tab',
+    (slug) => {
+      // Scoped-PBT config: exercise arbitrary QuestionFormConfig shapes so the
+      // property holds for every row on the tab, not one hand-picked row.
+      fc.assert(
+        fc.property(questionConfigArb, (config) => {
+          cleanup();
+          setAuthUnauthenticated();
+
+          renderForm(
+            <QuestionAnswerForm
+              installationId={INSTALL_ID}
+              slug={slug}
+              title="Test"
+              config={config}
+            />,
+          );
+
+          for (const section of config.sections) {
+            for (const row of section.rows) {
+              const answer = screen.getByLabelText(
+                `Réponse client — ${row.questionPrimary}`,
+              ) as HTMLInputElement;
+
+              // Preserved: an unauthenticated visitor sees the field read-only,
+              // disabled, and carrying the not-allowed cursor style. This is the
+              // scope boundary of the fix — authentication is still required.
+              expect(answer).toHaveAttribute('readonly');
+              expect(answer).toBeDisabled();
+              expect(answer.className).toContain(NOT_ALLOWED_CLASS);
+            }
+          }
+
+          cleanup();
+        }),
+        { numRuns: NUM_RUNS },
+      );
+    },
+  );
+
+  it.each(QA_SLUGS)(
+    'never forwards a save to the service on blur for an unauthenticated visitor on the %s tab',
+    async (slug) => {
+      // The onBlur handler guards on canAnswer, so a blur from an unauthenticated
+      // visitor must not call saveClientAnswer. This preserves the
+      // "authentication required to persist" boundary after the fix.
+      cleanup();
+      vi.clearAllMocks();
+      mockedPrereq.loadClientAnswers.mockResolvedValue({ slug: '', answers: {} });
+      mockedPrereq.saveClientAnswer.mockResolvedValue(undefined);
+      setAuthUnauthenticated();
+
+      renderForm(
+        <QuestionAnswerForm
+          installationId={INSTALL_ID}
+          slug={slug}
+          title="Test"
+          config={fixedConfig}
+        />,
+      );
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      const input = screen.getByLabelText(FIXED_LABEL) as HTMLInputElement;
+      await act(async () => {
+        fireEvent.blur(input, { target: { value: 'anything' } });
+        await Promise.resolve();
+      });
+
+      expect(mockedPrereq.saveClientAnswer).not.toHaveBeenCalled();
+
+      cleanup();
+    },
+  );
 });

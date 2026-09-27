@@ -1,0 +1,351 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Add and install pinned markdown pipeline dependencies": [
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536673762
+      },
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536684535
+      },
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536889236
+      }
+    ],
+    "2.1 Add `frontend/src/components/markdownSanitizeSchema.ts`": [
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536673995
+      },
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536893753
+      },
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790537016489
+      }
+    ],
+    "3.1 Replace the internals of `frontend/src/components/MarkdownRenderer.tsx`": [
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536674168
+      },
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790537023515
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538580913
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538588101
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538687019
+      }
+    ],
+    "4.1 Create `frontend/src/components/MarkdownRenderer.test.tsx` scaffold and example/edge tests": [
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536674472
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538691470
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538821678
+      }
+    ],
+    "5. Checkpoint - Ensure MarkdownRenderer tests pass": [
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536674666
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539512741
+      }
+    ],
+    "6.1 Update the MarkdownRenderer block in `frontend/src/pages/TopicDetailPage.preservation.test.tsx`": [
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536674797
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538692873
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538823109
+      }
+    ],
+    "7.1 Run the frontend build/typecheck and the full Vitest suite": [
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536674929
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539513863
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539739864
+      }
+    ],
+    "1. Set up dependencies": [
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790536889672
+      }
+    ],
+    "2. Create the sanitization schema module": [
+      {
+        "executionId": "faf962dc-465a-4155-8643-9c22d8c41327",
+        "chatSessionId": "sess_bf87201c-04f8-459e-8224-fc5dffdf4531",
+        "timestamp": 1790537016870
+      }
+    ],
+    "3. Rewrite the MarkdownRenderer to use the react-markdown pipeline": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538687177
+      }
+    ],
+    "4. Author the MarkdownRenderer test suite (example + property tests)": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538821876
+      }
+    ],
+    "6. Reconcile the pinned preservation test": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538823284
+      }
+    ],
+    "4.2 Property test — blank-line-separated blocks become separate paragraphs": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538846340
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539249327
+      }
+    ],
+    "4.3 Property test — single newline produces a line break within a paragraph": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538847652
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539250636
+      }
+    ],
+    "4.4 Property test — unordered lists yield one list item per entry": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538849029
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539251608
+      }
+    ],
+    "4.5 Property test — ordered lists yield one list item per entry": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538850414
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539253024
+      }
+    ],
+    "4.6 Property test — heading markers map to the corresponding heading level": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790538851621
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539254330
+      }
+    ],
+    "4.7 Property test — double-asterisk text becomes strong": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539258803
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539372505
+      }
+    ],
+    "4.8 Property test — single-backtick text becomes inline code": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539260296
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539373940
+      }
+    ],
+    "4.9 Property test — fenced blocks become preformatted code": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539261703
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539375754
+      }
+    ],
+    "4.10 Property test — streaming tolerates incomplete input without error": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539263089
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539377241
+      }
+    ],
+    "4.11 Property test — incremental rendering equals single-pass rendering": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539264217
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539378234
+      }
+    ],
+    "4.13 Property test — script elements are excluded": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539381860
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539499705
+      }
+    ],
+    "4.12 Property test — safe HTML is preserved": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539383167
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539498443
+      }
+    ],
+    "4.15 Property test — `javascript:` URLs are excluded": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539384696
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539502442
+      }
+    ],
+    "4.14 Property test — event-handler attributes are excluded": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539386021
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539501053
+      }
+    ],
+    "4.16 Property test — the prose container is always present": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539387294
+      },
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539503449
+      }
+    ],
+    "7. Final checkpoint - Verify build and full suite": [
+      {
+        "executionId": "9b353276-379c-42a7-aa33-a4e969a3f608",
+        "chatSessionId": "sess_6dd6f90f-8f46-4d51-97f4-2cee52d29868",
+        "timestamp": 1790539740030
+      }
+    ]
+  }
+}

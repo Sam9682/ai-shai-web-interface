@@ -2,18 +2,20 @@
 
 Spec: .kiro/specs/per-user-prerequisites-persistence (task 3.5)
 Migrated by: .kiro/specs/vcf-prerequisites-update (task 6.1)
+Updated by: .kiro/specs/opcp-installations-response-fields-editable (task 3.3)
 
 These example tests pin the authorization boundary and auth-failure behavior of
 the installation-scoped Q&A answer endpoints:
 
-- An Administrator PUT to a Q&A slug is rejected with HTTP 403 and the
-  structured code ``ANSWER_NOT_ALLOWED_FOR_ADMIN``. The admin block is retained
-  even though answers are now shared per installation.
+- Any authenticated user (administrators included) may PUT a Q&A answer: the PUT
+  returns HTTP 200 and persists the row per installation (shared,
+  last-write-wins). The previous admin-only block (HTTP 403
+  ``ANSWER_NOT_ALLOWED_FOR_ADMIN``) has been removed.
 - A missing or invalid Bearer token on the answer GET and PUT is rejected before
   any user identity is resolved: the read/write is never scoped to an
   unauthenticated caller.
 
-Validates: Requirements 9.3, 7.7
+Validates: Requirements 2.1, 2.3, 3.1
 """
 import pytest
 from fastapi import status
@@ -31,7 +33,7 @@ QA_SLUGS = ("network-checklist", "core-control-plane", "cloudstore", "vcf")
 # ---------------------------------------------------------------------------
 @pytest.fixture
 def admin_user(db_session):
-    """Create an administrator user (blocked from submitting Q&A answers)."""
+    """Create an administrator user (now allowed to submit Q&A answers)."""
     user = User(
         email="admin@prereq.authz.test",
         password_hash="hashed_password",
@@ -84,41 +86,45 @@ def _error_code(body: dict) -> str | None:
 
 
 # ===========================================================================
-# Requirement 3.1: Administrator PUT to a Q&A slug returns 403
+# Requirements 2.1, 2.3, 3.1: An authenticated administrator PUT to a Q&A slug
+# now succeeds (HTTP 200) and persists the row per installation.
 # ===========================================================================
-class TestAdminAnswerForbidden:
+class TestAdminAnswerAllowed:
     @pytest.mark.parametrize("slug", QA_SLUGS)
-    def test_admin_put_answer_forbidden_for_each_qa_slug(
+    def test_admin_put_answer_succeeds_for_each_qa_slug(
         self, client, admin_user, installation_id, slug
     ):
-        """An admin PUT to any Q&A slug -> 403 with ANSWER_NOT_ALLOWED_FOR_ADMIN."""
+        """An admin PUT to any Q&A slug -> 200 success (admin block removed)."""
         resp = client.put(
             f"/api/prerequisites/installations/{installation_id}/{slug}/answers/row-1",
             json={"answer": "value"},
             headers=_headers(admin_user),
         )
-        assert resp.status_code == status.HTTP_403_FORBIDDEN
-        assert _error_code(resp.json()) == "ANSWER_NOT_ALLOWED_FOR_ADMIN"
+        assert resp.status_code == status.HTTP_200_OK
+        body = resp.json()
+        assert body["success"] is True
+        assert body["slug"] == slug
 
-    def test_admin_put_answer_does_not_persist(
+    def test_admin_put_answer_persists(
         self, client, admin_user, member_user, installation_id
     ):
-        """A rejected admin PUT must not create an Answer_Record.
+        """An accepted admin PUT persists the row per installation (shared).
 
-        A member GET for the same installation + slug returns an empty map (the
-        admin write was refused before any row was created).
+        A member GET for the same installation + slug reflects the admin-written
+        value, confirming answers are shared per installation (no user scope).
         """
-        client.put(
+        put_resp = client.put(
             f"/api/prerequisites/installations/{installation_id}/cloudstore/answers/cs-1",
-            json={"answer": "admin-should-not-write"},
+            json={"answer": "admin-written"},
             headers=_headers(admin_user),
         )
+        assert put_resp.status_code == status.HTTP_200_OK
         get_resp = client.get(
             f"/api/prerequisites/installations/{installation_id}/cloudstore/answers",
             headers=_headers(member_user),
         )
         assert get_resp.status_code == status.HTTP_200_OK
-        assert get_resp.json()["answers"] == {}
+        assert get_resp.json()["answers"] == {"cs-1": "admin-written"}
 
 
 # ===========================================================================

@@ -17,9 +17,11 @@ family under an installation. These tests now exercise:
   404 carrying ``PREREQUISITE_SLUG_NOT_FOUND``; unknown installation ->
   ``INSTALLATION_NOT_FOUND``; empty-content default for a never-saved known
   static slug.
-- Authorization: admin-only static PUT (403 for member), member-only answer PUT
-  (403 for admin, code ``ANSWER_NOT_ALLOWED_FOR_ADMIN``), 401 for
+- Authorization: admin-only static PUT (403 for member), answer PUT allowed for
+  any authenticated user (administrators included, HTTP 200), 401 for
   unauthenticated / invalid-token reads.
+
+Updated by: .kiro/specs/opcp-installations-response-fields-editable (task 3.3)
 
 Validates: Requirements 9.3, 7.7 (and, unchanged in intent, 2.1-2.6, 7.1-7.5)
 """
@@ -485,17 +487,19 @@ class TestAuthorization:
         )
         assert resp.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_put_answer_forbidden_for_admin(
+    def test_put_answer_succeeds_for_admin(
         self, client, admin_user, installation_id
     ):
-        """Answer PUT is member-only -> 403 for an admin with the right code."""
+        """Answer PUT is allowed for any authenticated user -> 200 for an admin."""
         resp = client.put(
             _answer_path(installation_id, "cloudstore", "cs-1"),
             json={"answer": "x"},
             headers=_headers(admin_user),
         )
-        assert resp.status_code == status.HTTP_403_FORBIDDEN
-        assert _error_code(resp.json()) == "ANSWER_NOT_ALLOWED_FOR_ADMIN"
+        assert resp.status_code == status.HTTP_200_OK
+        body = resp.json()
+        assert body["success"] is True
+        assert body["slug"] == "cloudstore"
 
     def test_get_content_unauthenticated_401(self, client, installation_id):
         """No bearer token -> 401 on a read."""

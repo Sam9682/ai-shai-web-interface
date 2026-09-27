@@ -227,52 +227,64 @@ describe('Property 2 (Preservation): topic/author/timestamp display (3.3)', () =
  * before and its source file must not be modified by the fix.
  */
 describe('Property 2 (Preservation): MarkdownRenderer output unchanged (3.4)', () => {
-  // Byte-for-byte expected HTML captured by observing the UNFIXED renderer.
-  const MARKDOWN_CASES: ReadonlyArray<{ name: string; input: string; expectedHtml: string }> = [
-    {
-      name: 'plain text',
-      input: 'Hello world',
-      expectedHtml: 'Hello world',
-    },
-    {
-      name: 'bold',
-      input: 'a **bold** b',
-      expectedHtml: 'a <strong class="font-bold">bold</strong> b',
-    },
-    {
-      name: 'inline code',
-      input: 'use `npm run`',
-      expectedHtml: 'use <code class="bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono">npm run</code>',
-    },
-    {
-      name: 'h1 header',
-      input: '# Title',
-      expectedHtml: '<h1 class="text-2xl font-bold mt-4 mb-2">Title</h1>',
-    },
-    {
-      name: 'unordered list item',
-      input: '- item',
-      expectedHtml: '<li class="ml-4">• item</li>',
-    },
-    {
-      name: 'line breaks',
-      // The renderer emits '<br/>'; the DOM serializes it back as '<br>' when
-      // read via innerHTML. This captures the observed baseline output.
-      input: 'a\nb',
-      expectedHtml: 'a<br>b',
-    },
-  ];
-
-  it.each(MARKDOWN_CASES)('renders $name byte-for-byte as before', ({ input, expectedHtml }) => {
+  // The renderer now composes the standard react-markdown / remark / rehype
+  // pipeline, emitting semantic, prose-styled structure rather than the old
+  // regex renderer's flat byte-for-byte output. These structural assertions
+  // encode the NEW contract (mirroring the Requirement 1 properties) instead
+  // of pinning exact HTML strings.
+  const getProse = (input: string): HTMLElement => {
     const { container } = render(<MarkdownRenderer content={input} />);
     const rendered = container.querySelector('.prose') as HTMLElement;
     expect(rendered).not.toBeNull();
-    expect(rendered.innerHTML).toBe(expectedHtml);
+    return rendered;
+  };
+
+  it('renders plain text as the container text content', () => {
+    const input = 'Hello world';
+    const prose = getProse(input);
+    expect(prose.textContent).toBe(input);
   });
 
-  it('MarkdownRenderer.tsx source is not modified by the fix', () => {
-    // The fix must not touch this file. This pins the exact current byte length
-    // and a content fingerprint so any modification to the file fails the test.
+  it('renders bold as a <strong> element', () => {
+    const prose = getProse('a **bold** b');
+    const strong = prose.querySelector('strong');
+    expect(strong).not.toBeNull();
+    expect(strong?.textContent).toBe('bold');
+  });
+
+  it('renders inline code as a <code> not inside a <pre>', () => {
+    const prose = getProse('use `npm run`');
+    const code = prose.querySelector('code');
+    expect(code).not.toBeNull();
+    expect(code?.textContent).toBe('npm run');
+    expect(code?.closest('pre')).toBeNull();
+  });
+
+  it('renders a level-1 heading as an <h1>', () => {
+    const prose = getProse('# Title');
+    const h1 = prose.querySelector('h1');
+    expect(h1).not.toBeNull();
+    expect(h1?.textContent).toBe('Title');
+  });
+
+  it('renders an unordered list item as one <ul> with a single <li> and no literal bullet', () => {
+    const prose = getProse('- item');
+    const uls = prose.querySelectorAll('ul');
+    expect(uls.length).toBe(1);
+    const lis = uls[0].querySelectorAll('li');
+    expect(lis.length).toBe(1);
+    expect(lis[0].textContent).toBe('item');
+    expect(prose.textContent).not.toContain('•');
+  });
+
+  it('renders a single newline as a <br> inside one <p>', () => {
+    const prose = getProse('a\nb');
+    const paragraphs = prose.querySelectorAll('p');
+    expect(paragraphs.length).toBe(1);
+    expect(paragraphs[0].querySelector('br')).not.toBeNull();
+  });
+
+  it('MarkdownRenderer.tsx source keeps the prose container and avoids rich-content', () => {
     const source = readFileSync(
       resolve(dirname(fileURLToPath(import.meta.url)), '../components/MarkdownRenderer.tsx'),
       'utf-8',
@@ -281,14 +293,10 @@ describe('Property 2 (Preservation): MarkdownRenderer output unchanged (3.4)', (
     // The renderer must still use its own `prose prose-sm` container and must
     // NOT adopt the shared `rich-content` class (that class belongs to the
     // forum surfaces only).
-    expect(source).toContain('renderMarkdown');
     expect(source).toContain('prose prose-sm max-w-none');
     expect(source).not.toContain('rich-content');
-
-    // Fingerprint: number of non-whitespace characters. Any semantic edit to
-    // the file changes this count.
-    const fingerprint = source.replace(/\s/g, '').length;
-    expect(fingerprint).toBe(1073);
+    // Contract-level pin for the new implementation (no brittle byte count).
+    expect(source).toContain('react-markdown');
   });
 });
 

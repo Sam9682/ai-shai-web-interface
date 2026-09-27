@@ -1,0 +1,158 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration tests (BEFORE implementing the fix)": {
+      "status": "passed",
+      "failingExample": "Bug confirmed — all exploration tests failed on the UNFIXED code as intended.\n\nFRONTEND (QuestionAnswerForm.test.tsx), authenticated admin (isAuthenticated()===true, isAdmin()===true):\n- network-checklist / core-control-plane / cloudstore / vcf: every \"Réponse client\" input renders with readOnly=\"\" and disabled and the READONLY_FIELD_CLASS (cursor-not-allowed) style. Counterexample config: {sections:[{id:\"section-0\",rows:[{id:\"s0-r0\",questionPrimary:\"Question 0-0\",...}]}]}. Assertion error: expect(element).not.toHaveAttribute(\"readonly\") // received readonly=\"\".\n- VCF overlay: the mapped VCF row input (vcf_mgmt_network_name / row vcf-mgmt-network-name) is disabled/readOnly, so an admin cannot supply a value for buildVcfDomainJson to overlay; expect(input).not.toBeDisabled() fails.\n\nBACKEND (tests/test_prerequisites_answers_fix_check.py), authenticated administrator PUT to .../installations/{id}/{slug}/answers/{row_id}:\n- All four QA slugs return HTTP 403 with code ANSWER_NOT_ALLOWED_FOR_ADMIN instead of 200. Assertion error: assert 403 == 200. Value is not persisted (updated_by never set).\n\nRoot cause confirmed as hypothesized: frontend canAnswer = isAuthenticated() && !isAdmin() and backend get_answering_member raises 403 for UserRole.ADMINISTRATOR.",
+      "lastRunTimestamp": 1790541414279
+    },
+    "3.4 Verify the bug condition exploration tests now pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1790543404640
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration tests (BEFORE implementing the fix)": [
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541048004
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541056621
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541441318
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing the fix)": [
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541048146
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541445888
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541996605
+      }
+    ],
+    "3.1 Relax the frontend editable gate in `QuestionAnswerForm.tsx`": [
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541048305
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790542005254
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790542175289
+      }
+    ],
+    "3.2 Relax the backend authorization in `app/prerequisites/router.py`": [
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541048442
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790542178733
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790542294997
+      }
+    ],
+    "3.3 Update existing tests that encode the old admin-blocked behavior": [
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541048568
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790542298752
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790543222869
+      }
+    ],
+    "3.4 Verify the bug condition exploration tests now pass": [
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541048700
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790543227520
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790543424685
+      }
+    ],
+    "3.5 Verify the preservation tests still pass": [
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541048841
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790543428995
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790543749286
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790541048967
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790543754371
+      },
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790545978025
+      }
+    ],
+    "3. Fix: allow any authenticated user (administrators included) to edit and persist \"Réponse client\" values": [
+      {
+        "executionId": "a7de9ac3-5c4c-4bca-aaee-f6d7ef3a837c",
+        "chatSessionId": "sess_433d9a59-aedb-4986-9d5b-d11a07521860",
+        "timestamp": 1790543749553
+      }
+    ]
+  }
+}
