@@ -75,8 +75,8 @@ const MarkerLegend = () => {
  *
  * Each row renders two read-only question columns, a Mandatory/Optional marker,
  * the example value, a Comments/Details hint, and one editable Client answer.
- * The Client answer is editable only for authenticated non-admin members;
- * everyone else sees it read-only. Answers persist through
+ * The Client answer is editable for any authenticated user (administrators
+ * included); unauthenticated visitors see it read-only. Answers persist through
  * `prerequisitesService` (no localStorage).
  */
 export const QuestionAnswerForm = ({
@@ -87,7 +87,7 @@ export const QuestionAnswerForm = ({
   variant = 'card',
 }: QuestionAnswerFormProps) => {
   const { t } = useTranslation();
-  const canAnswer = authService.isAuthenticated() && !authService.isAdmin();
+  const canAnswer = authService.isAuthenticated();
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [errorRowIds, setErrorRowIds] = useState<Set<string>>(new Set());
   const [loadError, setLoadError] = useState(false);

@@ -30,7 +30,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import User, UserRole
+from app.models import User
 from app.models.installation import Installation
 from app.models.prerequisite import PrerequisiteContent, PrerequisiteAnswer
 from app.auth.dependencies import get_current_user
@@ -107,25 +107,11 @@ async def get_answering_member(
 ) -> User:
     """Authorize a user to save client answers.
 
-    Mirrors the frontend ``canAnswer`` gate: administrators manage static
-    content but do NOT submit client answers. Any authenticated non-admin user
-    may answer. This mirrors the ``get_verified_member`` dependency pattern.
-
-    Raises:
-        HTTPException 403: If the current user is an administrator
+    Mirrors the frontend ``canAnswer`` gate: any authenticated user
+    (administrators included) may submit client answers. The dependency on
+    ``get_current_user`` ensures unauthenticated or invalid-token requests are
+    rejected with 401 before reaching this authorization step.
     """
-    if current_user.role == UserRole.ADMINISTRATOR:
-        logger.warning(
-            f"Administrator {current_user.id} attempted to submit a client answer"
-        )
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=ErrorResponse.create(
-                code="ANSWER_NOT_ALLOWED_FOR_ADMIN",
-                message="Administrators cannot submit client answers",
-                details={"current_role": current_user.role.value},
-            ),
-        )
     return current_user
 
 
@@ -416,7 +402,7 @@ async def get_answers(
 @router.put(
     "/installations/{installation_id}/{slug}/answers/{row_id}",
     response_model=PrerequisiteUpdateResponse,
-    summary="Save a single client answer for an installation (members only)",
+    summary="Save a single client answer for an installation (any authenticated user)",
 )
 async def update_answer(
     installation_id: UUID,
@@ -429,8 +415,9 @@ async def update_answer(
     """Upsert the ``(installation_id, slug, row_id)`` answer row for a known qa slug.
 
     Answers are shared per installation (last-write-wins); ``updated_by`` records
-    the last editor. Unknown installations return ``INSTALLATION_NOT_FOUND``;
-    unknown slugs return ``PREREQUISITE_SLUG_NOT_FOUND`` (members only).
+    the last editor. Any authenticated user (administrators included) may save.
+    Unknown installations return ``INSTALLATION_NOT_FOUND``; unknown slugs return
+    ``PREREQUISITE_SLUG_NOT_FOUND``.
     """
     _get_installation_or_404(db, installation_id)
 
