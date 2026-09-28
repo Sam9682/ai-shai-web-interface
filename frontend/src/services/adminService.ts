@@ -57,6 +57,19 @@ export interface LoginLogParams {
   page_size?: number;
 }
 
+export type AIProviderId = 'shai' | 'kiro' | 'openai' | 'opcp_companion';
+
+export interface AIProviderStatus {
+  provider: AIProviderId;
+  name: string;
+  enabled: boolean;
+  always_enabled: boolean;
+}
+
+export interface AIProviderConfigResponse {
+  providers: AIProviderStatus[];
+}
+
 export const adminService = {
   async listUsers(): Promise<UserListResponse> {
     const response = await api.get('/admin/members');
@@ -99,5 +112,17 @@ export const adminService = {
       first_name: data.first_name,
       last_name: data.last_name,
     });
+  },
+
+  async getAIProviderConfig(): Promise<AIProviderConfigResponse> {
+    const response = await api.get('/admin/ai-providers');
+    return response.data;
+  },
+
+  async updateAIProviderConfig(
+    updates: { provider: AIProviderId; enabled: boolean }[]
+  ): Promise<AIProviderConfigResponse> {
+    const response = await api.put('/admin/ai-providers', { providers: updates });
+    return response.data;
   },
 };

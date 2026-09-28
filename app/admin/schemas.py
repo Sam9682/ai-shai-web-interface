@@ -244,3 +244,35 @@ class AnnouncementResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+
+class AIProviderStatus(BaseModel):
+    """Enablement status for a single AI Oracle provider."""
+    provider: str = Field(description="Canonical provider id (shai, kiro, openai, opcp_companion)")
+    name: str = Field(description="Human-readable provider name")
+    enabled: bool = Field(description="Whether the provider is offered in the AI Oracle dropdown")
+    always_enabled: bool = Field(
+        default=False,
+        description="True when the provider cannot be disabled (e.g. shai)"
+    )
+
+
+class AIProviderConfigResponse(BaseModel):
+    """List of AI provider enablement statuses."""
+    providers: list[AIProviderStatus]
+
+
+class AIProviderUpdateItem(BaseModel):
+    """Requested enablement change for one provider."""
+    provider: str = Field(
+        description="Provider id to update",
+        pattern="^(shai|kiro|openai|opcp_companion)$"
+    )
+    enabled: bool = Field(description="Desired enabled state")
+
+
+class AIProviderConfigUpdateRequest(BaseModel):
+    """Bulk update request for AI provider enablement flags."""
+    providers: list[AIProviderUpdateItem] = Field(
+        description="Enablement changes to apply"
+    )

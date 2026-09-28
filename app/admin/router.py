@@ -24,7 +24,15 @@ from app.admin.schemas import (
     ActivityReportResponse,
     ForumActivityStats,
     AnnouncementRequest,
-    AnnouncementResponse
+    AnnouncementResponse,
+    AIProviderStatus,
+    AIProviderConfigResponse,
+    AIProviderConfigUpdateRequest,
+)
+from app.oracle.provider_config import get_enabled_map, set_enabled_map
+from app.models.ai_provider_config import (
+    AI_PROVIDER_IDS,
+    ALWAYS_ENABLED_PROVIDER,
 )
 from app.auth.schemas import ErrorResponse
 from app.logging_config import logger
@@ -994,3 +1002,77 @@ async def get_login_logs(
         page=page,
         page_size=page_size
     )
+
+
+# Human-readable names for AI providers, kept in sync with the Oracle router
+# and the frontend dropdown labels.
+_AI_PROVIDER_NAMES = {
+    "shai": "Shai AI (OVH)",
+    "kiro": "Kiro AI (AWS)",
+    "openai": "ChatGPT (OpenAI)",
+    "opcp_companion": "OPCP Companion (RAG)",
+}
+
+
+def _build_provider_statuses(enabled_map: dict[str, bool]) -> list[AIProviderStatus]:
+    """Turn an enabled map into ordered AIProviderStatus items."""
+    return [
+        AIProviderStatus(
+            provider=provider_id,
+            name=_AI_PROVIDER_NAMES.get(provider_id, provider_id),
+            enabled=enabled_map.get(provider_id, False),
+            always_enabled=(provider_id == ALWAYS_ENABLED_PROVIDER),
+        )
+        for provider_id in AI_PROVIDER_IDS
+    ]
+
+
+@router.get(
+    "/ai-providers",
+    response_model=AIProviderConfigResponse,
+    status_code=status.HTTP_200_OK,
+    responses={
+        403: {"description": "Insufficient permissions - administrator role required"},
+    },
+)
+async def get_ai_provider_config(
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> AIProviderConfigResponse:
+    """Return the enablement status of every AI Oracle provider.
+
+    Administrator only. ``shai`` is always reported as enabled and flagged
+    ``always_enabled`` so the UI can lock its toggle on.
+    """
+    enabled_map = get_enabled_map(db)
+    return AIProviderConfigResponse(providers=_build_provider_statuses(enabled_map))
+
+
+@router.put(
+    "/ai-providers",
+    response_model=AIProviderConfigResponse,
+    status_code=status.HTTP_200_OK,
+    responses={
+        403: {"description": "Insufficient permissions - administrator role required"},
+        400: {"description": "Invalid provider id"},
+    },
+)
+@limiter.limit("30/hour")
+async def update_ai_provider_config(
+    request: Request,
+    update_data: AIProviderConfigUpdateRequest,
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> AIProviderConfigResponse:
+    """Enable or disable AI Oracle providers.
+
+    Administrator only. ``shai`` cannot be disabled: any attempt to disable it
+    is ignored and it stays enabled. Disabled providers disappear from the AI
+    Oracle dropdown.
+    """
+    updates = {item.provider: item.enabled for item in update_data.providers}
+    enabled_map = set_enabled_map(db, updates, updated_by=current_user.id)
+    logger.info(
+        f"Administrator {current_user.id} updated AI provider config: {updates}"
+    )
+    return AIProviderConfigResponse(providers=_build_provider_statuses(enabled_map))

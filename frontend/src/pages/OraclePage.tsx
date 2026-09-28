@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { oracleService } from '../services/oracleService';
-import type { Source } from '../services/oracleService';
+import type { Source, AvailableProvider, AIProviderId } from '../services/oracleService';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { SourcesList } from '../components/SourcesList';
 import { useTranslation } from '../hooks/useLanguage';
@@ -20,10 +20,41 @@ export const OraclePage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [provider, setProvider] = useState<'shai' | 'kiro' | 'openai' | 'opcp_companion'>('shai');
+  const [provider, setProvider] = useState<AIProviderId>('shai');
+  const [enabledProviders, setEnabledProviders] = useState<AvailableProvider[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Load which AI providers are enabled by the administrator. Only enabled
+  // providers are shown in the dropdown; disabled ones are absent entirely.
+  useEffect(() => {
+    let cancelled = false;
+    oracleService
+      .getAvailableProviders()
+      .then((data) => {
+        if (cancelled) return;
+        const enabled = (data.providers || []).filter((p) => p.enabled);
+        setEnabledProviders(enabled);
+        // If the currently selected provider is not enabled, fall back to the
+        // first enabled one (shai is always enabled).
+        setProvider((current) =>
+          enabled.some((p) => p.id === current)
+            ? current
+            : (enabled[0]?.id ?? 'shai')
+        );
+      })
+      .catch((error) => {
+        console.error('Failed to load AI providers:', error);
+        // Fall back to shai only, which is always available.
+        setEnabledProviders([
+          { id: 'shai', name: 'Shai AI (OVH)', description: '', default: true, enabled: true },
+        ]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     setMessages([
@@ -166,14 +197,13 @@ export const OraclePage = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('page.oracle.provider.label')}</label>
             <select
               value={provider}
-              onChange={(e) => setProvider(e.target.value as any)}
+              onChange={(e) => setProvider(e.target.value as AIProviderId)}
               className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent"
               disabled={loading}
             >
-              <option value="shai">Shai AI (OVH)</option>
-              <option value="kiro">Kiro AI (AWS)</option>
-              <option value="openai">ChatGPT (OpenAI)</option>
-              <option value="opcp_companion">OPCP Companion (RAG)</option>
+              {enabledProviders.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
             </select>
           </div>
 

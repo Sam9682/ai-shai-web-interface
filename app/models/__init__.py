@@ -17,6 +17,12 @@ from app.models.user_deletion import ScheduledUserDeletion
 from app.models.prerequisite import PrerequisiteContent, PrerequisiteAnswer
 from app.models.installation import Installation
 from app.models.credential_config import CredentialConfig
+from app.models.ai_provider_config import (
+    AIProviderConfig,
+    AI_PROVIDER_IDS,
+    ALWAYS_ENABLED_PROVIDER,
+    DEFAULT_PROVIDER_ENABLED,
+)
 
 __all__ = [
     "User", "UserRole",
@@ -31,6 +37,10 @@ __all__ = [
     "ScheduledUserDeletion",
     "PrerequisiteContent", "PrerequisiteAnswer",
     "Installation",
-    "CredentialConfig"
+    "CredentialConfig",
+    "AIProviderConfig",
+    "AI_PROVIDER_IDS",
+    "ALWAYS_ENABLED_PROVIDER",
+    "DEFAULT_PROVIDER_ENABLED",
 ]
 from app.models.oracle import OracleQuery

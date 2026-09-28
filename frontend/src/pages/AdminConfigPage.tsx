@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { adminService, type LoginLogEntry } from '../services/adminService';
+import { adminService, type LoginLogEntry, type AIProviderStatus, type AIProviderId } from '../services/adminService';
 import { useTranslation } from '../hooks/useLanguage';
 
 const PAGE_SIZE = 50;
@@ -24,6 +24,48 @@ export const AdminConfigPage = () => {
   const [page, setPage] = useState(1);
   const [actionFilter, setActionFilter] = useState<string>('');
   const [loading, setLoading] = useState(true);
+
+  // AI provider enablement state
+  const [providers, setProviders] = useState<AIProviderStatus[]>([]);
+  const [savingProviders, setSavingProviders] = useState(false);
+  const [providerFeedback, setProviderFeedback] = useState<'saved' | 'error' | null>(null);
+
+  const loadProviders = useCallback(async () => {
+    try {
+      const response = await adminService.getAIProviderConfig();
+      setProviders(response.providers);
+    } catch (error) {
+      console.error('Failed to load AI providers:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadProviders();
+  }, [loadProviders]);
+
+  const toggleProvider = (id: AIProviderId, enabled: boolean) => {
+    setProviderFeedback(null);
+    setProviders((prev) =>
+      prev.map((p) => (p.provider === id ? { ...p, enabled } : p))
+    );
+  };
+
+  const saveProviders = async () => {
+    try {
+      setSavingProviders(true);
+      setProviderFeedback(null);
+      const response = await adminService.updateAIProviderConfig(
+        providers.map((p) => ({ provider: p.provider, enabled: p.enabled }))
+      );
+      setProviders(response.providers);
+      setProviderFeedback('saved');
+    } catch (error) {
+      console.error('Failed to save AI providers:', error);
+      setProviderFeedback('error');
+    } finally {
+      setSavingProviders(false);
+    }
+  };
 
   const loadLogs = useCallback(async () => {
     try {
@@ -57,6 +99,55 @@ export const AdminConfigPage = () => {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-[#000E9C]">{t('page.adminConfig.title')}</h1>
+      </div>
+
+      {/* AI provider enablement */}
+      <div className="card p-4 mb-8">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">{t('page.adminConfig.aiProviders.title')}</h2>
+          <p className="text-sm text-gray-500">{t('page.adminConfig.aiProviders.subtitle')}</p>
+        </div>
+
+        <ul className="divide-y divide-gray-100">
+          {providers.map((p) => (
+            <li key={p.provider} className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-900">{p.name}</span>
+                {p.always_enabled && (
+                  <span className="px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                    {t('page.adminConfig.aiProviders.alwaysOn')}
+                  </span>
+                )}
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={p.enabled}
+                  disabled={p.always_enabled}
+                  onChange={(e) => toggleProvider(p.provider, e.target.checked)}
+                />
+                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-[#000E9C] peer-disabled:opacity-50 peer-disabled:cursor-not-allowed after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
+              </label>
+            </li>
+          ))}
+        </ul>
+
+        <div className="flex items-center gap-3 mt-4">
+          <button
+            onClick={saveProviders}
+            disabled={savingProviders}
+            className="px-4 py-2 bg-[#000E9C] text-white text-sm font-medium rounded hover:bg-[#4949FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {savingProviders ? t('page.adminConfig.aiProviders.saving') : t('page.adminConfig.aiProviders.save')}
+          </button>
+          {providerFeedback === 'saved' && (
+            <span className="text-sm text-green-600">{t('page.adminConfig.aiProviders.saved')}</span>
+          )}
+          {providerFeedback === 'error' && (
+            <span className="text-sm text-red-600">{t('page.adminConfig.aiProviders.error')}</span>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">

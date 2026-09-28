@@ -46,6 +46,20 @@ interface ForumAnalysisResponse {
   confidence: number;
 }
 
+export type AIProviderId = 'shai' | 'kiro' | 'openai' | 'opcp_companion';
+
+export interface AvailableProvider {
+  id: AIProviderId;
+  name: string;
+  description: string;
+  default: boolean;
+  enabled: boolean;
+}
+
+interface AvailableProvidersResponse {
+  providers: AvailableProvider[];
+}
+
 class OracleService {
   async askOracle(query: OracleQuery): Promise<OracleResponse> {
     const response = await api.post('/oracle/ask', query);
@@ -138,7 +152,7 @@ class OracleService {
     return response.data;
   }
 
-  async getAvailableProviders() {
+  async getAvailableProviders(): Promise<AvailableProvidersResponse> {
     const response = await api.get('/oracle/providers');
     return response.data;
   }

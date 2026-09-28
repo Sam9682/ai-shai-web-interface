@@ -17,6 +17,7 @@ from app.oracle.schemas import (
     ForumAnalysisResponse
 )
 from app.oracle.service import OracleService
+from app.oracle.provider_config import get_enabled_map, is_provider_enabled
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from app.middleware.rate_limit import limiter
@@ -40,10 +41,17 @@ async def ask_oracle(
     - Historique sauvegardé pour les utilisateurs connectés
     - Rate limited à 10 requêtes par minute
     """
+    if not is_provider_enabled(db, query.ai_provider):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Le fournisseur d'IA '{query.ai_provider}' n'est pas activé"
+        )
     try:
         user_id = current_user.id if current_user else None
         response = await OracleService.ask_oracle(db, query, user_id)
         return response
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -67,6 +75,12 @@ async def ask_oracle_stream(
     - Historique sauvegardé pour les utilisateurs connectés
     - Rate limited à 10 requêtes par minute
     """
+    if not is_provider_enabled(db, query.ai_provider):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Le fournisseur d'IA '{query.ai_provider}' n'est pas activé"
+        )
+
     async def event_generator():
         try:
             user_id = current_user.id if current_user else None
@@ -178,35 +192,47 @@ async def analyze_forum(
 
 
 @router.get("/providers")
-async def get_available_providers():
+async def get_available_providers(db: Session = Depends(get_db)):
     """
     Liste des fournisseurs d'IA disponibles
+
+    Chaque fournisseur porte un indicateur ``enabled`` reflétant la
+    configuration administrateur (table ``ai_provider_config``). Le front
+    n'affiche dans le menu déroulant que les fournisseurs activés. Le
+    fournisseur ``shai`` est toujours activé.
     """
-    return {
-        "providers": [
-            {
-                "id": "shai",
-                "name": "Shai AI",
-                "description": "IA d'OVH Cloud (recommandé)",
-                "default": True
-            },
-            {
-                "id": "kiro",
-                "name": "Kiro AI",
-                "description": "IA locale via kiro-cli (inclus dans le container)",
-                "default": False
-            },
-            {
-                "id": "openai",
-                "name": "OpenAI",
-                "description": "GPT-4 d'OpenAI",
-                "default": False
-            },
-            {
-                "id": "opcp_companion",
-                "name": "OPCP Companion",
-                "description": "Assistant RAG basé sur la base documentaire OPCP (pgvector + OVH)",
-                "default": False
-            }
-        ]
-    }
+    enabled_map = get_enabled_map(db)
+
+    provider_meta = [
+        {
+            "id": "shai",
+            "name": "Shai AI",
+            "description": "IA d'OVH Cloud (recommandé)",
+            "default": True,
+        },
+        {
+            "id": "kiro",
+            "name": "Kiro AI",
+            "description": "IA locale via kiro-cli (inclus dans le container)",
+            "default": False,
+        },
+        {
+            "id": "openai",
+            "name": "OpenAI",
+            "description": "GPT-4 d'OpenAI",
+            "default": False,
+        },
+        {
+            "id": "opcp_companion",
+            "name": "OPCP Companion",
+            "description": "Assistant RAG basé sur la base documentaire OPCP (pgvector + OVH)",
+            "default": False,
+        },
+    ]
+
+    providers = [
+        {**meta, "enabled": enabled_map.get(meta["id"], False)}
+        for meta in provider_meta
+    ]
+
+    return {"providers": providers}
