@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import User, Document, UserRole, AuditLog
-from app.models.document import DocumentCategory, AccessLevel
+from app.models.document import DocumentCategory, AccessLevel, classify_extension
 from app.forum.dependencies import get_administrator
 from app.auth.dependencies import get_current_user_optional
 from app.documents.schemas import (
@@ -46,37 +46,36 @@ router = APIRouter(prefix="/api/documents", tags=["documents"])
 )
 async def upload_document(
     file: Annotated[UploadFile, File(description="Document file to upload")],
-    category: Annotated[DocumentCategory, Form(description="Document category")],
     access_level: Annotated[AccessLevel, Form(description="Access level for document")],
     current_user: User = Depends(get_administrator),
     db: Session = Depends(get_db)
 ) -> DocumentUploadResponse:
     """Upload a document (admin only)
-    
-    Validates Requirements 5.2:
-    - Administrator uploads document
+
+    Validates Requirements 2.4, 3.4, 3.5, 4.3, 5.2:
+    - Administrator uploads document (category is server-assigned)
+    - System derives the category from the file extension
     - System stores file and creates metadata
-    - Assigns category and access permissions
-    
+    - Assigns access permissions
+
     Args:
         file: Uploaded file
-        category: Document category
         access_level: Access level for document
         current_user: Authenticated administrator
         db: Database session
-    
+
     Returns:
         DocumentUploadResponse with document details
-    
+
     Raises:
-        HTTPException 400: If file validation fails
+        HTTPException 400: If the extension is unknown or file validation fails
         HTTPException 403: If user is not administrator
     """
     logger.info(
         f"Document upload initiated by user {current_user.id}: "
-        f"filename={file.filename}, category={category}, access_level={access_level}"
+        f"filename={file.filename}, access_level={access_level}"
     )
-    
+
     # Read file content
     try:
         file_content = await file.read()
@@ -91,13 +90,30 @@ async def upload_document(
                 details={"error": str(e)}
             )
         )
-    
-    # Validate file
+
+    # Classify the category from the file extension (server is the sole
+    # authority on category). Reject unmapped extensions without persisting
+    # anything (Requirement 2.4).
+    category = classify_extension(file.filename or "")
+    if category is None:
+        logger.warning(
+            f"Rejected upload with unmapped extension: {file.filename}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=ErrorResponse.create(
+                code="INVALID_FILE_TYPE",
+                message="File extension is not a supported category",
+                details={"filename": file.filename}
+            )
+        )
+
+    # Validate file (size + extension allow-list, Requirement 4.3)
     is_valid, error_message = storage_service.validate_file(
         file_size=file_size,
-        mime_type=file.content_type or "application/octet-stream"
+        filename=file.filename or ""
     )
-    
+
     if not is_valid:
         logger.warning(
             f"File validation failed for {file.filename}: {error_message}"

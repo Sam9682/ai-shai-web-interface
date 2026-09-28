@@ -2,17 +2,42 @@
 import enum
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 from sqlalchemy import String, Integer, DateTime, Enum as SQLEnum, ForeignKey, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
 
 class DocumentCategory(str, enum.Enum):
-    """Document category enumeration"""
-    STATUTES = "statutes"
-    MINUTES = "minutes"
-    FINANCIAL_REPORTS = "financial_reports"
-    OTHER = "other"
+    """Document category enumeration (extension-derived)."""
+    DOCUMENTS = "documents"
+    SCRIPTS = "scripts"
+    LINKS = "links"
+
+
+# Category_Mapping: file extension (lowercase, no dot) -> DocumentCategory
+CATEGORY_MAPPING: dict[str, DocumentCategory] = {
+    "pdf": DocumentCategory.DOCUMENTS,
+    "doc": DocumentCategory.DOCUMENTS,
+    "docx": DocumentCategory.DOCUMENTS,
+    "md": DocumentCategory.DOCUMENTS,
+    "txt": DocumentCategory.DOCUMENTS,
+    "sh": DocumentCategory.SCRIPTS,
+    "sql": DocumentCategory.SCRIPTS,
+    "py": DocumentCategory.SCRIPTS,
+    "links": DocumentCategory.LINKS,
+}
+
+
+def classify_extension(filename: str) -> "DocumentCategory | None":
+    """Return the category for a filename's extension, or None if unmapped.
+
+    The extension is taken from the last suffix, lowercased, dot stripped.
+    Returns None when the extension is absent or not in CATEGORY_MAPPING so
+    the caller can reject the upload.
+    """
+    ext = Path(filename).suffix.lower().lstrip(".")
+    return CATEGORY_MAPPING.get(ext) if ext else None
 
 
 class AccessLevel(str, enum.Enum):

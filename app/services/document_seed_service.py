@@ -26,15 +26,6 @@ MIME_BY_EXTENSION: dict[str, str] = {
 }
 DEFAULT_MIME = "application/octet-stream"
 
-# Ordered category keyword rules (Requirement 4). First match wins => deterministic.
-# Keywords are matched case-insensitively as substrings of the filename.
-CATEGORY_KEYWORDS: list[tuple[DocumentCategory, tuple[str, ...]]] = [
-    (DocumentCategory.STATUTES, ("statut",)),
-    (DocumentCategory.MINUTES, ("minute", "compte")),
-    (DocumentCategory.FINANCIAL_REPORTS, ("financ", "report", "rapport")),
-]
-
-
 def resolve_mime_type(filename: str) -> str:
     """Resolve MIME type from the file extension (Requirement 3.1-3.4)."""
     ext = Path(filename).suffix.lower()
@@ -42,15 +33,13 @@ def resolve_mime_type(filename: str) -> str:
 
 
 def infer_category(filename: str) -> DocumentCategory:
-    """Infer DocumentCategory from filename keywords (Requirement 4.1-4.4).
+    """Infer DocumentCategory for a seeded file.
 
-    Deterministic precedence: statutes > minutes > financial_reports > other.
+    The category set is now extension-derived and collapses to the single
+    ``documents`` category for seeded repository docs (consistent with the
+    Category_Migration remapping all legacy rows to ``documents``).
     """
-    lowered = filename.lower()
-    for category, keywords in CATEGORY_KEYWORDS:
-        if any(keyword in lowered for keyword in keywords):
-            return category
-    return DocumentCategory.OTHER
+    return DocumentCategory.DOCUMENTS
 
 
 def compute_hash(content: bytes) -> str:

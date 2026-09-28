@@ -27,7 +27,7 @@ def test_document_model_creation(db_session, test_user):
         original_name="Test Document.pdf",
         mime_type="application/pdf",
         size=1024000,
-        category=DocumentCategory.STATUTES,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=test_user.id,
         download_count=0
@@ -43,7 +43,7 @@ def test_document_model_creation(db_session, test_user):
     assert document.original_name == "Test Document.pdf"
     assert document.mime_type == "application/pdf"
     assert document.size == 1024000
-    assert document.category == DocumentCategory.STATUTES
+    assert document.category == DocumentCategory.DOCUMENTS
     assert document.access_level == AccessLevel.MEMBERS
     assert document.uploaded_by == test_user.id
     assert document.download_count == 0
@@ -56,14 +56,13 @@ def test_document_model_creation(db_session, test_user):
 def test_document_categories(db_session, test_user):
     """Test all document categories
     
-    Validates Requirement 5.4:
-    - Documents can be categorized as statutes, minutes, financial_reports, or other
+    Validates Requirement 1.1:
+    - Documents can be categorized as documents, scripts, or links
     """
     categories = [
-        DocumentCategory.STATUTES,
-        DocumentCategory.MINUTES,
-        DocumentCategory.FINANCIAL_REPORTS,
-        DocumentCategory.OTHER
+        DocumentCategory.DOCUMENTS,
+        DocumentCategory.SCRIPTS,
+        DocumentCategory.LINKS,
     ]
     
     for category in categories:
@@ -83,7 +82,7 @@ def test_document_categories(db_session, test_user):
     
     # Verify all categories were created
     documents = db_session.query(Document).all()
-    assert len(documents) == 4
+    assert len(documents) == 3
     assert set(doc.category for doc in documents) == set(categories)
 
 
@@ -105,7 +104,7 @@ def test_document_access_levels(db_session, test_user):
             original_name=f"Test {access_level.value}.pdf",
             mime_type="application/pdf",
             size=1024,
-            category=DocumentCategory.OTHER,
+            category=DocumentCategory.DOCUMENTS,
             access_level=access_level,
             uploaded_by=test_user.id,
             download_count=0
@@ -131,7 +130,7 @@ def test_document_uploader_relationship(db_session, test_user):
         original_name="Test.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.OTHER,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=test_user.id,
         download_count=0
@@ -158,7 +157,7 @@ def test_document_download_count_increment(db_session, test_user):
         original_name="Test.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.OTHER,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=test_user.id,
         download_count=0
@@ -190,21 +189,21 @@ def test_document_query_by_category(db_session, test_user):
     """
     # Create documents with different categories
     doc1 = Document(
-        filename="statutes.pdf",
-        original_name="Statutes.pdf",
+        filename="handbook.pdf",
+        original_name="Handbook.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.STATUTES,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=test_user.id,
         download_count=0
     )
     doc2 = Document(
-        filename="minutes.pdf",
-        original_name="Minutes.pdf",
-        mime_type="application/pdf",
+        filename="deploy.sh",
+        original_name="Deploy.sh",
+        mime_type="application/x-sh",
         size=1024,
-        category=DocumentCategory.MINUTES,
+        category=DocumentCategory.SCRIPTS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=test_user.id,
         download_count=0
@@ -214,12 +213,12 @@ def test_document_query_by_category(db_session, test_user):
     db_session.commit()
     
     # Query by category
-    statutes = db_session.query(Document).filter(
-        Document.category == DocumentCategory.STATUTES
+    documents = db_session.query(Document).filter(
+        Document.category == DocumentCategory.DOCUMENTS
     ).all()
     
-    assert len(statutes) == 1
-    assert statutes[0].filename == "statutes.pdf"
+    assert len(documents) == 1
+    assert documents[0].filename == "handbook.pdf"
 
 
 def test_document_query_by_access_level(db_session, test_user):
@@ -234,7 +233,7 @@ def test_document_query_by_access_level(db_session, test_user):
         original_name="Public.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.OTHER,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.PUBLIC,
         uploaded_by=test_user.id,
         download_count=0
@@ -244,7 +243,7 @@ def test_document_query_by_access_level(db_session, test_user):
         original_name="Members.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.OTHER,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=test_user.id,
         download_count=0
@@ -254,7 +253,7 @@ def test_document_query_by_access_level(db_session, test_user):
         original_name="Admin.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.OTHER,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.ADMINISTRATORS,
         uploaded_by=test_user.id,
         download_count=0

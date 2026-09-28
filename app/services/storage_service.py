@@ -30,6 +30,17 @@ ALLOWED_MIME_TYPES = {
     'image/webp',
 }
 
+# Allowed file extensions (lowercase, no dot) for document uploads.
+# Validation is extension-based because browsers report inconsistent or empty
+# MIME types for text/script formats (.md, .sh, .sql, .py). This set is
+# intentionally the same key set as CATEGORY_MAPPING in app.models.document, so
+# any file that classifies to a category is also accepted by storage.
+ALLOWED_EXTENSIONS = {
+    "pdf", "doc", "docx", "md", "txt",   # documents
+    "sh", "sql", "py",                    # scripts
+    "links",                              # links
+}
+
 
 class StorageService:
     """Service for file storage operations
@@ -48,16 +59,21 @@ class StorageService:
         self.upload_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"Storage service initialized with upload dir: {self.upload_dir}")
     
-    def validate_file(self, file_size: int, mime_type: str) -> Tuple[bool, Optional[str]]:
-        """Validate file size and mime type
-        
-        Validates Requirements 5.6:
-        - Supports common file formats (PDF, DOCX, XLSX, images)
-        
+    def validate_file(self, file_size: int, filename: str) -> Tuple[bool, Optional[str]]:
+        """Validate file size and extension
+
+        Validates Requirements 4.1, 4.3:
+        - Accepts the supported document/script/link file types by extension
+        - Rejects oversized files and unsupported extensions
+
+        Size is checked first, then the file extension is checked against
+        ALLOWED_EXTENSIONS. Extension-based validation is used because browsers
+        report unreliable MIME types for text/script formats.
+
         Args:
             file_size: Size of file in bytes
-            mime_type: MIME type of file
-        
+            filename: Original filename (used to derive the extension)
+
         Returns:
             Tuple of (is_valid, error_message)
         """
@@ -65,11 +81,12 @@ class StorageService:
         if file_size > self.max_size:
             max_mb = self.max_size / (1024 * 1024)
             return False, f"File size exceeds maximum allowed size of {max_mb}MB"
-        
-        # Check mime type
-        if mime_type not in ALLOWED_MIME_TYPES:
-            return False, f"File type {mime_type} is not supported"
-        
+
+        # Check file extension against the allow-list
+        ext = Path(filename).suffix.lower().lstrip(".")
+        if ext not in ALLOWED_EXTENSIONS:
+            return False, f"File type .{ext} is not supported"
+
         return True, None
     
     def save_file(self, file_content: bytes, original_filename: str) -> Tuple[str, str]:

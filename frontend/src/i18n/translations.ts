@@ -346,10 +346,12 @@ export const fr: TranslationDictionary = {
   'page.adminEvents.error.update': 'Échec de la mise à jour de l\'événement.',
 
   // ---- Documents page ----
-  'page.documents.category.statutes': 'Statuts',
-  'page.documents.category.minutes': 'Comptes rendus',
-  'page.documents.category.financialReports': 'Rapports financiers',
-  'page.documents.category.other': 'Autre',
+  'page.documents.category.documents': 'Documents',
+  'page.documents.category.scripts': 'Scripts',
+  'page.documents.category.links': 'Liens',
+  'page.documents.upload.label': 'Téléverser un document',
+  'page.documents.upload.button': 'Téléverser',
+  'page.documents.error.upload': 'Échec du téléversement du document.',
   'page.documents.title': 'Documents',
   'page.documents.search.placeholder': 'Rechercher un document…',
   'page.documents.search.ariaLabel': 'Rechercher un document',
@@ -758,10 +760,12 @@ export const en: TranslationDictionary = {
   'page.adminEvents.error.update': 'Failed to update the event.',
 
   // ---- Documents page ----
-  'page.documents.category.statutes': 'Statutes',
-  'page.documents.category.minutes': 'Minutes',
-  'page.documents.category.financialReports': 'Financial reports',
-  'page.documents.category.other': 'Other',
+  'page.documents.category.documents': 'Documents',
+  'page.documents.category.scripts': 'Scripts',
+  'page.documents.category.links': 'Links',
+  'page.documents.upload.label': 'Upload a document',
+  'page.documents.upload.button': 'Upload',
+  'page.documents.error.upload': 'Failed to upload the document.',
   'page.documents.title': 'Documents',
   'page.documents.search.placeholder': 'Search for a document…',
   'page.documents.search.ariaLabel': 'Search for a document',

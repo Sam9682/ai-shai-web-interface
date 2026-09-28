@@ -80,7 +80,7 @@ def sample_document(db_session, admin_user):
         original_name="test_document.pdf",
         mime_type="application/pdf",
         size=len(pdf_content),
-        category=DocumentCategory.STATUTES,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=admin_user.id,
         download_count=0
@@ -197,7 +197,7 @@ def test_delete_document_file_missing_from_storage(client, admin_user, admin_hea
         original_name="missing.pdf",
         mime_type="application/pdf",
         size=1000,
-        category=DocumentCategory.OTHER,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=admin_user.id,
         download_count=0

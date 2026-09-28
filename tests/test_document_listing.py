@@ -96,7 +96,7 @@ def sample_documents(db_session, admin_user):
             original_name="Public Statute.pdf",
             mime_type="application/pdf",
             size=1024000,
-            category=DocumentCategory.STATUTES,
+            category=DocumentCategory.DOCUMENTS,
             access_level=AccessLevel.PUBLIC,
             uploaded_by=admin_user.id,
             download_count=0
@@ -106,7 +106,7 @@ def sample_documents(db_session, admin_user):
             original_name="Public Minutes.pdf",
             mime_type="application/pdf",
             size=2048000,
-            category=DocumentCategory.MINUTES,
+            category=DocumentCategory.SCRIPTS,
             access_level=AccessLevel.PUBLIC,
             uploaded_by=admin_user.id,
             download_count=5
@@ -117,7 +117,7 @@ def sample_documents(db_session, admin_user):
             original_name="Members Financial Report.pdf",
             mime_type="application/pdf",
             size=3072000,
-            category=DocumentCategory.FINANCIAL_REPORTS,
+            category=DocumentCategory.LINKS,
             access_level=AccessLevel.MEMBERS,
             uploaded_by=admin_user.id,
             download_count=10
@@ -127,7 +127,7 @@ def sample_documents(db_session, admin_user):
             original_name="Members Document.pdf",
             mime_type="application/pdf",
             size=1536000,
-            category=DocumentCategory.OTHER,
+            category=DocumentCategory.DOCUMENTS,
             access_level=AccessLevel.MEMBERS,
             uploaded_by=admin_user.id,
             download_count=3
@@ -138,7 +138,7 @@ def sample_documents(db_session, admin_user):
             original_name="Admin Confidential.pdf",
             mime_type="application/pdf",
             size=4096000,
-            category=DocumentCategory.FINANCIAL_REPORTS,
+            category=DocumentCategory.LINKS,
             access_level=AccessLevel.ADMINISTRATORS,
             uploaded_by=admin_user.id,
             download_count=1
@@ -148,7 +148,7 @@ def sample_documents(db_session, admin_user):
             original_name="Admin Board Minutes.pdf",
             mime_type="application/pdf",
             size=2560000,
-            category=DocumentCategory.MINUTES,
+            category=DocumentCategory.SCRIPTS,
             access_level=AccessLevel.ADMINISTRATORS,
             uploaded_by=admin_user.id,
             download_count=2
@@ -245,79 +245,61 @@ def test_list_documents_admin_sees_all(client, admin_headers, sample_documents):
     }
 
 
-def test_list_documents_filter_by_category_statutes(client, admin_headers, sample_documents):
-    """Test filtering documents by category (statutes)
-    
+def test_list_documents_filter_by_category_documents(client, admin_headers, sample_documents):
+    """Test filtering documents by category (documents)
+
     Validates Requirement 5.4: Documents organized by categories
     """
     response = client.get(
         "/api/documents",
-        params={"category": DocumentCategory.STATUTES.value},
+        params={"category": DocumentCategory.DOCUMENTS.value},
         headers=admin_headers
     )
-    
+
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
-    
-    assert data["total"] == 1
-    assert data["documents"][0]["category"] == DocumentCategory.STATUTES.value
-    assert data["documents"][0]["original_name"] == "Public Statute.pdf"
+
+    assert data["total"] == 2  # Public Statute + Members Document
+    for doc in data["documents"]:
+        assert doc["category"] == DocumentCategory.DOCUMENTS.value
 
 
-def test_list_documents_filter_by_category_minutes(client, admin_headers, sample_documents):
-    """Test filtering documents by category (minutes)
-    
+def test_list_documents_filter_by_category_scripts(client, admin_headers, sample_documents):
+    """Test filtering documents by category (scripts)
+
     Validates Requirement 5.4: Documents organized by categories
     """
     response = client.get(
         "/api/documents",
-        params={"category": DocumentCategory.MINUTES.value},
+        params={"category": DocumentCategory.SCRIPTS.value},
         headers=admin_headers
     )
-    
+
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
-    
+
     assert data["total"] == 2  # Public Minutes + Admin Board Minutes
     for doc in data["documents"]:
-        assert doc["category"] == DocumentCategory.MINUTES.value
+        assert doc["category"] == DocumentCategory.SCRIPTS.value
 
 
-def test_list_documents_filter_by_category_financial_reports(client, admin_headers, sample_documents):
-    """Test filtering documents by category (financial reports)
-    
+def test_list_documents_filter_by_category_links(client, admin_headers, sample_documents):
+    """Test filtering documents by category (links)
+
     Validates Requirement 5.4: Documents organized by categories
     """
     response = client.get(
         "/api/documents",
-        params={"category": DocumentCategory.FINANCIAL_REPORTS.value},
+        params={"category": DocumentCategory.LINKS.value},
         headers=admin_headers
     )
-    
+
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
-    
+
     assert data["total"] == 2  # Members Financial Report + Admin Confidential
     for doc in data["documents"]:
-        assert doc["category"] == DocumentCategory.FINANCIAL_REPORTS.value
-
-
-def test_list_documents_filter_by_category_other(client, admin_headers, sample_documents):
-    """Test filtering documents by category (other)
-    
-    Validates Requirement 5.4: Documents organized by categories
-    """
-    response = client.get(
-        "/api/documents",
-        params={"category": DocumentCategory.OTHER.value},
-        headers=admin_headers
-    )
-    
-    assert response.status_code == status.HTTP_200_OK
-    data = response.json()
-    
-    assert data["total"] == 1
-    assert data["documents"][0]["category"] == DocumentCategory.OTHER.value
+        assert doc["category"] == DocumentCategory.LINKS.value
 
 
 def test_list_documents_filter_category_with_access_control(client, member_headers, sample_documents):
@@ -325,17 +307,17 @@ def test_list_documents_filter_category_with_access_control(client, member_heade
     
     Validates Requirements 5.1, 5.4: Category filtering respects access control
     """
-    # Member requests financial reports - should only see members document, not admin
+    # Member requests links - should only see the members document, not the admin one
     response = client.get(
         "/api/documents",
-        params={"category": DocumentCategory.FINANCIAL_REPORTS.value},
+        params={"category": DocumentCategory.LINKS.value},
         headers=member_headers
     )
     
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     
-    assert data["total"] == 1  # Only Members Financial Report
+    assert data["total"] == 1  # Only Members Financial Report (LINKS, members)
     assert data["documents"][0]["original_name"] == "Members Financial Report.pdf"
     assert data["documents"][0]["access_level"] == AccessLevel.MEMBERS.value
 
@@ -351,7 +333,7 @@ def test_list_documents_empty_result(client, admin_headers, db_session, admin_us
         original_name="Test.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.STATUTES,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.PUBLIC,
         uploaded_by=admin_user.id,
         download_count=0
@@ -362,7 +344,7 @@ def test_list_documents_empty_result(client, admin_headers, db_session, admin_us
     # Request a different category
     response = client.get(
         "/api/documents",
-        params={"category": DocumentCategory.MINUTES.value},
+        params={"category": DocumentCategory.SCRIPTS.value},
         headers=admin_headers
     )
     
@@ -437,7 +419,7 @@ def test_list_documents_ordered_by_created_at_desc(client, admin_headers, db_ses
         original_name="Old Document.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.OTHER,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.PUBLIC,
         uploaded_by=admin_user.id,
         download_count=0
@@ -452,7 +434,7 @@ def test_list_documents_ordered_by_created_at_desc(client, admin_headers, db_ses
         original_name="New Document.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.OTHER,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.PUBLIC,
         uploaded_by=admin_user.id,
         download_count=0
@@ -481,8 +463,10 @@ def test_list_documents_invalid_category(client, admin_headers):
         headers=admin_headers
     )
     
-    # FastAPI should return 422 for invalid enum value
-    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    # The app's validation handler maps request validation errors to a
+    # structured 400 response.
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json()["error"]["code"] == "VALIDATION_ERROR"
 
 
 def test_list_documents_unauthenticated_with_category_filter(client, sample_documents):
@@ -492,13 +476,14 @@ def test_list_documents_unauthenticated_with_category_filter(client, sample_docu
     """
     response = client.get(
         "/api/documents",
-        params={"category": DocumentCategory.STATUTES.value}
+        params={"category": DocumentCategory.DOCUMENTS.value}
     )
     
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     
-    # Should only see public statutes
+    # Anonymous sees only the single public DOCUMENTS item (Public Statute);
+    # the members-only DOCUMENTS item is filtered out.
     assert data["total"] == 1
-    assert data["documents"][0]["category"] == DocumentCategory.STATUTES.value
+    assert data["documents"][0]["category"] == DocumentCategory.DOCUMENTS.value
     assert data["documents"][0]["access_level"] == AccessLevel.PUBLIC.value

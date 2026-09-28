@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { documentService, type Document, type DocumentCategory } from '../services/documentService';
+import { authService } from '../services/authService';
 import { useTranslation } from '../hooks/useLanguage';
 
 /** Maps each document category to its translation key (resolved at render time). */
 const CATEGORY_LABEL_KEYS: Record<DocumentCategory, string> = {
-  statutes: 'page.documents.category.statutes',
-  minutes: 'page.documents.category.minutes',
-  financial_reports: 'page.documents.category.financialReports',
-  other: 'page.documents.category.other',
+  documents: 'page.documents.category.documents',
+  scripts: 'page.documents.category.scripts',
+  links: 'page.documents.category.links',
 };
-const CATEGORY_ORDER: DocumentCategory[] = ['statutes', 'minutes', 'financial_reports', 'other'];
+const CATEGORY_ORDER: DocumentCategory[] = ['documents', 'scripts', 'links'];
 
 export function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} o`;
@@ -29,16 +29,27 @@ export const DocumentsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isAdmin = authService.isAdmin(); // Requirement 3.1, 3.2
+
+  /** Fetch the document list from the API. Shared by the initial effect and post-upload refresh. */
+  const loadDocuments = async (): Promise<void> => {
+    try {
+      const res = await documentService.listDocuments();
+      setDocuments(res.documents);
+    } catch {
+      setError(t('page.documents.error.load'));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    let active = true;
-    documentService
-      .listDocuments()
-      .then((res) => { if (active) setDocuments(res.documents); })
-      .catch(() => { if (active) setError(t('page.documents.error.load')); })
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
+    void loadDocuments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filtered = useMemo(() => {
@@ -49,7 +60,7 @@ export const DocumentsPage = () => {
 
   const grouped = useMemo(() => {
     const map: Record<DocumentCategory, Document[]> = {
-      statutes: [], minutes: [], financial_reports: [], other: [],
+      documents: [], scripts: [], links: [],
     };
     for (const doc of filtered) map[doc.category].push(doc);   // Requirement 8.1 partition
     return map;
@@ -62,6 +73,23 @@ export const DocumentsPage = () => {
     } catch {
       setDownloadError(`${t('page.documents.error.downloadPrefix')}${doc.original_name}${t('page.documents.error.downloadSuffix')}`); // Requirement 10.3
     }
+  };
+
+  const handleUpload = async (file: File) => {
+    try {
+      setUploadError(null);
+      await documentService.uploadDocument(file);  // Requirement 3.3
+      await loadDocuments();                        // Requirement 5.1: refresh so item appears
+    } catch {
+      setUploadError(t('page.documents.error.upload'));
+    }
+  };
+
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) void handleUpload(file);
+    // Reset so selecting the same file again re-triggers change.
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   if (loading) return <div className="card p-6 text-gray-600">{t('page.documents.loading')}</div>;
@@ -83,6 +111,40 @@ export const DocumentsPage = () => {
           className="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent"
         />
       </div>
+
+      {isAdmin && (
+        <div className="mb-5">
+          <label
+            htmlFor="document-upload-input"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            {t('page.documents.upload.label')}
+          </label>
+          <div className="flex items-center gap-3">
+            <input
+              id="document-upload-input"
+              ref={fileInputRef}
+              type="file"
+              onChange={onFileChange}
+              aria-label={t('page.documents.upload.label')}
+              className="text-sm text-gray-700"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
+            >
+              {t('page.documents.upload.button')}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {uploadError && (
+        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
+          {uploadError}
+        </div>
+      )}
 
       {downloadError && (
         <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">

@@ -1,0 +1,322 @@
+{
+  "pbtResults": {
+    "2.1 Write property test for accepted types": {
+      "status": "passed",
+      "lastRunTimestamp": 1790608278309
+    },
+    "2.2 Write property test for storage-path invariance": {
+      "status": "passed",
+      "lastRunTimestamp": 1790608279311
+    },
+    "5.1 Write property test for migration remap": {
+      "status": "passed",
+      "lastRunTimestamp": 1790609419912
+    }
+  },
+  "executionHistory": {
+    "4. Checkpoint - backend classification, storage, and API": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607792995
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790609154247
+      }
+    ],
+    "9. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607793116
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790609450014
+      }
+    ],
+    "1.1 Write property test for extension classification": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607809316
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608144314
+      }
+    ],
+    "1.2 Write property test for unknown-extension classification": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607810812
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608144454
+      }
+    ],
+    "2.1 Write property test for accepted types": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607812124
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608378195
+      }
+    ],
+    "2.2 Write property test for storage-path invariance": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607813093
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608379561
+      }
+    ],
+    "3.1 Write property test for unknown-extension upload rejection": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607814464
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790609147265
+      }
+    ],
+    "3.2 Write integration test for admin-only upload authorization": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607815915
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790609148618
+      }
+    ],
+    "3.3 Write property test for role-based listing filter": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607817409
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790609150018
+      }
+    ],
+    "5.1 Write property test for migration remap": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607818721
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790609447166
+      }
+    ],
+    "6.1 Write unit test for `uploadDocument` wiring": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607820114
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608149005
+      }
+    ],
+    "7.1 Write unit test for category ordering": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607821511
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608382306
+      }
+    ],
+    "7.2 Write unit test for admin-only upload control rendering": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607822469
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608383823
+      }
+    ],
+    "7.3 Write unit test for post-upload refresh and download wiring": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607823917
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608385838
+      }
+    ],
+    "8.1 Write property test for category label coverage": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607825249
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608151831
+      }
+    ],
+    "1. Redefine `DocumentCategory` enum, add `CATEGORY_MAPPING` and `classify_extension`": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607832068
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607857575
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608144529
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608144595
+      }
+    ],
+    "2. Extend storage validation to the new file types": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607832524
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608159072
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608376665
+      }
+    ],
+    "3. Update upload router and schemas for server-side classification": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607833708
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608391015
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790609147433
+      }
+    ],
+    "5. Add the Alembic category remap migration": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607834937
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790609166433
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790609447302
+      }
+    ],
+    "6. Add `uploadDocument` and update category type in `documentService.ts`": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607836335
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607859105
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608149165
+      }
+    ],
+    "7. Update category constants and add admin-only upload control in `DocumentsPage.tsx`": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607837901
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608160637
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608380904
+      }
+    ],
+    "8. Add and replace i18n keys in `translations.ts`": [
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607839427
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790607860345
+      },
+      {
+        "executionId": "c5ed7f40-a50a-4402-a020-61ad82decab2",
+        "chatSessionId": "sess_f72f6f56-e858-421d-813b-44a08557e708",
+        "timestamp": 1790608152029
+      }
+    ]
+  }
+}

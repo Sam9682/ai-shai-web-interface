@@ -109,7 +109,7 @@ def public_document(db_session, admin_user, sample_file_content):
         original_name="Public Test Document.pdf",
         mime_type="application/pdf",
         size=len(sample_file_content),
-        category=DocumentCategory.STATUTES,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.PUBLIC,
         uploaded_by=admin_user.id,
         download_count=0
@@ -139,7 +139,7 @@ def members_document(db_session, admin_user, sample_file_content):
         original_name="Members Test Document.pdf",
         mime_type="application/pdf",
         size=len(sample_file_content),
-        category=DocumentCategory.FINANCIAL_REPORTS,
+        category=DocumentCategory.LINKS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=admin_user.id,
         download_count=0
@@ -169,7 +169,7 @@ def admin_document(db_session, admin_user, sample_file_content):
         original_name="Admin Test Document.pdf",
         mime_type="application/pdf",
         size=len(sample_file_content),
-        category=DocumentCategory.MINUTES,
+        category=DocumentCategory.SCRIPTS,
         access_level=AccessLevel.ADMINISTRATORS,
         uploaded_by=admin_user.id,
         download_count=0
@@ -424,7 +424,7 @@ def test_download_document_file_not_found(client, admin_headers, db_session, adm
         original_name="Missing File.pdf",
         mime_type="application/pdf",
         size=1024,
-        category=DocumentCategory.OTHER,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.PUBLIC,
         uploaded_by=admin_user.id,
         download_count=0

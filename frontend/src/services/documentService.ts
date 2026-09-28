@@ -1,6 +1,6 @@
 import api from './api';
 
-export type DocumentCategory = 'statutes' | 'minutes' | 'financial_reports' | 'other';
+export type DocumentCategory = 'documents' | 'scripts' | 'links';
 export type AccessLevel = 'public' | 'members' | 'administrators';
 
 export interface Document {
@@ -26,6 +26,14 @@ export const documentService = {
   async listDocuments(): Promise<DocumentListResponse> {
     const response = await api.get<DocumentListResponse>('/documents');
     return response.data;
+  },
+
+  async uploadDocument(file: File, accessLevel: AccessLevel = 'public'): Promise<Document> {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('access_level', accessLevel);
+    const response = await api.post<{ document: Document }>('/documents/upload', form);
+    return response.data.document;
   },
 
   async downloadDocument(id: string, originalName: string): Promise<void> {

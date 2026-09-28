@@ -1,9 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, cleanup, within, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fc from 'fast-check';
 import { DocumentsPage, formatSize } from './DocumentsPage';
 import { documentService, type Document, type DocumentCategory } from '../services/documentService';
+import { authService } from '../services/authService';
 import { LanguageProvider } from '../hooks/useLanguage';
 
 // DocumentsPage consumes the translation context, so it must render inside a
@@ -17,27 +18,36 @@ function renderPage() {
   );
 }
 
-// Mock the service module: both methods are vi.fn()s whose behaviour is set per test.
+// Mock the service module: methods are vi.fn()s whose behaviour is set per test.
 vi.mock('../services/documentService', () => ({
   documentService: {
     listDocuments: vi.fn(),
     downloadDocument: vi.fn(),
+    uploadDocument: vi.fn(),
+  },
+}));
+
+// Mock the auth service so we can flip isAdmin() per test.
+vi.mock('../services/authService', () => ({
+  authService: {
+    isAdmin: vi.fn(),
   },
 }));
 
 const mockedListDocuments = vi.mocked(documentService.listDocuments);
 const mockedDownloadDocument = vi.mocked(documentService.downloadDocument);
+const mockedUploadDocument = vi.mocked(documentService.uploadDocument);
+const mockedIsAdmin = vi.mocked(authService.isAdmin);
 
 // Minimum property-test iterations mandated by the design (>= 100).
 const NUM_RUNS = 100;
 
-const CATEGORIES: DocumentCategory[] = ['statutes', 'minutes', 'financial_reports', 'other'];
+const CATEGORIES: DocumentCategory[] = ['documents', 'scripts', 'links'];
 
 const CATEGORY_LABELS: Record<DocumentCategory, string> = {
-  statutes: 'Statuts',
-  minutes: 'Comptes rendus',
-  financial_reports: 'Rapports financiers',
-  other: 'Autre',
+  documents: 'Documents',
+  scripts: 'Scripts',
+  links: 'Liens',
 };
 
 // Build a full Document record from the fields that matter to the page.
@@ -117,12 +127,13 @@ beforeEach(() => {
   // Sensible default so a test that forgets to configure still resolves cleanly.
   mockedListDocuments.mockResolvedValue({ documents: [], total: 0 });
   mockedDownloadDocument.mockResolvedValue(undefined);
+  mockedUploadDocument.mockResolvedValue(makeDocument('uploaded', 'uploaded.pdf', 1, 'documents'));
+  // Default: non-admin unless a test opts in.
+  mockedIsAdmin.mockReturnValue(false);
 });
 
 // -----------------------------------------------------------------------------
-// Task 7.2
-// Feature: docs-auto-seed-and-documents-page
-// Property 7: Grouping is a partition by category.
+// Task 7.2 (docs-auto-seed): grouping is a partition by category.
 // Validates: Requirements 8.1
 // -----------------------------------------------------------------------------
 describe('Property 7: grouping is a partition by category', () => {
@@ -135,8 +146,6 @@ describe('Property 7: grouping is a partition by category', () => {
         renderPage();
         await waitForLoaded();
 
-        // Collect, per category, the set of document ids rendered under that
-        // category's section. Item ids are read from a data attribute keyed by id.
         const seenIds = new Set<string>();
 
         for (const category of CATEGORIES) {
@@ -144,26 +153,21 @@ describe('Property 7: grouping is a partition by category', () => {
           const section = sectionForCategory(category);
 
           if (expectedDocs.length === 0) {
-            // Only non-empty sections render.
             expect(section).toBeNull();
             continue;
           }
 
           expect(section).not.toBeNull();
           const items = within(section as HTMLElement).getAllByRole('listitem');
-          // Exactly the docs of this category appear under this section.
           expect(items).toHaveLength(expectedDocs.length);
 
-          // Each expected document name shows up exactly once within the section.
           for (const doc of expectedDocs) {
             expect(within(section as HTMLElement).getAllByText(doc.original_name).length).toBeGreaterThan(0);
-            // Track that this id has been accounted for exactly once across sections.
             expect(seenIds.has(doc.id)).toBe(false);
             seenIds.add(doc.id);
           }
         }
 
-        // Union of all sections equals the full displayed set (disjoint + complete).
         expect(seenIds.size).toBe(documents.length);
         cleanup();
       }),
@@ -173,9 +177,125 @@ describe('Property 7: grouping is a partition by category', () => {
 });
 
 // -----------------------------------------------------------------------------
-// Task 7.3
-// Feature: docs-auto-seed-and-documents-page
-// Property 8: Displayed item content.
+// Task 7.1 — Unit: CATEGORY_ORDER drives grouped rendering order.
+// Validates: Requirement 1.2
+// -----------------------------------------------------------------------------
+describe('Task 7.1: category order drives grouped rendering', () => {
+  it('renders category sections in the order documents, scripts, links', async () => {
+    const docs = [
+      makeDocument('l1', 'a.links', 10, 'links'),
+      makeDocument('s1', 'b.sh', 20, 'scripts'),
+      makeDocument('d1', 'c.pdf', 30, 'documents'),
+    ];
+    mockedListDocuments.mockResolvedValue({ documents: docs, total: docs.length });
+
+    renderPage();
+    await waitForLoaded();
+
+    const headings = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
+    expect(headings).toEqual(['Documents', 'Scripts', 'Liens']);
+  });
+});
+
+// -----------------------------------------------------------------------------
+// Task 7.2 — Unit: upload control renders only for admins.
+// Validates: Requirements 3.1, 3.2
+// -----------------------------------------------------------------------------
+describe('Task 7.2: upload control admin gating', () => {
+  it('renders the upload control when isAdmin() is true', async () => {
+    mockedIsAdmin.mockReturnValue(true);
+    mockedListDocuments.mockResolvedValue({ documents: [], total: 0 });
+
+    renderPage();
+    await waitForLoaded();
+
+    expect(screen.getByLabelText('Téléverser un document')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Téléverser' })).toBeInTheDocument();
+  });
+
+  it('hides the upload control when isAdmin() is false', async () => {
+    mockedIsAdmin.mockReturnValue(false);
+    mockedListDocuments.mockResolvedValue({ documents: [], total: 0 });
+
+    renderPage();
+    await waitForLoaded();
+
+    expect(screen.queryByLabelText('Téléverser un document')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Téléverser' })).toBeNull();
+  });
+});
+
+// -----------------------------------------------------------------------------
+// Task 7.3 — Unit: successful upload refreshes list; item appears under its
+// category; download requests GET /api/documents/{id}/download.
+// Validates: Requirements 5.1, 5.2
+// -----------------------------------------------------------------------------
+describe('Task 7.3: upload refresh and download wiring', () => {
+  it('refreshes the list after a successful upload and shows the new item under its category', async () => {
+    mockedIsAdmin.mockReturnValue(true);
+    const uploaded = makeDocument('new-1', 'guide.md', 100, 'documents');
+
+    // First load: empty. After upload: contains the new document.
+    mockedListDocuments
+      .mockResolvedValueOnce({ documents: [], total: 0 })
+      .mockResolvedValueOnce({ documents: [uploaded], total: 1 });
+    mockedUploadDocument.mockResolvedValue(uploaded);
+
+    renderPage();
+    await waitForLoaded();
+
+    const file = new File(['# hello'], 'guide.md', { type: 'text/markdown' });
+    const input = screen.getByLabelText('Téléverser un document') as HTMLInputElement;
+    await userEvent.upload(input, file);
+
+    await waitFor(() => {
+      expect(mockedUploadDocument).toHaveBeenCalledTimes(1);
+      expect(mockedUploadDocument).toHaveBeenCalledWith(file);
+    });
+
+    // List refreshed twice: initial mount + post-upload.
+    await waitFor(() => expect(mockedListDocuments).toHaveBeenCalledTimes(2));
+
+    // New item appears under the Documents category.
+    const section = sectionForCategory('documents');
+    expect(section).not.toBeNull();
+    expect(within(section as HTMLElement).getByText('guide.md')).toBeInTheDocument();
+  });
+
+  it('requests the download for the selected item', async () => {
+    mockedIsAdmin.mockReturnValue(false);
+    const doc = makeDocument('doc-9', 'notes.txt', 512, 'documents');
+    mockedListDocuments.mockResolvedValue({ documents: [doc], total: 1 });
+    mockedDownloadDocument.mockResolvedValue(undefined);
+
+    renderPage();
+    await waitForLoaded();
+
+    const button = await screen.findByRole('button', { name: 'Télécharger' });
+    await userEvent.click(button);
+
+    expect(mockedDownloadDocument).toHaveBeenCalledTimes(1);
+    expect(mockedDownloadDocument).toHaveBeenCalledWith('doc-9', 'notes.txt');
+  });
+
+  it('shows an upload error banner when the upload fails', async () => {
+    mockedIsAdmin.mockReturnValue(true);
+    mockedListDocuments.mockResolvedValue({ documents: [], total: 0 });
+    mockedUploadDocument.mockRejectedValue(new Error('rejected'));
+
+    renderPage();
+    await waitForLoaded();
+
+    const file = new File(['x'], 'bad.exe', { type: 'application/octet-stream' });
+    const input = screen.getByLabelText('Téléverser un document') as HTMLInputElement;
+    await userEvent.upload(input, file);
+
+    expect(await screen.findByText('Échec du téléversement du document.')).toBeInTheDocument();
+  });
+});
+
+// -----------------------------------------------------------------------------
+// Displayed item content.
 // Validates: Requirements 8.2, 8.3
 // -----------------------------------------------------------------------------
 describe('Property 8: displayed item content', () => {
@@ -188,14 +308,11 @@ describe('Property 8: displayed item content', () => {
         renderPage();
         await waitForLoaded();
 
-        // One "Télécharger" button per document.
         const downloadButtons = screen.queryAllByRole('button', { name: 'Télécharger' });
         expect(downloadButtons).toHaveLength(documents.length);
 
         for (const doc of documents) {
-          // Name present.
           expect(screen.getAllByText(doc.original_name).length).toBeGreaterThan(0);
-          // Formatted size present.
           expect(screen.getAllByText(formatSize(doc.size)).length).toBeGreaterThan(0);
         }
 
@@ -207,9 +324,7 @@ describe('Property 8: displayed item content', () => {
 });
 
 // -----------------------------------------------------------------------------
-// Task 7.4
-// Feature: docs-auto-seed-and-documents-page
-// Property 9: Search filter subset and membership.
+// Search filter subset and membership.
 // Validates: Requirements 9.1, 9.2
 // -----------------------------------------------------------------------------
 describe('Property 9: search filter subset and membership', () => {
@@ -222,11 +337,8 @@ describe('Property 9: search filter subset and membership', () => {
         renderPage();
         const input = await screen.findByLabelText('Rechercher un document');
 
-        // Set the input value directly. fireEvent.change avoids userEvent's
-        // keyboard-descriptor parsing of characters like "[" or "{".
         fireEvent.change(input, { target: { value: query } });
 
-        // Expected set: page trims + lowercases the query before matching.
         const normalized = query.trim().toLowerCase();
         const expected =
           normalized === ''
@@ -238,7 +350,6 @@ describe('Property 9: search filter subset and membership', () => {
           expect(buttons).toHaveLength(expected.length);
         });
 
-        // Displayed set is a subset of the full list and equals the expected matches.
         const expectedIds = new Set(expected.map((d) => d.id));
         for (const doc of documents) {
           const shown = screen.queryAllByText(doc.original_name).length > 0;
@@ -255,13 +366,9 @@ describe('Property 9: search filter subset and membership', () => {
 });
 
 // -----------------------------------------------------------------------------
-// Task 7.5 — Unit / example tests
-// Validates: Requirements 7.3, 10.1, 10.3
-// -----------------------------------------------------------------------------
-
-// Feature: docs-auto-seed-and-documents-page
-// Property: formatSize returns a defined, non-empty string with a unit.
+// formatSize
 // Validates: Requirements 8.2
+// -----------------------------------------------------------------------------
 describe('formatSize', () => {
   it('returns a non-empty string containing a size unit for any non-negative integer', () => {
     fc.assert(
@@ -269,7 +376,6 @@ describe('formatSize', () => {
         const result = formatSize(bytes);
         expect(typeof result).toBe('string');
         expect(result.length).toBeGreaterThan(0);
-        // Must contain one of the known units.
         expect(/\b(o|Ko|Mo|Go)\b/.test(result)).toBe(true);
       }),
       { numRuns: NUM_RUNS },
@@ -288,7 +394,7 @@ describe('DocumentsPage — mount and interactions', () => {
   });
 
   it('calls downloadDocument with the document id and original_name when Télécharger is clicked', async () => {
-    const doc = makeDocument('doc-1', 'statuts.pdf', 2048, 'statutes');
+    const doc = makeDocument('doc-1', 'statuts.pdf', 2048, 'documents');
     mockedListDocuments.mockResolvedValue({ documents: [doc], total: 1 });
     mockedDownloadDocument.mockResolvedValue(undefined);
 
@@ -311,7 +417,7 @@ describe('DocumentsPage — mount and interactions', () => {
   });
 
   it('shows a French per-download error message when the download fails', async () => {
-    const doc = makeDocument('doc-1', 'rapport.pdf', 1024, 'financial_reports');
+    const doc = makeDocument('doc-1', 'rapport.pdf', 1024, 'documents');
     mockedListDocuments.mockResolvedValue({ documents: [doc], total: 1 });
     mockedDownloadDocument.mockRejectedValue(new Error('denied'));
 
@@ -325,4 +431,8 @@ describe('DocumentsPage — mount and interactions', () => {
       await screen.findByText('Échec du téléchargement de « rapport.pdf »'),
     ).toBeInTheDocument();
   });
+});
+
+afterEach(() => {
+  cleanup();
 });

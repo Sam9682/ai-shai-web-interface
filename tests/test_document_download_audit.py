@@ -83,7 +83,7 @@ def public_document(db_session, admin_user, sample_file_content):
         original_name="Public Test Document.pdf",
         mime_type="application/pdf",
         size=len(sample_file_content),
-        category=DocumentCategory.STATUTES,
+        category=DocumentCategory.DOCUMENTS,
         access_level=AccessLevel.PUBLIC,
         uploaded_by=admin_user.id,
         download_count=0
@@ -113,7 +113,7 @@ def members_document(db_session, admin_user, sample_file_content):
         original_name="Members Test Document.pdf",
         mime_type="application/pdf",
         size=len(sample_file_content),
-        category=DocumentCategory.FINANCIAL_REPORTS,
+        category=DocumentCategory.LINKS,
         access_level=AccessLevel.MEMBERS,
         uploaded_by=admin_user.id,
         download_count=0
@@ -323,7 +323,7 @@ def test_download_audit_log_includes_all_required_fields(client, member_headers,
     # Verify details values are correct
     assert audit_log.details["document_id"] == str(members_document.id)
     assert audit_log.details["document_name"] == members_document.original_name
-    assert audit_log.details["category"] == DocumentCategory.FINANCIAL_REPORTS.value
+    assert audit_log.details["category"] == DocumentCategory.LINKS.value
     assert audit_log.details["access_level"] == AccessLevel.MEMBERS.value
     assert audit_log.details["user_role"] == "member"
 
@@ -373,7 +373,7 @@ def test_access_denied_download_does_not_create_audit_log(client, member_headers
         original_name="Admin Only Document.pdf",
         mime_type="application/pdf",
         size=len(sample_file_content),
-        category=DocumentCategory.MINUTES,
+        category=DocumentCategory.SCRIPTS,
         access_level=AccessLevel.ADMINISTRATORS,
         uploaded_by=admin_user.id,
         download_count=0

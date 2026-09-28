@@ -11,8 +11,11 @@ from app.models.document import DocumentCategory, AccessLevel
 
 
 class DocumentUploadRequest(BaseModel):
-    """Request schema for document upload"""
-    category: DocumentCategory = Field(..., description="Document category")
+    """Request schema for document upload.
+
+    The category is no longer client-supplied; the server derives it from the
+    uploaded file's extension. Only the access level is provided by the client.
+    """
     access_level: AccessLevel = Field(..., description="Access level for document")
 
 
