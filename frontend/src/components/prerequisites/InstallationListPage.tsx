@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useLanguage';
 import { authService } from '../../services/authService';
@@ -6,6 +6,12 @@ import {
   prerequisitesService,
   type Installation,
 } from '../../services/prerequisitesService';
+import {
+  exportInstallation,
+  generateArchitectureDocument,
+  importInstallation,
+  parseImportFile,
+} from '../../services/installationExport';
 import { DeleteInstallationDialog } from './DeleteInstallationDialog';
 
 /**
@@ -49,6 +55,7 @@ const FIELD_CLASS =
 export const InstallationListPage = () => {
   const { t } = useTranslation();
   const isAdmin = authService.isAdmin();
+  const isAuthenticated = authService.isAuthenticated();
 
   const [installations, setInstallations] = useState<Installation[]>([]);
   const [status, setStatus] = useState<LoadStatus>('loading');
@@ -65,6 +72,110 @@ export const InstallationListPage = () => {
   // Delete seam — task 8.2 replaces the inline confirmation with a dialog.
   const [pendingDelete, setPendingDelete] = useState<Installation | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  // Export / Import / Generate-document state. `busyId` marks the row whose
+  // action is in flight (disables that row's buttons); `rowStatus` carries a
+  // transient success/error message shown under the row.
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [rowStatus, setRowStatus] = useState<
+    Record<string, { kind: 'success' | 'error'; message: string }>
+  >({});
+  // Hidden file input reused for every row; `importTarget` remembers which
+  // installation the chosen file should be applied to.
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [importTarget, setImportTarget] = useState<Installation | null>(null);
+
+  const showRowStatus = (
+    id: string,
+    kind: 'success' | 'error',
+    message: string,
+  ) => {
+    setRowStatus((prev) => ({ ...prev, [id]: { kind, message } }));
+  };
+
+  const clearStatus = (id: string) => {
+    setRowStatus((prev) => {
+      if (!prev[id]) return prev;
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  };
+
+  const handleExport = async (installation: Installation) => {
+    setBusyId(installation.id);
+    clearStatus(installation.id);
+    try {
+      await exportInstallation(installation);
+      showRowStatus(installation.id, 'success', t('prereq.installations.export.success'));
+    } catch {
+      showRowStatus(installation.id, 'error', t('prereq.installations.export.error'));
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleGenerateDoc = async (installation: Installation) => {
+    setBusyId(installation.id);
+    clearStatus(installation.id);
+    try {
+      await generateArchitectureDocument(installation);
+      showRowStatus(installation.id, 'success', t('prereq.installations.generateDoc.success'));
+    } catch {
+      showRowStatus(installation.id, 'error', t('prereq.installations.generateDoc.error'));
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  // Import is a two-step flow: clicking the button opens the OS file picker for
+  // the target row; selecting a file runs the import against that row.
+  const handleImportClick = (installation: Installation) => {
+    clearStatus(installation.id);
+    setImportTarget(installation);
+    // Reset the input so re-selecting the same file still fires `onChange`.
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    fileInputRef.current?.click();
+  };
+
+  const handleImportFileChosen = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    const target = importTarget;
+    setImportTarget(null);
+    if (!file || !target) return;
+
+    setBusyId(target.id);
+    clearStatus(target.id);
+    try {
+      const raw = await file.text();
+      const parsed = parseImportFile(raw);
+      const result = await importInstallation(target.id, parsed);
+      if (result.failed > 0) {
+        showRowStatus(
+          target.id,
+          'error',
+          t('prereq.installations.import.partial')
+            .replace('{written}', String(result.written))
+            .replace('{failed}', String(result.failed)),
+        );
+      } else {
+        showRowStatus(
+          target.id,
+          'success',
+          t('prereq.installations.import.success').replace(
+            '{written}',
+            String(result.written),
+          ),
+        );
+      }
+    } catch {
+      showRowStatus(target.id, 'error', t('prereq.installations.import.error'));
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   const load = useCallback(async () => {
     setStatus('loading');
@@ -240,30 +351,75 @@ export const InstallationListPage = () => {
                 key={installation.id}
                 className="flex flex-wrap items-center justify-between gap-3 py-3"
               >
-                {isEditing ? (
-                  <input
-                    type="text"
-                    aria-label={t('prereq.installations.edit.label')}
-                    value={editingName}
-                    onChange={(e) => setEditingName(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') void saveEdit(installation.id);
-                      if (e.key === 'Escape') cancelEdit();
-                    }}
-                    className={`${FIELD_CLASS} max-w-xs`}
-                  />
-                ) : (
-                  <Link
-                    to={installationRoute(installation.id)}
-                    className="text-sm font-medium text-[#000E9C] hover:text-[#4949FF] hover:underline"
-                  >
-                    {installation.project_name}
-                  </Link>
-                )}
+                <div className="flex min-w-0 flex-col gap-1">
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      aria-label={t('prereq.installations.edit.label')}
+                      value={editingName}
+                      onChange={(e) => setEditingName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') void saveEdit(installation.id);
+                        if (e.key === 'Escape') cancelEdit();
+                      }}
+                      className={`${FIELD_CLASS} max-w-xs`}
+                    />
+                  ) : (
+                    <Link
+                      to={installationRoute(installation.id)}
+                      className="text-sm font-medium text-[#000E9C] hover:text-[#4949FF] hover:underline"
+                    >
+                      {installation.project_name}
+                    </Link>
+                  )}
+                  {rowStatus[installation.id] && (
+                    <p
+                      role={rowStatus[installation.id].kind === 'error' ? 'alert' : 'status'}
+                      className={
+                        rowStatus[installation.id].kind === 'error'
+                          ? 'text-xs text-red-600'
+                          : 'text-xs text-green-700'
+                      }
+                    >
+                      {rowStatus[installation.id].message}
+                    </p>
+                  )}
+                </div>
 
-                {isAdmin && (
-                  <div className="flex items-center gap-2">
-                    {isEditing ? (
+                <div className="flex flex-wrap items-center gap-2">
+                  {!isEditing && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => void handleExport(installation)}
+                        disabled={busyId === installation.id}
+                        className={SECONDARY_BUTTON}
+                      >
+                        {t('prereq.installations.export.button')}
+                      </button>
+                      {isAuthenticated && (
+                        <button
+                          type="button"
+                          onClick={() => handleImportClick(installation)}
+                          disabled={busyId === installation.id}
+                          className={SECONDARY_BUTTON}
+                        >
+                          {t('prereq.installations.import.button')}
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => void handleGenerateDoc(installation)}
+                        disabled={busyId === installation.id}
+                        className={SECONDARY_BUTTON}
+                      >
+                        {t('prereq.installations.generateDoc.button')}
+                      </button>
+                    </>
+                  )}
+
+                  {isAdmin &&
+                    (isEditing ? (
                       <>
                         <button
                           type="button"
@@ -297,9 +453,8 @@ export const InstallationListPage = () => {
                           {t('prereq.installations.delete.button')}
                         </button>
                       </>
-                    )}
-                  </div>
-                )}
+                    ))}
+                </div>
               </li>
             );
           })}
@@ -320,6 +475,20 @@ export const InstallationListPage = () => {
           onCancel={cancelDelete}
         />
       )}
+
+      {/*
+        Hidden file input reused by every row's "Import values" button. The
+        chosen JSON is applied to `importTarget` (set on button click) via
+        handleImportFileChosen.
+      */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/json,.json"
+        className="hidden"
+        aria-hidden="true"
+        onChange={(e) => void handleImportFileChosen(e)}
+      />
     </div>
   );
 };

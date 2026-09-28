@@ -110,6 +110,11 @@ export const Layout = ({ children }: LayoutProps) => {
                       {t('nav.users')}
                     </Link>
                   )}
+                  {isAdmin && (
+                    <Link to="/admin/configuration" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
+                      {t('nav.config')}
+                    </Link>
+                  )}
                 </>
               )}
             </div>
@@ -237,6 +242,11 @@ export const Layout = ({ children }: LayoutProps) => {
                 {isAdmin && (
                   <Link to="/admin/users" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
                     {t('nav.users')}
+                  </Link>
+                )}
+                {isAdmin && (
+                  <Link to="/admin/configuration" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
+                    {t('nav.config')}
                   </Link>
                 )}
               </>

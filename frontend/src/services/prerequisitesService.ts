@@ -20,6 +20,42 @@ export interface Installation {
   updated_at: string;
 }
 
+/**
+ * OpenStack credential configuration for the `servers-nodes` tab. The secret is
+ * never returned by the backend; `secret_stored` only reports whether one exists.
+ */
+export interface CredentialConfig {
+  auth_url: string;
+  credential_id: string;
+  nova_endpoint: string;
+  secret_stored: boolean;
+}
+
+/**
+ * Payload to save credentials. `credential_secret` is omitted when reusing the
+ * secret already stored server-side.
+ */
+export interface SaveCredentialConfigRequest {
+  auth_url: string;
+  credential_id: string;
+  nova_endpoint: string;
+  credential_secret?: string;
+}
+
+/** A single Nova server as returned by the OpenStack proxy. */
+export interface NovaServer {
+  id: string;
+  name: string;
+  status: string;
+}
+
+export interface RetrieveServersResponse {
+  servers: NovaServer[];
+}
+
+/** Prerequisites slug for the OpenStack servers/nodes tab. */
+export const SERVERS_SLUG = 'servers-nodes';
+
 export const prerequisitesService = {
   // Installations (multi-instance CRUD)
   async listInstallations(): Promise<Installation[]> {
@@ -90,5 +126,36 @@ export const prerequisitesService = {
       `/prerequisites/installations/${installationId}/${slug}/answers/${rowId}`,
       { answer },
     );
+  },
+
+  // OpenStack credentials + live server retrieval (servers-nodes tab) —
+  // scoped to an Installation.
+  async loadCredentialConfig(installationId: string): Promise<CredentialConfig> {
+    const response = await api.get(
+      `/prerequisites/installations/${installationId}/${SERVERS_SLUG}/credentials`,
+    );
+    return response.data;
+  },
+
+  async saveCredentialConfig(
+    installationId: string,
+    cfg: SaveCredentialConfigRequest,
+  ): Promise<CredentialConfig> {
+    const response = await api.put(
+      `/prerequisites/installations/${installationId}/${SERVERS_SLUG}/credentials`,
+      cfg,
+    );
+    return response.data;
+  },
+
+  async retrieveServers(
+    installationId: string,
+    cfg: SaveCredentialConfigRequest,
+  ): Promise<RetrieveServersResponse> {
+    const response = await api.post(
+      `/prerequisites/installations/${installationId}/${SERVERS_SLUG}/servers/retrieve`,
+      cfg,
+    );
+    return response.data;
   },
 };

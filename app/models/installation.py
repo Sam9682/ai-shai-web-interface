@@ -74,6 +74,12 @@ class Installation(Base):
         back_populates="installation",
         cascade="all, delete-orphan"
     )
+    credential_config: Mapped["CredentialConfig"] = relationship(
+        "CredentialConfig",
+        back_populates="installation",
+        cascade="all, delete-orphan",
+        uselist=False
+    )
 
     def __repr__(self) -> str:
         return f"<Installation(id={self.id}, project_name={self.project_name})>"

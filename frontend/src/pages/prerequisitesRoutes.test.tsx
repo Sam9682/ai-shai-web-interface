@@ -24,6 +24,22 @@ vi.mock('../services/prerequisitesService', () => ({
     saveStaticContent: vi.fn().mockResolvedValue(undefined),
     loadClientAnswers: vi.fn().mockResolvedValue({ slug: '', answers: {} }),
     saveClientAnswer: vi.fn().mockResolvedValue(undefined),
+    // The servers-nodes tab (ServersTable) loads credential config on mount
+    // when given an installationId; provide empty/no-op resolves so route/guard
+    // behavior stays isolated and the mount effect never hits the network.
+    loadCredentialConfig: vi.fn().mockResolvedValue({
+      auth_url: '',
+      credential_id: '',
+      nova_endpoint: '',
+      secret_stored: false,
+    }),
+    saveCredentialConfig: vi.fn().mockResolvedValue({
+      auth_url: '',
+      credential_id: '',
+      nova_endpoint: '',
+      secret_stored: false,
+    }),
+    retrieveServers: vi.fn().mockResolvedValue({ servers: [] }),
   },
 }));
 

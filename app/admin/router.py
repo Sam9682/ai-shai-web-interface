@@ -19,6 +19,8 @@ from app.admin.schemas import (
     DeactivateMemberResponse,
     AuditLogEntry,
     AuditLogResponse,
+    LoginLogEntry,
+    LoginLogResponse,
     ActivityReportResponse,
     ForumActivityStats,
     AnnouncementRequest,
@@ -879,4 +881,116 @@ async def send_announcement(
         message=f"Announcement sent successfully to {notifications_sent} members",
         notifications_sent=notifications_sent,
         total_members=total_active_members
+    )
+
+
+# Actions that represent user connection events, surfaced in the admin
+# configuration view. Kept in sync with the actions written by the auth router.
+LOGIN_LOG_ACTIONS = ["LOGIN_SUCCESS", "LOGIN_FAILED", "LOGOUT"]
+
+
+@router.get(
+    "/login-logs",
+    response_model=LoginLogResponse,
+    status_code=status.HTTP_200_OK,
+    responses={
+        403: {"description": "Insufficient permissions - administrator role required"}
+    }
+)
+async def get_login_logs(
+    action: Optional[str] = Query(
+        None,
+        description="Filter by a single connection action (LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT)"
+    ),
+    start_date: Optional[datetime] = Query(None, description="Filter by start date (inclusive)"),
+    end_date: Optional[datetime] = Query(None, description="Filter by end date (inclusive)"),
+    page: int = Query(1, ge=1, description="Page number (1-indexed)"),
+    page_size: int = Query(50, ge=1, le=100, description="Number of entries per page"),
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+) -> LoginLogResponse:
+    """Get the user connection log (who connected/disconnected and when).
+
+    Returns login, failed-login, and logout events recorded in the audit log,
+    restricted to administrators. Each entry surfaces the acting user's
+    identity, the event type, connection metadata (IP address, user-agent),
+    and the timestamp.
+
+    Args:
+        action: Optional filter by a single connection action.
+        start_date: Optional inclusive start date filter.
+        end_date: Optional inclusive end date filter.
+        page: Page number (1-indexed).
+        page_size: Number of entries per page (max 100).
+        current_user: Authenticated administrator.
+        db: Database session.
+
+    Returns:
+        LoginLogResponse with paginated connection log entries.
+
+    Raises:
+        HTTPException 403: If the user is not an administrator.
+    """
+    # Restrict to connection-related actions
+    if action is not None and action in LOGIN_LOG_ACTIONS:
+        actions_filter = [action]
+    else:
+        actions_filter = LOGIN_LOG_ACTIONS
+
+    query = db.query(AuditLog).filter(AuditLog.action.in_(actions_filter))
+
+    if start_date is not None:
+        if start_date.tzinfo is None:
+            start_date = start_date.replace(tzinfo=timezone.utc)
+        query = query.filter(AuditLog.timestamp >= start_date)
+    if end_date is not None:
+        if end_date.tzinfo is None:
+            end_date = end_date.replace(tzinfo=timezone.utc)
+        query = query.filter(AuditLog.timestamp <= end_date)
+
+    total = query.count()
+
+    offset = (page - 1) * page_size
+    rows = query.order_by(AuditLog.timestamp.desc()).offset(offset).limit(page_size).all()
+
+    # Denormalize the acting user's email/name for display. Cache lookups so
+    # repeated user IDs on the page hit the DB only once.
+    user_cache: dict = {}
+    entries: list[LoginLogEntry] = []
+    for row in rows:
+        details = row.details or {}
+        user_email = details.get("email")
+        user_name = None
+        if row.admin_id is not None:
+            if row.admin_id not in user_cache:
+                user_cache[row.admin_id] = db.query(User).filter(User.id == row.admin_id).first()
+            acting_user = user_cache[row.admin_id]
+            if acting_user is not None:
+                user_email = acting_user.email
+                user_name = f"{acting_user.first_name} {acting_user.last_name}".strip()
+
+        entries.append(
+            LoginLogEntry(
+                id=str(row.id),
+                user_id=str(row.admin_id) if row.admin_id else None,
+                user_email=user_email,
+                user_name=user_name,
+                action=row.action,
+                ip_address=details.get("ip_address"),
+                user_agent=details.get("user_agent"),
+                reason=details.get("reason"),
+                timestamp=row.timestamp,
+            )
+        )
+
+    logger.info(
+        f"Administrator {current_user.id} ({current_user.email}) retrieved login logs "
+        f"(page {page}, {len(entries)} entries, {total} total)"
+    )
+
+    return LoginLogResponse(
+        entries=entries,
+        total=total,
+        page=page,
+        page_size=page_size
     )

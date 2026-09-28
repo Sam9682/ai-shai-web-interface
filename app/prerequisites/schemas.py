@@ -34,6 +34,10 @@ __all__ = [
     "InstallationUpdateRequest",
     "InstallationResponse",
     "InstallationListResponse",
+    "CredentialConfigResponse",
+    "CredentialConfigSaveRequest",
+    "NovaServerSchema",
+    "RetrieveServersResponse",
     "ErrorResponse",
 ]
 
@@ -142,3 +146,53 @@ class InstallationListResponse(BaseModel):
     Matches the frontend ``{ installations: [...] }`` shape. Validates Requirement 6.1.
     """
     installations: list[InstallationResponse]
+
+
+class CredentialConfigResponse(BaseModel):
+    """OpenStack credential config returned to the client.
+
+    The credential secret is NEVER present on this schema; only a
+    ``secret_stored`` flag reflects whether an encrypted secret is persisted.
+    This guarantees the secret can never be serialized back to the client on
+    any code path. Validates Requirements 3.3, 5.3, 8.4.
+    """
+    auth_url: str
+    credential_id: str
+    nova_endpoint: str
+    secret_stored: bool
+
+    model_config = ConfigDict(from_attributes=False)
+
+
+class CredentialConfigSaveRequest(BaseModel):
+    """Request schema for saving/updating the OpenStack credential config.
+
+    The non-secret fields are required and must be non-empty
+    (``Field(min_length=1)``). ``credential_secret`` is optional; omit it to
+    reuse the previously stored secret. Validates Requirements 3.3, 5.3.
+    """
+    auth_url: str = Field(min_length=1)
+    credential_id: str = Field(min_length=1)
+    nova_endpoint: str = Field(min_length=1)
+    credential_secret: Optional[str] = None  # omit to reuse stored secret
+
+
+class NovaServerSchema(BaseModel):
+    """A single OpenStack (Nova) server as returned to the client.
+
+    Matches the frontend ``NovaServer`` shape ``{ id, name, status }``.
+    Validates Requirements 5.3, 8.4.
+    """
+    id: str
+    name: str
+    status: str
+
+
+class RetrieveServersResponse(BaseModel):
+    """Response schema for the servers/retrieve endpoint.
+
+    Matches the frontend ``RetrieveServersResponse`` shape
+    ``{ servers: NovaServer[] }``. The secret and Keystone token are never
+    included. Validates Requirements 5.3, 8.4.
+    """
+    servers: list[NovaServerSchema]
