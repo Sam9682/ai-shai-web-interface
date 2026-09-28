@@ -32,9 +32,39 @@ export interface CreateUserRequest {
   role: string;
 }
 
+export interface LoginLogEntry {
+  id: string;
+  user_id: string | null;
+  user_email: string | null;
+  user_name: string | null;
+  action: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  reason: string | null;
+  timestamp: string;
+}
+
+export interface LoginLogResponse {
+  entries: LoginLogEntry[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface LoginLogParams {
+  action?: string;
+  page?: number;
+  page_size?: number;
+}
+
 export const adminService = {
   async listUsers(): Promise<UserListResponse> {
     const response = await api.get('/admin/members');
+    return response.data;
+  },
+
+  async getLoginLogs(params: LoginLogParams = {}): Promise<LoginLogResponse> {
+    const response = await api.get('/admin/login-logs', { params });
     return response.data;
   },
 

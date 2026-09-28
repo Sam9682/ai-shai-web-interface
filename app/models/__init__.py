@@ -10,6 +10,7 @@ from app.models.token_blacklist import TokenBlacklist
 from app.models.user_deletion import ScheduledUserDeletion
 from app.models.prerequisite import PrerequisiteContent, PrerequisiteAnswer
 from app.models.installation import Installation
+from app.models.credential_config import CredentialConfig
 
 __all__ = [
     "User", "UserRole",
@@ -22,6 +23,7 @@ __all__ = [
     "TokenBlacklist",
     "ScheduledUserDeletion",
     "PrerequisiteContent", "PrerequisiteAnswer",
-    "Installation"
+    "Installation",
+    "CredentialConfig"
 ]
 from app.models.oracle import OracleQuery

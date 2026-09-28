@@ -33,6 +33,7 @@ from app.database import get_db
 from app.models import User
 from app.models.installation import Installation
 from app.models.prerequisite import PrerequisiteContent, PrerequisiteAnswer
+from app.models.credential_config import CredentialConfig
 from app.auth.dependencies import get_current_user
 from app.forum.dependencies import get_administrator
 from app.prerequisites.schemas import (
@@ -45,6 +46,17 @@ from app.prerequisites.schemas import (
     InstallationUpdateRequest,
     InstallationResponse,
     InstallationListResponse,
+    CredentialConfigResponse,
+    CredentialConfigSaveRequest,
+    NovaServerSchema,
+    RetrieveServersResponse,
+)
+from app.prerequisites.security import encrypt_secret, decrypt_secret
+from app.prerequisites.openstack import (
+    OpenStackProxy,
+    OpenStackAuthError,
+    OpenStackConnectionError,
+    OpenStackServiceError,
 )
 from app.auth.schemas import ErrorResponse
 
@@ -473,3 +485,293 @@ async def update_answer(
                 details={"error": str(e)},
             ),
         )
+
+
+# ---------------------------------------------------------------------------
+# Installation-scoped OpenStack credential config (servers-nodes tab, task 4.2)
+# ---------------------------------------------------------------------------
+
+
+def _credential_config_response(
+    config: CredentialConfig | None,
+) -> CredentialConfigResponse:
+    """Map a ``CredentialConfig`` row (or absence) to the client response.
+
+    The credential secret is NEVER serialized; ``secret_stored`` only reflects
+    whether an encrypted secret is persisted. When ``config`` is ``None`` an
+    empty default is returned (``secret_stored=False``). ``CredentialConfigResponse``
+    is declared with ``from_attributes=False``, so fields are mapped explicitly.
+    """
+    if config is None:
+        return CredentialConfigResponse(
+            auth_url="",
+            credential_id="",
+            nova_endpoint="",
+            secret_stored=False,
+        )
+
+    return CredentialConfigResponse(
+        auth_url=config.auth_url,
+        credential_id=config.credential_id,
+        nova_endpoint=config.nova_endpoint,
+        secret_stored=config.credential_secret_encrypted is not None,
+    )
+
+
+def _upsert_credential_config(
+    db: Session,
+    installation_id: UUID,
+    payload: CredentialConfigSaveRequest,
+    updated_by: UUID,
+) -> CredentialConfig:
+    """Upsert the credential config for an installation, keyed on ``installation_id``.
+
+    The non-secret fields (Auth URL, Credential ID, Nova endpoint) are always
+    written. The credential secret is encrypted and stored only when a
+    ``credential_secret`` value is provided; when omitted, any previously stored
+    secret is left untouched. This does NOT commit — the caller is responsible
+    for the commit/rollback so the upsert can be composed with a retrieve.
+    """
+    config = (
+        db.query(CredentialConfig)
+        .filter(CredentialConfig.installation_id == installation_id)
+        .first()
+    )
+
+    if config is None:
+        config = CredentialConfig(
+            installation_id=installation_id,
+            auth_url=payload.auth_url,
+            credential_id=payload.credential_id,
+            nova_endpoint=payload.nova_endpoint,
+            updated_by=updated_by,
+        )
+        db.add(config)
+    else:
+        config.auth_url = payload.auth_url
+        config.credential_id = payload.credential_id
+        config.nova_endpoint = payload.nova_endpoint
+        config.updated_by = updated_by
+
+    # Encrypt and store the secret only when a value is provided; otherwise
+    # preserve any previously stored secret.
+    if payload.credential_secret:
+        config.credential_secret_encrypted = encrypt_secret(
+            payload.credential_secret
+        )
+
+    return config
+
+
+@router.get(
+    "/installations/{installation_id}/servers-nodes/credentials",
+    response_model=CredentialConfigResponse,
+    summary="Get the OpenStack credential config for an installation",
+)
+async def get_credential_config(
+    installation_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> CredentialConfigResponse:
+    """Return the stored credential config for an installation.
+
+    The credential secret is never returned; ``secret_stored`` reflects whether
+    an encrypted secret is persisted. When no config exists yet for the
+    installation, an empty default (``secret_stored=False``) is returned.
+    Unknown installations return ``INSTALLATION_NOT_FOUND``.
+    """
+    _get_installation_or_404(db, installation_id)
+
+    config = (
+        db.query(CredentialConfig)
+        .filter(CredentialConfig.installation_id == installation_id)
+        .first()
+    )
+
+    return _credential_config_response(config)
+
+
+@router.put(
+    "/installations/{installation_id}/servers-nodes/credentials",
+    response_model=CredentialConfigResponse,
+    summary="Save the OpenStack credential config for an installation",
+)
+async def save_credential_config(
+    installation_id: UUID,
+    payload: CredentialConfigSaveRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> CredentialConfigResponse:
+    """Upsert the credential config for an installation, keyed on ``installation_id``.
+
+    The non-secret fields (Auth URL, Credential ID, Nova endpoint) are always
+    persisted. The credential secret is encrypted and stored only when a
+    ``credential_secret`` value is provided; when omitted, any previously stored
+    secret is left untouched. The secret is never returned in the response.
+    Unknown installations return ``INSTALLATION_NOT_FOUND``.
+    """
+    _get_installation_or_404(db, installation_id)
+
+    try:
+        config = _upsert_credential_config(
+            db, installation_id, payload, current_user.id
+        )
+
+        db.commit()
+        db.refresh(config)
+
+        logger.info(
+            f"OpenStack credential config saved for "
+            f"installation_id={installation_id}"
+        )
+        return _credential_config_response(config)
+
+    except Exception as e:  # pragma: no cover - defensive DB error path
+        db.rollback()
+        logger.error(
+            f"Failed to save credential config for "
+            f"installation_id={installation_id}: {e}",
+            exc_info=True,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="DATABASE_ERROR",
+                message="Failed to save credential config",
+                details={"error": str(e)},
+            ),
+        )
+
+
+@router.post(
+    "/installations/{installation_id}/servers-nodes/servers/retrieve",
+    response_model=RetrieveServersResponse,
+    summary="Persist config and retrieve the live OpenStack server list",
+)
+async def retrieve_servers(
+    installation_id: UUID,
+    payload: CredentialConfigSaveRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> RetrieveServersResponse:
+    """Persist the credential config, resolve the secret, and list live servers.
+
+    Flow:
+
+    1. Verify the installation exists (``INSTALLATION_NOT_FOUND`` otherwise).
+    2. Upsert the credential config (Auth URL, Credential ID, Nova endpoint),
+       encrypting and storing the secret only when a ``credential_secret`` value
+       is provided.
+    3. Resolve the effective secret: the inline ``credential_secret`` when
+       provided, otherwise the decrypted stored secret. If neither exists,
+       return ``MISSING_CREDENTIAL_SECRET`` (400) — defense in depth behind the
+       client-side validation.
+    4. Run the two-step OpenStack flow via :class:`OpenStackProxy` and return the
+       mapped ``{id, name, status}`` rows.
+
+    The credential secret and the Keystone token are never included in any
+    response, on success or on error. OpenStack failures map to:
+    ``OpenStackAuthError`` -> 401 ``AUTH_FAILED``,
+    ``OpenStackConnectionError`` -> 502 ``CONNECTION_FAILED``,
+    ``OpenStackServiceError`` -> 502 ``OPENSTACK_ERROR``. DB failures roll back
+    and return ``DATABASE_ERROR`` (500).
+    """
+    _get_installation_or_404(db, installation_id)
+
+    # Persist the config first so subsequent loads prefill the non-secret fields.
+    try:
+        config = _upsert_credential_config(
+            db, installation_id, payload, current_user.id
+        )
+        db.commit()
+        db.refresh(config)
+    except Exception as e:  # pragma: no cover - defensive DB error path
+        db.rollback()
+        logger.error(
+            f"Failed to save credential config during retrieve for "
+            f"installation_id={installation_id}: {e}",
+            exc_info=True,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="DATABASE_ERROR",
+                message="Failed to save credential config",
+                details={"error": str(e)},
+            ),
+        )
+
+    # Resolve the effective secret: inline value if provided, else the stored
+    # (decrypted) secret. The plaintext exists only transiently here.
+    if payload.credential_secret:
+        secret = payload.credential_secret
+    elif config.credential_secret_encrypted is not None:
+        secret = decrypt_secret(config.credential_secret_encrypted)
+    else:
+        logger.warning(
+            f"Retrieve requested with no secret available for "
+            f"installation_id={installation_id}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=ErrorResponse.create(
+                code="MISSING_CREDENTIAL_SECRET",
+                message="No credential secret was provided or is stored.",
+            ),
+        )
+
+    # Run the OpenStack flow. The secret and token stay inside the proxy call;
+    # only mapped server rows are returned. Error bodies never carry the secret
+    # or token — the exception messages and details reference non-sensitive
+    # context only.
+    try:
+        servers = await OpenStackProxy().retrieve(
+            auth_url=config.auth_url,
+            credential_id=config.credential_id,
+            secret=secret,
+            nova_endpoint=config.nova_endpoint,
+        )
+    except OpenStackAuthError as e:
+        logger.warning(
+            f"OpenStack authentication failed for installation_id={installation_id}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=ErrorResponse.create(
+                code=e.code,
+                message=str(e),
+            ),
+        )
+    except OpenStackConnectionError as e:
+        logger.error(
+            f"OpenStack connection failed for installation_id={installation_id}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=ErrorResponse.create(
+                code=e.code,
+                message=str(e),
+            ),
+        )
+    except OpenStackServiceError as e:
+        logger.error(
+            f"OpenStack service error for installation_id={installation_id}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=ErrorResponse.create(
+                code=e.code,
+                message=str(e),
+            ),
+        )
+
+    logger.info(
+        f"OpenStack server list retrieved for "
+        f"installation_id={installation_id} ({len(servers)} servers)"
+    )
+    return RetrieveServersResponse(
+        servers=[
+            NovaServerSchema(id=s.id, name=s.name, status=s.status)
+            for s in servers
+        ]
+    )

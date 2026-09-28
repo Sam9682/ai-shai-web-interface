@@ -185,6 +185,106 @@ describe('prerequisitesService installations contract', () => {
   });
 });
 
+describe('prerequisitesService OpenStack credentials contract', () => {
+  // Feature: openstack-node-status — servers-nodes credentials + retrieval (task 7.2)
+  // Validates: Requirements 10.2
+
+  const INSTALL_ID = '55555555-5555-5555-5555-555555555555';
+  const SECRET = 'super-secret-value';
+
+  // Helper: no serialized response object should carry a secret field. This
+  // guards Req 3.3/5.3 at the service boundary — the client never surfaces one.
+  const assertNoSecretField = (value: unknown) => {
+    const json = JSON.stringify(value ?? {});
+    expect(json).not.toContain('credential_secret');
+    expect(json).not.toContain(SECRET);
+  };
+
+  describe('loadCredentialConfig', () => {
+    it('issues GET .../servers-nodes/credentials and returns a secret-free config', async () => {
+      const payload = {
+        auth_url: 'https://keystone.example/v3',
+        credential_id: 'cred-1',
+        nova_endpoint: 'https://nova.example/v2.1',
+        secret_stored: true,
+      };
+      mockedApi.get.mockResolvedValueOnce({ data: payload });
+
+      const result = await prerequisitesService.loadCredentialConfig(INSTALL_ID);
+
+      expect(mockedApi.get).toHaveBeenCalledTimes(1);
+      expect(mockedApi.get).toHaveBeenCalledWith(
+        `/prerequisites/installations/${INSTALL_ID}/servers-nodes/credentials`,
+      );
+      expect(mockedApi.put).not.toHaveBeenCalled();
+      expect(mockedApi.post).not.toHaveBeenCalled();
+      expect(result).toEqual(payload);
+      assertNoSecretField(result);
+    });
+  });
+
+  describe('saveCredentialConfig', () => {
+    it('issues PUT .../servers-nodes/credentials with the config body and returns a secret-free config', async () => {
+      const cfg = {
+        auth_url: 'https://keystone.example/v3',
+        credential_id: 'cred-1',
+        nova_endpoint: 'https://nova.example/v2.1',
+        credential_secret: SECRET,
+      };
+      const response = {
+        auth_url: cfg.auth_url,
+        credential_id: cfg.credential_id,
+        nova_endpoint: cfg.nova_endpoint,
+        secret_stored: true,
+      };
+      mockedApi.put.mockResolvedValueOnce({ data: response });
+
+      const result = await prerequisitesService.saveCredentialConfig(INSTALL_ID, cfg);
+
+      expect(mockedApi.put).toHaveBeenCalledTimes(1);
+      expect(mockedApi.put).toHaveBeenCalledWith(
+        `/prerequisites/installations/${INSTALL_ID}/servers-nodes/credentials`,
+        cfg,
+      );
+      expect(mockedApi.get).not.toHaveBeenCalled();
+      expect(mockedApi.post).not.toHaveBeenCalled();
+      expect(result).toEqual(response);
+      // The returned config the client keeps must never echo the secret back.
+      assertNoSecretField(result);
+    });
+  });
+
+  describe('retrieveServers', () => {
+    it('issues POST .../servers-nodes/servers/retrieve with the config body and returns a secret-free server list', async () => {
+      const cfg = {
+        auth_url: 'https://keystone.example/v3',
+        credential_id: 'cred-1',
+        nova_endpoint: 'https://nova.example/v2.1',
+        credential_secret: SECRET,
+      };
+      const response = {
+        servers: [
+          { id: 'srv-1', name: 'node-a', status: 'ACTIVE' },
+          { id: 'srv-2', name: 'node-b', status: 'SHUTOFF' },
+        ],
+      };
+      mockedApi.post.mockResolvedValueOnce({ data: response });
+
+      const result = await prerequisitesService.retrieveServers(INSTALL_ID, cfg);
+
+      expect(mockedApi.post).toHaveBeenCalledTimes(1);
+      expect(mockedApi.post).toHaveBeenCalledWith(
+        `/prerequisites/installations/${INSTALL_ID}/servers-nodes/servers/retrieve`,
+        cfg,
+      );
+      expect(mockedApi.get).not.toHaveBeenCalled();
+      expect(mockedApi.put).not.toHaveBeenCalled();
+      expect(result).toEqual(response);
+      assertNoSecretField(result);
+    });
+  });
+});
+
 describe('prerequisitesService does not touch localStorage (Req 6.4)', () => {
   let getItemSpy: ReturnType<typeof vi.spyOn>;
   let setItemSpy: ReturnType<typeof vi.spyOn>;

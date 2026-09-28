@@ -165,6 +165,25 @@ def _hash_2fa_code(code: str) -> str:
     return hashlib.sha256(code.strip().encode("utf-8")).hexdigest()
 
 
+def _client_info(request: Request) -> dict:
+    """Extract client connection metadata (IP address and user-agent).
+
+    Used to enrich connection audit-log entries (login/logout) so the
+    admin configuration view can show where and with what a user connected.
+    Honors the ``X-Forwarded-For`` header when the app sits behind a proxy.
+    """
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        # First entry in the list is the original client IP.
+        ip_address = forwarded.split(",")[0].strip()
+    else:
+        ip_address = request.client.host if request.client else None
+    return {
+        "ip_address": ip_address,
+        "user_agent": request.headers.get("user-agent"),
+    }
+
+
 @router.post(
     "/login",
     response_model=None,
@@ -234,7 +253,8 @@ async def login(
                 details={
                     "email": login_data.email,
                     "reason": "invalid_credentials",
-                    "remaining_attempts": remaining - 1
+                    "remaining_attempts": remaining - 1,
+                    **_client_info(request)
                 }
             )
             db.add(audit_log)
@@ -265,7 +285,8 @@ async def login(
                 target_id=user.id,
                 details={
                     "email": login_data.email,
-                    "reason": "email_not_verified"
+                    "reason": "email_not_verified",
+                    **_client_info(request)
                 }
             )
             db.add(audit_log)
@@ -345,7 +366,8 @@ async def login(
             target_type="user",
             target_id=user.id,
             details={
-                "email": login_data.email
+                "email": login_data.email,
+                **_client_info(request)
             }
         )
         db.add(audit_log)
@@ -394,6 +416,7 @@ async def login(
     }
 )
 async def logout(
+    request: Request,
     token: str = Depends(get_token_from_request),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -474,7 +497,8 @@ async def logout(
             target_id=current_user.id,
             details={
                 "email": current_user.email,
-                "token_expires_at": expires_at.isoformat()
+                "token_expires_at": expires_at.isoformat(),
+                **_client_info(request)
             }
         )
         
@@ -1344,7 +1368,7 @@ async def login_2fa(
             action="LOGIN_SUCCESS",
             target_type="user",
             target_id=user.id,
-            details={"email": user.email, "method": "2fa"},
+            details={"email": user.email, "method": "2fa", **_client_info(request)},
         )
         db.add(audit_log)
         db.commit()

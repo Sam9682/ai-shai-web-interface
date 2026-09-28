@@ -1,9 +1,27 @@
-import { describe, it, expect, afterEach } from 'vitest';
-import { render, screen, cleanup, within } from '@testing-library/react';
+import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest';
+import { render, screen, cleanup, within, act } from '@testing-library/react';
+import type React from 'react';
 import fc from 'fast-check';
 import { ServersTable } from './ServersTable';
 import type { ServerNode } from './serversData';
 import { SERVER_NODES } from './serversData';
+import { LanguageProvider } from '../../hooks/useLanguage';
+import { prerequisitesService } from '../../services/prerequisitesService';
+
+// The credentials form (rendered only when `installationId` is set) loads the
+// stored config on mount. Mock the service so the static-table preservation
+// case below can mount the form without hitting the network. The pre-existing
+// tests below never render the form, so this mock does not affect them.
+vi.mock('../../services/prerequisitesService', () => ({
+  SERVERS_SLUG: 'servers-nodes',
+  prerequisitesService: {
+    loadCredentialConfig: vi.fn(),
+    saveCredentialConfig: vi.fn(),
+    retrieveServers: vi.fn(),
+  },
+}));
+
+const mockedPrereq = vi.mocked(prerequisitesService);
 
 // ===========================================================================
 // Bugfix spec: opcp-installations-response-fields-editable (task 2)
@@ -87,5 +105,77 @@ describe('Property 2 (preservation): Servers nodes tab is a read-only inventory'
     expect(screen.queryByLabelText(/Réponse client/)).toBeNull();
     expect(document.querySelectorAll('input, textarea, select')).toHaveLength(0);
     expect(screen.getByRole('table')).toBeInTheDocument();
+  });
+});
+
+// ===========================================================================
+// Feature spec: openstack-node-status (task 9.5)
+// Requirement 1.4: The Servers_Table_Component SHALL continue to render the
+// existing static servers table when the Credentials_Form (and Live_Results
+// section) are present.
+//
+// When `installationId` is set the credentials form renders ABOVE the static
+// inventory; this test pins that the static six-column inventory table still
+// renders alongside the form. Validates: Requirement 1.4
+// ===========================================================================
+
+const INSTALL_ID = '33333333-3333-3333-3333-333333333333';
+const CREDENTIALS_TITLE = 'Identifiants OpenStack';
+const RETRIEVE_LABEL = 'RÉCUPÉRER LES INFOS';
+
+function renderWithProvider(ui: React.ReactElement) {
+  return render(<LanguageProvider>{ui}</LanguageProvider>);
+}
+
+describe('Requirement 1.4 (preservation): static table renders alongside the credentials form', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+    mockedPrereq.loadCredentialConfig.mockResolvedValue({
+      auth_url: '',
+      credential_id: '',
+      nova_endpoint: '',
+      secret_stored: false,
+    });
+  });
+
+  it('renders the six-column static inventory table together with the credentials form', async () => {
+    renderWithProvider(
+      <ServersTable
+        title="Servers nodes"
+        nodes={SERVER_NODES}
+        installationId={INSTALL_ID}
+      />,
+    );
+    // Let the mount-time loadCredentialConfig promise resolve.
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    // The credentials form is present (title + RETRIEVE INFO button).
+    expect(
+      screen.getByRole('heading', { name: CREDENTIALS_TITLE }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(RETRIEVE_LABEL)).toBeInTheDocument();
+
+    // The static inventory table still renders: find the table whose header row
+    // carries the six inventory columns (Node UUID, Serial Number, ...).
+    const tables = screen.getAllByRole('table');
+    const staticTable = tables.find(
+      (table) => within(table).queryByText('Node UUID') !== null,
+    );
+    expect(staticTable).toBeDefined();
+
+    const headers = within(staticTable as HTMLElement).getAllByRole('columnheader');
+    expect(headers).toHaveLength(6);
+    expect(within(staticTable as HTMLElement).getByText('Serial Number')).toBeInTheDocument();
+    expect(within(staticTable as HTMLElement).getByText('Provision State')).toBeInTheDocument();
+
+    // Every built-in inventory row is present in the static table.
+    for (const node of SERVER_NODES) {
+      expect(
+        within(staticTable as HTMLElement).getByText(node.nodeUuid),
+      ).toBeInTheDocument();
+    }
   });
 });

@@ -38,6 +38,23 @@ export const fr: TranslationDictionary = {
   'nav.oracle': 'Oracle IA',
   'nav.prerequisites': 'OPCP installations',
   'nav.users': 'Utilisateurs',
+  'nav.config': 'Configuration',
+  'page.adminConfig.title': 'Configuration',
+  'page.adminConfig.logs.title': 'Journal des connexions',
+  'page.adminConfig.logs.subtitle': 'Historique des connexions et déconnexions des utilisateurs.',
+  'page.adminConfig.loading': 'Chargement des journaux...',
+  'page.adminConfig.empty': 'Aucune connexion enregistrée.',
+  'page.adminConfig.col.user': 'Utilisateur',
+  'page.adminConfig.col.email': 'Email',
+  'page.adminConfig.col.event': 'Événement',
+  'page.adminConfig.col.when': 'Date et heure',
+  'page.adminConfig.col.ip': 'Adresse IP',
+  'page.adminConfig.event.login': 'Connexion',
+  'page.adminConfig.event.logout': 'Déconnexion',
+  'page.adminConfig.event.failed': 'Échec de connexion',
+  'page.adminConfig.filter.all': 'Tous les événements',
+  'page.adminConfig.prev': 'Précédent',
+  'page.adminConfig.next': 'Suivant',
   'auth.logout': 'Déconnexion',
   'auth.login': 'Connexion',
   'auth.register': 'Inscription',
@@ -83,6 +100,18 @@ export const fr: TranslationDictionary = {
   'prereq.installations.error.action':
     "L'opération a échoué. Veuillez réessayer.",
   'prereq.installations.error.emptyName': 'Le nom du projet ne peut pas être vide.',
+  'prereq.installations.export.button': 'Exporter les valeurs',
+  'prereq.installations.export.success': 'Valeurs exportées avec succès.',
+  'prereq.installations.export.error': "Échec de l'export des valeurs.",
+  'prereq.installations.import.button': 'Importer les valeurs',
+  'prereq.installations.import.success': '{written} valeur(s) importée(s) avec succès.',
+  'prereq.installations.import.partial':
+    '{written} valeur(s) importée(s), {failed} en échec.',
+  'prereq.installations.import.error':
+    "Échec de l'import. Vérifiez que le fichier est un export JSON valide.",
+  'prereq.installations.generateDoc.button': "Générer le document d'architecture",
+  'prereq.installations.generateDoc.success': "Document d'architecture généré avec succès.",
+  'prereq.installations.generateDoc.error': "Échec de la génération du document.",
 
   // ---- Login page ----
   'page.login.title': 'Connexion',
@@ -383,6 +412,34 @@ export const fr: TranslationDictionary = {
   'page.security.email2fa.success.disabled': 'Vérification par email désactivée.',
   'page.security.email2fa.error.enable': 'Impossible d\'activer la vérification par email.',
   'page.security.email2fa.error.disable': 'Impossible de désactiver la vérification par email.',
+
+  // ---- Prerequisites: servers-nodes OpenStack live status ----
+  // Credentials form labels.
+  'prereq.servers.credentials.title': 'Identifiants OpenStack',
+  'prereq.servers.credentials.authUrl': 'URL d\'authentification (Keystone)',
+  'prereq.servers.credentials.credentialId': 'Identifiant de la credential',
+  'prereq.servers.credentials.credentialSecret': 'Secret de la credential',
+  'prereq.servers.credentials.novaEndpoint': 'Point d\'accès Nova',
+  'prereq.servers.credentials.secretStored': 'Un secret est enregistré',
+  // Retrieve action + loading.
+  'prereq.servers.retrieve': 'RÉCUPÉRER LES INFOS',
+  'prereq.servers.retrieving': 'Récupération en cours…',
+  // Client-side validation messages.
+  'prereq.servers.validation.authUrlRequired': 'L\'URL d\'authentification est requise.',
+  'prereq.servers.validation.credentialIdRequired': 'L\'identifiant de la credential est requis.',
+  'prereq.servers.validation.novaEndpointRequired': 'Le point d\'accès Nova est requis.',
+  'prereq.servers.validation.secretRequired': 'Le secret de la credential est requis.',
+  // Live results section.
+  'prereq.servers.results.title': 'Serveurs',
+  'prereq.servers.results.colId': 'ID',
+  'prereq.servers.results.colName': 'Nom',
+  'prereq.servers.results.colStatus': 'Statut',
+  'prereq.servers.results.empty': 'Aucun serveur retourné.',
+  // Error messages.
+  'prereq.servers.error.invalidCredentials': 'Identifiants invalides. Vérifiez la credential et son secret.',
+  'prereq.servers.error.connection': 'Impossible de contacter OpenStack. Vérifiez le réseau et les URL.',
+  'prereq.servers.error.openstack': 'OpenStack a renvoyé une erreur. Veuillez réessayer plus tard.',
+  'prereq.servers.error.generic': 'Une erreur est survenue lors de la récupération des serveurs.',
 };
 
 /** English UI_String text. */
@@ -395,6 +452,23 @@ export const en: TranslationDictionary = {
   'nav.oracle': 'AI Oracle',
   'nav.prerequisites': 'OPCP installations',
   'nav.users': 'Users',
+  'nav.config': 'Configuration',
+  'page.adminConfig.title': 'Configuration',
+  'page.adminConfig.logs.title': 'Connection log',
+  'page.adminConfig.logs.subtitle': 'History of user logins and logouts.',
+  'page.adminConfig.loading': 'Loading logs...',
+  'page.adminConfig.empty': 'No connection recorded.',
+  'page.adminConfig.col.user': 'User',
+  'page.adminConfig.col.email': 'Email',
+  'page.adminConfig.col.event': 'Event',
+  'page.adminConfig.col.when': 'Date and time',
+  'page.adminConfig.col.ip': 'IP address',
+  'page.adminConfig.event.login': 'Login',
+  'page.adminConfig.event.logout': 'Logout',
+  'page.adminConfig.event.failed': 'Failed login',
+  'page.adminConfig.filter.all': 'All events',
+  'page.adminConfig.prev': 'Previous',
+  'page.adminConfig.next': 'Next',
   'auth.logout': 'Log out',
   'auth.login': 'Log in',
   'auth.register': 'Sign up',
@@ -439,6 +513,17 @@ export const en: TranslationDictionary = {
     'Unable to load installations. Please try again later.',
   'prereq.installations.error.action': 'The operation failed. Please try again.',
   'prereq.installations.error.emptyName': 'The project name cannot be empty.',
+  'prereq.installations.export.button': 'Export values',
+  'prereq.installations.export.success': 'Values exported successfully.',
+  'prereq.installations.export.error': 'Failed to export values.',
+  'prereq.installations.import.button': 'Import values',
+  'prereq.installations.import.success': '{written} value(s) imported successfully.',
+  'prereq.installations.import.partial': '{written} value(s) imported, {failed} failed.',
+  'prereq.installations.import.error':
+    'Import failed. Make sure the file is a valid JSON export.',
+  'prereq.installations.generateDoc.button': 'Generate Architecture Document',
+  'prereq.installations.generateDoc.success': 'Architecture document generated successfully.',
+  'prereq.installations.generateDoc.error': 'Failed to generate the document.',
 
   // ---- Login page ----
   'page.login.title': 'Log in',
@@ -606,7 +691,7 @@ export const en: TranslationDictionary = {
   'page.oracle.send': 'Send',
   'page.oracle.history.title': 'Question history',
   'page.oracle.history.empty': 'No history available',
-  'page.oracle.welcome': 'Welcome to the AI Oracle\n\nI am your intelligent assistant to explore all your questions. Ask me anything!\n\nTip: To get answers on specialized topics, adapt the context of your question. For example:\n• "As a medical student, I would like to understand..."\n• "Can you generate a web page that analyzes..."\n• "In an educational context, explain to me..."',
+  'page.oracle.welcome': 'Welcome to the AI Oracle\n\nI am your OPCP intelligent assistant to explore all your questions. Ask me anything!\n\nExamples of questions: What is OPCP ?"\n• "What is openstack ?"\n• "Display curl command to get the list of servers via API openstack ?"',
   'page.oracle.welcome.short': 'Welcome to the AI Oracle.',
   'page.oracle.error.contact': 'Unable to reach the Oracle',
 
@@ -739,6 +824,34 @@ export const en: TranslationDictionary = {
   'page.security.email2fa.success.disabled': 'Email verification disabled.',
   'page.security.email2fa.error.enable': 'Unable to enable email verification.',
   'page.security.email2fa.error.disable': 'Unable to disable email verification.',
+
+  // ---- Prerequisites: servers-nodes OpenStack live status ----
+  // Credentials form labels.
+  'prereq.servers.credentials.title': 'OpenStack credentials',
+  'prereq.servers.credentials.authUrl': 'Authentication URL (Keystone)',
+  'prereq.servers.credentials.credentialId': 'Credential ID',
+  'prereq.servers.credentials.credentialSecret': 'Credential secret',
+  'prereq.servers.credentials.novaEndpoint': 'Nova endpoint',
+  'prereq.servers.credentials.secretStored': 'A secret is stored',
+  // Retrieve action + loading.
+  'prereq.servers.retrieve': 'RETRIEVE INFO',
+  'prereq.servers.retrieving': 'Retrieving…',
+  // Client-side validation messages.
+  'prereq.servers.validation.authUrlRequired': 'The authentication URL is required.',
+  'prereq.servers.validation.credentialIdRequired': 'The credential ID is required.',
+  'prereq.servers.validation.novaEndpointRequired': 'The Nova endpoint is required.',
+  'prereq.servers.validation.secretRequired': 'The credential secret is required.',
+  // Live results section.
+  'prereq.servers.results.title': 'Servers',
+  'prereq.servers.results.colId': 'ID',
+  'prereq.servers.results.colName': 'Name',
+  'prereq.servers.results.colStatus': 'Status',
+  'prereq.servers.results.empty': 'No servers returned.',
+  // Error messages.
+  'prereq.servers.error.invalidCredentials': 'Invalid credentials. Check the credential and its secret.',
+  'prereq.servers.error.connection': 'Unable to reach OpenStack. Check the network and the URLs.',
+  'prereq.servers.error.openstack': 'OpenStack returned an error. Please try again later.',
+  'prereq.servers.error.generic': 'An error occurred while retrieving the servers.',
 };
 
 /** All Translation_Dictionaries keyed by Supported_Language. */

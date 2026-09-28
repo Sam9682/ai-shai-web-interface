@@ -2,29 +2,10 @@ import { useParams } from 'react-router-dom';
 import { StaticContentPage } from '../components/prerequisites/StaticContentPage';
 import { QuestionAnswerForm } from '../components/prerequisites/QuestionAnswerForm';
 import { ServersTable } from '../components/prerequisites/ServersTable';
-import { ChecklistTabs, type ChecklistTab } from '../components/prerequisites/ChecklistTabs';
+import { ChecklistTabs } from '../components/prerequisites/ChecklistTabs';
 import { FIRST_PREREQ_SLUG } from '../components/prerequisites/InstallationListPage';
-import {
-  cloudStoreQuestionConfig,
-  coreControlPlaneConfig,
-  networkChecklistConfig,
-  vcfConfig,
-} from '../components/prerequisites/configs';
+import { CHECKLIST_CATEGORIES } from '../components/prerequisites/checklistCategories';
 import type { QuestionFormConfig } from '../components/prerequisites/types';
-
-/**
- * Ordered checklist set for the question archetype. This is the single source
- * of truth for both the aggregate default-installation view and the per-slug
- * lookup, so the two paths cannot drift. Each entry pairs a canonical slug
- * (the persistence key) with its display title and question config.
- */
-const CHECKLIST_CATEGORIES: ReadonlyArray<ChecklistTab> = [
-  { slug: 'network-checklist', title: 'Network Checklist', config: networkChecklistConfig },
-  { slug: 'core-control-plane', title: 'Core Control Plane', config: coreControlPlaneConfig },
-  { slug: 'cloudstore', title: 'CloudStore', config: cloudStoreQuestionConfig },
-  { slug: 'vcf', title: 'VCF', config: vcfConfig },
-  { kind: 'servers', slug: 'servers-nodes', title: 'Servers nodes' },
-];
 
 /**
  * Per-slug prerequisites descriptor. Static slugs render the
@@ -124,7 +105,7 @@ export const InstallationPrereqPage = () => {
   }
 
   if (config.archetype === 'servers') {
-    return <ServersTable title={config.title} />;
+    return <ServersTable title={config.title} installationId={installationId} />;
   }
 
   return (

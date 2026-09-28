@@ -121,7 +121,7 @@ export const ChecklistTabs = ({ installationId, tabs }: ChecklistTabsProps) => {
           hidden={index !== clampedActive}
         >
           {tab.kind === 'servers' ? (
-            <ServersTable title={tab.title} variant="embedded" />
+            <ServersTable title={tab.title} variant="embedded" installationId={installationId} />
           ) : (
             <QuestionAnswerForm
               installationId={installationId}

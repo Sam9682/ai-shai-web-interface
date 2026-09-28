@@ -1,0 +1,423 @@
+{
+  "pbtResults": {
+    "2.2 Write property test for secret encryption round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1790586281147
+    },
+    "6.2 Write property test for secret never in any response": {
+      "status": "passed",
+      "lastRunTimestamp": 1790586473023
+    }
+  },
+  "executionHistory": {
+    "1.1 Create `CredentialConfig` model": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584921880
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584933818
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585102906
+      }
+    ],
+    "1.2 Create Alembic migration for the credential config table": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584922027
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585133450
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585262516
+      }
+    ],
+    "2.1 Implement Fernet encrypt/decrypt keyed off `SECRET_KEY`": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584922162
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584934869
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585103968
+      }
+    ],
+    "3.1 Implement `OpenStackProxy` and error hierarchy": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584922279
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585134700
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585263885
+      }
+    ],
+    "4.1 Add Pydantic schemas": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584922401
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585281531
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585467431
+      }
+    ],
+    "4.2 Add GET and PUT credentials endpoints": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584922523
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585473405
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585644255
+      }
+    ],
+    "4.3 Add POST servers/retrieve endpoint with error mapping": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584922645
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585649699
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585792418
+      }
+    ],
+    "5. Checkpoint - backend wiring": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584922765
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585801011
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586165515
+      }
+    ],
+    "7.1 Add types and methods to `prerequisitesService`": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584922892
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585282542
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585466517
+      }
+    ],
+    "8.1 Add `prereq.*` keys to fr and en dictionaries": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584923002
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585137092
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585264783
+      }
+    ],
+    "9.1 Add `installationId` prop and CredentialsForm": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584923107
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585474407
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585643264
+      }
+    ],
+    "9.2 Add LiveResultsSection and retrieval flow": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584923224
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585650941
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585793680
+      }
+    ],
+    "10.1 Pass `installationId` through ChecklistTabs and InstallationPrereqPage": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584923327
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585799974
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586166580
+      }
+    ],
+    "11. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790584923444
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586743465
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790587524940
+      }
+    ],
+    "2. Backend: secret encryption helper": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585104138
+      }
+    ],
+    "1. Backend: persistence model + registration": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585262693
+      }
+    ],
+    "3. Backend: OpenStack proxy module": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585264011
+      }
+    ],
+    "8. Frontend: i18n keys": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585264925
+      }
+    ],
+    "7. Frontend: prerequisites service extension": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585466639
+      }
+    ],
+    "4. Backend: schemas + router endpoints": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585792576
+      }
+    ],
+    "9. Frontend: credentials form + live results in ServersTable": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790585793855
+      }
+    ],
+    "10. Frontend: thread installationId into the tab": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586166728
+      }
+    ],
+    "2.2 Write property test for secret encryption round-trip": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586182835
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586497517
+      }
+    ],
+    "6.1 Write persistence + secret-handling tests": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586184169
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586498938
+      }
+    ],
+    "6.2 Write property test for secret never in any response": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586185841
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586500350
+      }
+    ],
+    "6.3 Write successful token-and-servers retrieval test": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586187126
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586502428
+      }
+    ],
+    "6.4 Write error-handling tests": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586188100
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586503294
+      }
+    ],
+    "6. Backend: proxy and endpoint tests": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586499071
+      }
+    ],
+    "7.2 Write service tests": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586509396
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586737042
+      }
+    ],
+    "9.3 Write validation vitest tests": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586510728
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586735888
+      }
+    ],
+    "9.4 Write live-results and error vitest tests": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586513308
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586734412
+      }
+    ],
+    "9.5 Extend static-table preservation test": [
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586513484
+      },
+      {
+        "executionId": "f3b921f4-3bd4-431a-ab49-83b46df0c994",
+        "chatSessionId": "sess_c0ff1a17-2189-4fce-9564-5f259d48ee6e",
+        "timestamp": 1790586732994
+      }
+    ]
+  }
+}

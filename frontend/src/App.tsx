@@ -10,6 +10,7 @@ import { ForumPage } from './pages/ForumPage';
 import { TopicDetailPage } from './pages/TopicDetailPage';
 import { NewTopicPage } from './pages/NewTopicPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
+import { AdminConfigPage } from './pages/AdminConfigPage';
 import { AdminEventsPage } from './pages/AdminEventsPage';
 import { OraclePage } from './pages/OraclePage';
 import { HowToUsePage } from './pages/HowToUsePage';
@@ -71,6 +72,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <AdminEventsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/configuration"
+                  element={
+                    <ProtectedRoute>
+                      <AdminConfigPage />
                     </ProtectedRoute>
                   }
                 />

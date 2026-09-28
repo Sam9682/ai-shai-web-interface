@@ -154,6 +154,39 @@ class AuditLogResponse(BaseModel):
     }
 
 
+class LoginLogEntry(BaseModel):
+    """A single user connection event (login / logout / failed login).
+
+    Captures who connected (user identity), when (timestamp), the type of
+    event (action), and connection metadata (IP address, user-agent).
+    """
+    id: str
+    user_id: Optional[str]
+    user_email: Optional[str]
+    user_name: Optional[str]
+    action: str
+    ip_address: Optional[str] = None
+    user_agent: Optional[str] = None
+    reason: Optional[str] = None
+    timestamp: datetime
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class LoginLogResponse(BaseModel):
+    """Response schema for the login/connection log listing with pagination."""
+    entries: list[LoginLogEntry]
+    total: int
+    page: int
+    page_size: int
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
 class ForumActivityStats(BaseModel):
     """Forum activity statistics"""
     topics: int = Field(description="Number of topics created in the period")
