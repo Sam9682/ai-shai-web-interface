@@ -135,6 +135,7 @@ describe('Requirement 1.4 (preservation): static table renders alongside the cre
       auth_url: '',
       credential_id: '',
       nova_endpoint: '',
+      ca_certificate: '',
       secret_stored: false,
     });
   });

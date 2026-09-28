@@ -89,6 +89,7 @@ beforeEach(() => {
     auth_url: '',
     credential_id: '',
     nova_endpoint: '',
+    ca_certificate: '',
     secret_stored: false,
   });
   mockedPrereq.retrieveServers.mockResolvedValue({ servers: [] });
@@ -143,6 +144,7 @@ describe('Property 3: required-field validation gates retrieval', () => {
       auth_url: '',
       credential_id: '',
       nova_endpoint: '',
+      ca_certificate: '',
       secret_stored: true,
     });
 
@@ -168,6 +170,7 @@ describe('Property 3: required-field validation gates retrieval', () => {
       auth_url: '',
       credential_id: '',
       nova_endpoint: '',
+      ca_certificate: '',
       secret_stored: true,
     });
 

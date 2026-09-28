@@ -50,6 +50,7 @@ export interface InstallationExport {
       auth_url: string;
       credential_id: string;
       nova_endpoint: string;
+      ca_certificate: string;
       secret_stored: boolean;
     } | null;
     nodes: ReadonlyArray<ServerNode>;
@@ -142,6 +143,7 @@ export const buildInstallationExport = async (
       auth_url: cfg.auth_url ?? '',
       credential_id: cfg.credential_id ?? '',
       nova_endpoint: cfg.nova_endpoint ?? '',
+      ca_certificate: cfg.ca_certificate ?? '',
       secret_stored: Boolean(cfg.secret_stored),
     };
   } catch {
@@ -266,6 +268,56 @@ export const importInstallation = async (
 };
 
 // ---------------------------------------------------------------------------
+// Clear all values
+// ---------------------------------------------------------------------------
+
+/** Result of a clear-all-values operation, so the caller can report a summary. */
+export interface ClearResult {
+  /** Number of individual answer values cleared. */
+  cleared: number;
+  /** Number of answer clears that failed. */
+  failed: number;
+}
+
+/**
+ * Clear every parameter value across all question/answer tabs (Network
+ * Checklist, Core Control Plane, CloudStore, VCF) for an installation by
+ * writing an empty answer to every known row. The servers-nodes tab is
+ * reference/credential data and is intentionally left untouched, mirroring
+ * {@link importInstallation}.
+ *
+ * Rows are cleared sequentially per tab to keep server write pressure modest
+ * and make partial-failure counting deterministic.
+ */
+export const clearInstallationValues = async (
+  installationId: string,
+): Promise<ClearResult> => {
+  let cleared = 0;
+  let failed = 0;
+
+  for (const category of QA_CATEGORIES) {
+    const config = category.config as QuestionFormConfig;
+    for (const section of config.sections) {
+      for (const row of section.rows) {
+        try {
+          await prerequisitesService.saveClientAnswer(
+            installationId,
+            category.slug,
+            row.id,
+            '',
+          );
+          cleared += 1;
+        } catch {
+          failed += 1;
+        }
+      }
+    }
+  }
+
+  return { cleared, failed };
+};
+
+// ---------------------------------------------------------------------------
 // Architecture document
 // ---------------------------------------------------------------------------
 
@@ -348,6 +400,7 @@ const renderServersSection = (
           <tr><th>Auth URL</th><td class="mono">${escapeHtml(credentials.auth_url) || '<span class="muted">—</span>'}</td></tr>
           <tr><th>Credential ID</th><td class="mono">${escapeHtml(credentials.credential_id) || '<span class="muted">—</span>'}</td></tr>
           <tr><th>Nova endpoint</th><td class="mono">${escapeHtml(credentials.nova_endpoint) || '<span class="muted">—</span>'}</td></tr>
+          <tr><th>Certificat CA</th><td class="mono">${credentials.ca_certificate ? escapeHtml(credentials.ca_certificate) : '<span class="muted">—</span>'}</td></tr>
           <tr><th>Secret</th><td>${credentials.secret_stored ? 'Enregistré (non exporté)' : 'Non configuré'}</td></tr>
         </tbody>
       </table>`

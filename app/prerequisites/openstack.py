@@ -17,6 +17,7 @@ in local variables. They are never placed in response bodies, exception
 messages, or logs. Logging references non-sensitive context only (endpoints,
 upstream status codes).
 """
+import ssl
 from dataclasses import dataclass
 from typing import Any, List
 
@@ -63,6 +64,33 @@ class OpenStackServiceError(OpenStackError):
     code = "OPENSTACK_ERROR"
 
 
+class OpenStackCACertificateError(OpenStackError):
+    """The supplied CA certificate could not be parsed as valid PEM."""
+
+    code = "INVALID_CA_CERTIFICATE"
+
+
+def _build_verify(ca_certificate: str) -> ssl.SSLContext | bool:
+    """Return an httpx ``verify`` value for the effective CA certificate.
+
+    Empty/whitespace-only ``ca_certificate`` yields ``True`` (the system default
+    trust store), matching today's implicit behaviour. Otherwise an
+    :class:`ssl.SSLContext` is built from the PEM text and returned so both
+    outbound calls verify identically. A non-empty value that cannot be parsed
+    as a certificate raises :class:`OpenStackCACertificateError` before any
+    network call is attempted. The certificate content is never logged.
+    """
+    if not ca_certificate or not ca_certificate.strip():
+        return True
+    try:
+        context = ssl.create_default_context(cadata=ca_certificate)
+    except ssl.SSLError:
+        raise OpenStackCACertificateError(
+            "Le certificat CA fourni est invalide (format PEM illisible)."
+        )
+    return context
+
+
 @dataclass(frozen=True)
 class NovaServerDTO:
     """A single Nova server mapped to the fields exposed to the client."""
@@ -85,21 +113,30 @@ class OpenStackProxy:
         credential_id: str,
         secret: str,
         nova_endpoint: str,
+        ca_certificate: str = "",
     ) -> List[NovaServerDTO]:
         """Obtain a token then list servers, chaining the two OpenStack calls.
 
         The ``secret`` argument stays local to this call and is passed only to
         ``_get_token``; the resulting token stays local and is passed only to
         ``_list_servers``. Neither is logged.
+
+        The effective ``verify`` value is built once via :func:`_build_verify`
+        before any network call, so an invalid PEM raises
+        :class:`OpenStackCACertificateError` before any outbound request is
+        attempted. The same ``verify`` value is shared by both calls so they
+        verify TLS identically.
         """
-        token = await self._get_token(auth_url, credential_id, secret)
-        return await self._list_servers(nova_endpoint, token)
+        verify = _build_verify(ca_certificate)
+        token = await self._get_token(auth_url, credential_id, secret, verify)
+        return await self._list_servers(nova_endpoint, token, verify)
 
     async def _get_token(
         self,
         auth_url: str,
         credential_id: str,
         secret: str,
+        verify: ssl.SSLContext | bool = True,
     ) -> str:
         """POST the Keystone application-credential body and return the token.
 
@@ -122,7 +159,7 @@ class OpenStackProxy:
         }
 
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(verify=verify) as client:
                 response = await client.post(
                     url,
                     json=payload,
@@ -171,6 +208,7 @@ class OpenStackProxy:
         self,
         nova_endpoint: str,
         token: str,
+        verify: ssl.SSLContext | bool = True,
     ) -> List[NovaServerDTO]:
         """GET the Nova server list and map each server to id/name/status.
 
@@ -181,7 +219,7 @@ class OpenStackProxy:
         url = f"{nova_endpoint.rstrip('/')}/servers"
 
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(verify=verify) as client:
                 response = await client.get(
                     url,
                     headers={"X-Auth-Token": token},

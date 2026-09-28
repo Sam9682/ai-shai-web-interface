@@ -1,0 +1,179 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test (BEFORE implementing fix)": {
+      "status": "passed",
+      "failingExample": "Backend (tests/test_event_creation_bug_condition.py):\n1) test_equal_dates_far_future_yields_clear_specific_message — EventCreateRequest(start==end==2030-01-01T10:00) raises ValidationError with msg 'value error, end_date must be after start_date' (opaque raw field-name phrasing, not the clear \"end date must be after start date\" message). FAILS as expected.\n2) test_naive_near_future_start_is_accepted — Falsifying example offset_minutes=1: naive start = UTC-now + 1min, end = start + 1h is REJECTED with 'value error, start_date must be in the future' due to datetime.now(v.tzinfo) naive local-clock comparison. FAILS as expected.\n\nFrontend (frontend/src/pages/AdminEventsPage.extractApiError.test.ts):\n3) extractApiError({detail:[{msg:'Value error, end_date must be after start_date'}]}) returns the raw prefixed string 'Value error, end_date must be after start_date' — the 'Value error, ' prefix is not stripped. Property counterexample: [\" \", true] -> 'Value error,  '. 3 of 4 sub-tests FAIL as expected (missing clean behavior); the \"prefer over fallback\" sub-test passes since raw msg != generic fallback.\n\nAll failures are the EXPECTED outcome — they confirm the bug exists on the unfixed code.",
+      "lastRunTimestamp": 1790612565681
+    },
+    "3.4 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1790613441130
+    },
+    "3.5 Verify preservation tests still pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1790613537849
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test (BEFORE implementing fix)": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612154745
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612164755
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612594449
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612154854
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612599994
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612993109
+      }
+    ],
+    "3.1 Normalize datetimes and clarify validator messages (backend schema)": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612154950
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613003317
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613173615
+      }
+    ],
+    "3.2 Add server-side visibility for validation failures (backend)": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612155066
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613181389
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613280299
+      }
+    ],
+    "3.3 Surface and clean the 422 message on the frontend": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612155185
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613286636
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613358921
+      }
+    ],
+    "3.4 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612155274
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613368874
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613474154
+      }
+    ],
+    "3.5 Verify preservation tests still pass": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612155376
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613478269
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613563787
+      }
+    ],
+    "4. Add integration tests for the full create flow": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612155464
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613569122
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613846041
+      }
+    ],
+    "5. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790612155557
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613851185
+      },
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790614961161
+      }
+    ],
+    "3. Fix for event creation validation failure (silent 422 / naive-clock / opaque message)": [
+      {
+        "executionId": "53ef3549-23e5-452d-ac52-9e636bb6d9bd",
+        "chatSessionId": "sess_54c33e41-07ef-4d57-9e01-57ae2e55b68a",
+        "timestamp": 1790613563965
+      }
+    ]
+  }
+}

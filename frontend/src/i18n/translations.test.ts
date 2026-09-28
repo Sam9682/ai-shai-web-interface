@@ -51,4 +51,17 @@ describe('translation dictionary key parity (Requirement 5.3)', () => {
   it('the default language is one of the supported languages', () => {
     expect(SUPPORTED_LANGUAGES).toContain(DEFAULT_LANGUAGE);
   });
+
+  // Guards the OpenStack CA certificate i18n keys so parity holds for the
+  // label and the invalid-certificate error message in both languages.
+  // _Requirements: 1.4_
+  it.each([
+    'prereq.servers.credentials.caCertificate',
+    'prereq.servers.error.invalidCaCertificate',
+  ])('exposes a non-empty "%s" in both en and fr', (key) => {
+    expect(en).toHaveProperty(key);
+    expect(fr).toHaveProperty(key);
+    expect(en[key].trim().length, `en["${key}"] should be non-empty`).toBeGreaterThan(0);
+    expect(fr[key].trim().length, `fr["${key}"] should be non-empty`).toBeGreaterThan(0);
+  });
 });

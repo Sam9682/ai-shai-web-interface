@@ -2,10 +2,18 @@
 Feature: OPCP-website
 Validates Requirements 6.2
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, Field, field_validator
+
+
+def _normalize_to_utc(v: datetime) -> datetime:
+    """Attach UTC to a timezone-naive datetime so comparisons use an
+    unambiguous, timezone-aware instant instead of the server's local clock."""
+    if v.tzinfo is None:
+        return v.replace(tzinfo=timezone.utc)
+    return v
 
 
 class EventCreateRequest(BaseModel):
@@ -36,20 +44,32 @@ class EventCreateRequest(BaseModel):
         ),
     )
     
-    @field_validator('end_date')
-    @classmethod
-    def validate_end_date(cls, v: datetime, info) -> datetime:
-        """Validate that end_date is after start_date"""
-        if 'start_date' in info.data and v <= info.data['start_date']:
-            raise ValueError('end_date must be after start_date')
-        return v
-    
     @field_validator('start_date')
     @classmethod
     def validate_start_date(cls, v: datetime) -> datetime:
-        """Validate that start_date is in the future"""
-        if v <= datetime.now(v.tzinfo):
-            raise ValueError('start_date must be in the future')
+        """Validate that start_date is in the future.
+
+        A timezone-naive input is normalized to UTC for the comparison only, so
+        the future check uses an unambiguous aware instant against
+        datetime.now(timezone.utc) rather than the server's local clock. The
+        original value is returned unchanged to preserve its tzinfo.
+        """
+        if _normalize_to_utc(v) <= datetime.now(timezone.utc):
+            raise ValueError('Start date must be in the future.')
+        return v
+
+    @field_validator('end_date')
+    @classmethod
+    def validate_end_date(cls, v: datetime, info) -> datetime:
+        """Validate that end_date is strictly after start_date.
+
+        Both values are normalized to UTC for the comparison only, so naive and
+        aware instants are compared consistently. Equal dates are disallowed.
+        The original value is returned unchanged to preserve its tzinfo.
+        """
+        if 'start_date' in info.data and info.data['start_date'] is not None:
+            if _normalize_to_utc(v) <= _normalize_to_utc(info.data['start_date']):
+                raise ValueError('End date must be after start date.')
         return v
 
 

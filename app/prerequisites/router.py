@@ -57,6 +57,7 @@ from app.prerequisites.openstack import (
     OpenStackAuthError,
     OpenStackConnectionError,
     OpenStackServiceError,
+    OpenStackCACertificateError,
 )
 from app.auth.schemas import ErrorResponse
 
@@ -507,6 +508,7 @@ def _credential_config_response(
             auth_url="",
             credential_id="",
             nova_endpoint="",
+            ca_certificate="",
             secret_stored=False,
         )
 
@@ -514,6 +516,7 @@ def _credential_config_response(
         auth_url=config.auth_url,
         credential_id=config.credential_id,
         nova_endpoint=config.nova_endpoint,
+        ca_certificate=config.ca_certificate or "",
         secret_stored=config.credential_secret_encrypted is not None,
     )
 
@@ -526,11 +529,13 @@ def _upsert_credential_config(
 ) -> CredentialConfig:
     """Upsert the credential config for an installation, keyed on ``installation_id``.
 
-    The non-secret fields (Auth URL, Credential ID, Nova endpoint) are always
-    written. The credential secret is encrypted and stored only when a
-    ``credential_secret`` value is provided; when omitted, any previously stored
-    secret is left untouched. This does NOT commit — the caller is responsible
-    for the commit/rollback so the upsert can be composed with a retrieve.
+    The non-secret fields (Auth URL, Credential ID, Nova endpoint, CA
+    certificate) are always written; an empty CA certificate is persisted as
+    empty (it clears any previous value). The credential secret is encrypted
+    and stored only when a ``credential_secret`` value is provided; when
+    omitted, any previously stored secret is left untouched. This does NOT
+    commit — the caller is responsible for the commit/rollback so the upsert
+    can be composed with a retrieve.
     """
     config = (
         db.query(CredentialConfig)
@@ -552,6 +557,9 @@ def _upsert_credential_config(
         config.credential_id = payload.credential_id
         config.nova_endpoint = payload.nova_endpoint
         config.updated_by = updated_by
+
+    # Non-secret CA certificate is always written; "" clears it.
+    config.ca_certificate = payload.ca_certificate
 
     # Encrypt and store the secret only when a value is provided; otherwise
     # preserve any previously stored secret.
@@ -671,6 +679,7 @@ async def retrieve_servers(
 
     The credential secret and the Keystone token are never included in any
     response, on success or on error. OpenStack failures map to:
+    ``OpenStackCACertificateError`` -> 400 ``INVALID_CA_CERTIFICATE``,
     ``OpenStackAuthError`` -> 401 ``AUTH_FAILED``,
     ``OpenStackConnectionError`` -> 502 ``CONNECTION_FAILED``,
     ``OpenStackServiceError`` -> 502 ``OPENSTACK_ERROR``. DB failures roll back
@@ -730,6 +739,20 @@ async def retrieve_servers(
             credential_id=config.credential_id,
             secret=secret,
             nova_endpoint=config.nova_endpoint,
+            ca_certificate=config.ca_certificate or "",
+        )
+    except OpenStackCACertificateError as e:
+        # Non-secret, but the certificate content is never logged — only the
+        # non-sensitive installation id is recorded.
+        logger.warning(
+            f"Invalid CA certificate for installation_id={installation_id}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=ErrorResponse.create(
+                code=e.code,
+                message=str(e),
+            ),
         )
     except OpenStackAuthError as e:
         logger.warning(

@@ -18,6 +18,15 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // For multipart uploads the body is a FormData instance. The instance
+    // default `Content-Type: application/json` would drop the multipart
+    // boundary and cause the backend to reject the request with 400. Remove
+    // the forced content type so the browser generates
+    // `multipart/form-data; boundary=...` itself. JSON bodies are untouched.
+    if (config.data instanceof FormData && config.headers) {
+      delete config.headers['Content-Type'];
+      delete config.headers['content-type'];
+    }
     return config;
   },
   (error) => {

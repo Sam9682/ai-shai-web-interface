@@ -1,0 +1,124 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Property failed after 1 tests. seed: 376313895, path: \"0:0:0:0:0\". Counterexample: [[{\"kind\":\"text\",\"name\":\" \",\"value\":\"\"}]] (shrunk 4 times). AssertionError: expected 'application/json' not to be 'application/json'. All 3 tests failed on unfixed code: (1) property over varied FormData bodies, (2) concrete documentService.uploadDocument(file,'private') case, (3) upload-endpoint file+access_level case. In every case, after the shared axios client's request interceptor runs on a FormData body, config.headers['Content-Type'] remains 'application/json' — the hard-coded instance default JSON content type is retained, so no multipart boundary can be added. This confirms the root cause: the interceptor has no FormData-aware content-type handling.",
+      "lastRunTimestamp": 1790618993792
+    },
+    "3.2 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1790619271914
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790618860971
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790618870843
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619013401
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790618861112
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619019334
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619146534
+      }
+    ],
+    "3.1 Implement the fix in the request interceptor": [
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790618861245
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619153015
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619223565
+      }
+    ],
+    "3.2 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790618861362
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619232306
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619290952
+      }
+    ],
+    "3.3 Verify preservation tests still pass": [
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790618861468
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619295195
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619340377
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790618861569
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619347185
+      },
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619581753
+      }
+    ],
+    "3. Fix for forced JSON content type on FormData uploads": [
+      {
+        "executionId": "56bdc004-0432-47c1-974b-fa478aefba6c",
+        "chatSessionId": "sess_45443f47-790c-46cc-ac2e-249464be64fa",
+        "timestamp": 1790619340532
+      }
+    ]
+  }
+}

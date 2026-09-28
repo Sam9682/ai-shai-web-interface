@@ -7,6 +7,7 @@ import {
   type Installation,
 } from '../../services/prerequisitesService';
 import {
+  clearInstallationValues,
   exportInstallation,
   generateArchitectureDocument,
   importInstallation,
@@ -72,6 +73,12 @@ export const InstallationListPage = () => {
   // Delete seam — task 8.2 replaces the inline confirmation with a dialog.
   const [pendingDelete, setPendingDelete] = useState<Installation | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  // Clear-all-values seam (admin only). `pendingClear` holds the target row
+  // whose values are about to be wiped; `clearing` disables the confirm while
+  // the per-row writes are in flight.
+  const [pendingClear, setPendingClear] = useState<Installation | null>(null);
+  const [clearing, setClearing] = useState(false);
 
   // Export / Import / Generate-document state. `busyId` marks the row whose
   // action is in flight (disables that row's buttons); `rowStatus` carries a
@@ -279,6 +286,52 @@ export const InstallationListPage = () => {
   };
   // ---------------------------------------------------------------------------
 
+  // --- Clear-all-values seam (admin only) ------------------------------------
+  const handleClearRequest = (installation: Installation) => {
+    clearStatus(installation.id);
+    setPendingClear(installation);
+  };
+
+  const cancelClear = () => {
+    setPendingClear(null);
+  };
+
+  const confirmClear = async () => {
+    if (!pendingClear) return;
+    const target = pendingClear;
+    setClearing(true);
+    setBusyId(target.id);
+    clearStatus(target.id);
+    try {
+      const result = await clearInstallationValues(target.id);
+      setPendingClear(null);
+      if (result.failed > 0) {
+        showRowStatus(
+          target.id,
+          'error',
+          t('prereq.installations.clear.partial')
+            .replace('{cleared}', String(result.cleared))
+            .replace('{failed}', String(result.failed)),
+        );
+      } else {
+        showRowStatus(
+          target.id,
+          'success',
+          t('prereq.installations.clear.success').replace(
+            '{cleared}',
+            String(result.cleared),
+          ),
+        );
+      }
+    } catch {
+      showRowStatus(target.id, 'error', t('prereq.installations.clear.error'));
+    } finally {
+      setClearing(false);
+      setBusyId(null);
+    }
+  };
+  // ---------------------------------------------------------------------------
+
   return (
     <div className="card p-6">
       <h1 className="text-2xl font-bold text-[#000E9C] mb-5">
@@ -447,6 +500,14 @@ export const InstallationListPage = () => {
                         </button>
                         <button
                           type="button"
+                          onClick={() => handleClearRequest(installation)}
+                          disabled={busyId === installation.id}
+                          className={DANGER_BUTTON}
+                        >
+                          {t('prereq.installations.clear.button')}
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleDeleteRequest(installation)}
                           className={DANGER_BUTTON}
                         >
@@ -474,6 +535,53 @@ export const InstallationListPage = () => {
           onConfirm={() => void confirmDelete()}
           onCancel={cancelDelete}
         />
+      )}
+
+      {/*
+        Clear-all-values confirmation (admin only). Mirrors the delete dialog's
+        confirm/cancel seam: confirm runs clearInstallationValues across every
+        QA tab, cancel closes without touching the service. Kept inline (rather
+        than a dedicated component) since it is a single, self-contained modal.
+      */}
+      {isAdmin && pendingClear && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="clear-values-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+        >
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+            <h2
+              id="clear-values-title"
+              className="text-lg font-semibold text-gray-900"
+            >
+              {pendingClear.project_name}
+            </h2>
+            <p className="mt-2 text-sm text-gray-700">
+              {t('prereq.installations.clear.confirm')}
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={cancelClear}
+                disabled={clearing}
+                className={SECONDARY_BUTTON}
+              >
+                {t('prereq.installations.edit.cancel')}
+              </button>
+              <button
+                type="button"
+                onClick={() => void confirmClear()}
+                disabled={clearing}
+                className={DANGER_BUTTON}
+              >
+                {clearing
+                  ? t('prereq.installations.clear.clearing')
+                  : t('prereq.installations.clear.confirmButton')}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/*

@@ -10,13 +10,18 @@ import { useTranslation } from '../hooks/useLanguage';
  * business errors or { detail: [ { msg } ] } for Pydantic validation (422).
  * Falls back to the provided default message.
  */
-function extractApiError(error: unknown, fallback: string): string {
+export function extractApiError(error: unknown, fallback: string): string {
   const detail = (error as { response?: { data?: { detail?: unknown } } })
     ?.response?.data?.detail;
   if (typeof detail === 'string') return detail;
   if (Array.isArray(detail)) {
     const first = detail[0] as { msg?: string } | undefined;
-    if (first?.msg) return first.msg;
+    if (first?.msg) {
+      // Pydantic v2 prefixes ValueError messages with "Value error, ".
+      // Strip it so the admin sees a natural, specific reason, and prefer
+      // this specific message over the generic fallback.
+      return first.msg.replace(/^Value error, /, '');
+    }
   }
   const nested = (detail as { error?: { message?: string } } | undefined)?.error?.message;
   if (nested) return nested;

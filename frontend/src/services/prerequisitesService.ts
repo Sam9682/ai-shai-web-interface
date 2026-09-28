@@ -23,11 +23,13 @@ export interface Installation {
 /**
  * OpenStack credential configuration for the `servers-nodes` tab. The secret is
  * never returned by the backend; `secret_stored` only reports whether one exists.
+ * `ca_certificate` is non-secret and is always returned (empty when unset).
  */
 export interface CredentialConfig {
   auth_url: string;
   credential_id: string;
   nova_endpoint: string;
+  ca_certificate: string;
   secret_stored: boolean;
 }
 
@@ -40,6 +42,8 @@ export interface SaveCredentialConfigRequest {
   credential_id: string;
   nova_endpoint: string;
   credential_secret?: string;
+  // Optional; omitted/empty means the backend uses the system default trust store.
+  ca_certificate?: string;
 }
 
 /** A single Nova server as returned by the OpenStack proxy. */

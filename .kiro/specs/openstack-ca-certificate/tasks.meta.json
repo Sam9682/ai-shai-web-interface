@@ -1,0 +1,524 @@
+{
+  "pbtResults": {
+    "7.3 Write property test P1 — textarea round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1790616392587
+    },
+    "3.4 Write property test P6 — invalid PEM, no outbound call": {
+      "status": "passed",
+      "lastRunTimestamp": 1790616456307
+    },
+    "3.3 Write property test P5 — verify setting used by both calls": {
+      "status": "passed",
+      "lastRunTimestamp": 1790616480397
+    },
+    "4.4 Write property test P4 — one row, last-write-wins": {
+      "status": "passed",
+      "lastRunTimestamp": 1790616913872
+    },
+    "4.3 Write property test P3 — persistence round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1790616928053
+    }
+  },
+  "executionHistory": {
+    "1.1 Create the Alembic migration for `ca_certificate`": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615810802
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615820893
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615969952
+      }
+    ],
+    "1.2 Add the `ca_certificate` column to the `CredentialConfig` model": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615810920
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615975705
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616097664
+      }
+    ],
+    "2.1 Add `ca_certificate` to the credential config schemas": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811006
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616107619
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616211032
+      }
+    ],
+    "3.1 Add `OpenStackCACertificateError` and the `_build_verify` helper": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811086
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615822580
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615970949
+      }
+    ],
+    "3.2 Thread the effective `verify` value into both outbound calls": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811172
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615977100
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616100012
+      }
+    ],
+    "4.1 Return, persist, and resolve `ca_certificate` in the router": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811278
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616513818
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616671301
+      }
+    ],
+    "4.2 Add the `OpenStackCACertificateError` HTTP handler": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811356
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616680335
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616783985
+      }
+    ],
+    "5. Checkpoint - Ensure backend tests pass": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811431
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616953216
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790617035038
+      }
+    ],
+    "6.1 Extend `CredentialConfig` and `SaveCredentialConfigRequest`": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811524
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615978511
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616101273
+      }
+    ],
+    "7.1 Extend the form state and render the textarea": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811603
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616108990
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616212529
+      }
+    ],
+    "7.2 Include the CA certificate in `toSaveRequest` and map the error code": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811689
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616515226
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616667626
+      }
+    ],
+    "8.1 Add EN/FR keys for the label and error": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811770
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615979623
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616102470
+      }
+    ],
+    "9.1 Add `ca_certificate` to the export document": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811853
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616110129
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616215913
+      }
+    ],
+    "10. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790615811944
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790617040939
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790617148321
+      }
+    ],
+    "1. Add the `ca_certificate` database column and model field": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616097750
+      }
+    ],
+    "3. Add the CA-certificate proxy support in `openstack.py`": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616100086
+      }
+    ],
+    "6. Add the CA certificate to the frontend service types": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616101376
+      }
+    ],
+    "8. Add the i18n keys": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616102564
+      }
+    ],
+    "2. Extend the credential schemas": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616211196
+      }
+    ],
+    "9. Include the CA certificate in installation export": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616216042
+      }
+    ],
+    "2.2 Write unit tests for the schema field": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616245321
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616284503
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616503623
+      }
+    ],
+    "1.3 Write a migration smoke test": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616246739
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616283076
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616503201
+      }
+    ],
+    "3.3 Write property test P5 — verify setting used by both calls": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616248186
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616285871
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616504616
+      }
+    ],
+    "3.4 Write property test P6 — invalid PEM, no outbound call": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616249557
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616287316
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616506075
+      }
+    ],
+    "4.3 Write property test P3 — persistence round-trip": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616250956
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616790149
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616946214
+      }
+    ],
+    "4.4 Write property test P4 — one row, last-write-wins": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616252431
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616791522
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616947539
+      }
+    ],
+    "4.5 Write example/edge tests for storage": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616253847
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616792829
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616948634
+      }
+    ],
+    "7.3 Write property test P1 — textarea round-trip": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616255202
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616288518
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616507662
+      }
+    ],
+    "7.4 Write property test P2 — empty CA never gates validation": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616256615
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616516664
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616669961
+      }
+    ],
+    "7.5 Write example test 1.1 — labeled textarea present": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616259179
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616518065
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616669171
+      }
+    ],
+    "8.2 Verify EN/FR key parity (1.4)": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616259502
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616519445
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616670623
+      }
+    ],
+    "9.2 Write property test P7 — export includes stored CA certificate": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616260522
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616681356
+      },
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616785252
+      }
+    ],
+    "7. Add the CA certificate field to the credentials form": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616667764
+      }
+    ],
+    "4. Wire the CA certificate through the router": [
+      {
+        "executionId": "9765a18c-5af8-4dcc-90ff-e9d6ca64eb55",
+        "chatSessionId": "sess_672dac02-bf14-400d-a88a-77ae4f15c5fd",
+        "timestamp": 1790616784126
+      }
+    ]
+  }
+}

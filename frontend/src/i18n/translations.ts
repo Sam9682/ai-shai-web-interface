@@ -112,6 +112,15 @@ export const fr: TranslationDictionary = {
   'prereq.installations.generateDoc.button': "Générer le document d'architecture",
   'prereq.installations.generateDoc.success': "Document d'architecture généré avec succès.",
   'prereq.installations.generateDoc.error': "Échec de la génération du document.",
+  'prereq.installations.clear.button': 'Effacer toutes les valeurs',
+  'prereq.installations.clear.confirm':
+    'Effacer toutes les valeurs de tous les paramètres, dans tous les onglets (Network Checklist, Core Control Plane, CloudStore, VCF) de cette installation ? Cette action est irréversible.',
+  'prereq.installations.clear.confirmButton': 'Tout effacer',
+  'prereq.installations.clear.clearing': 'Effacement…',
+  'prereq.installations.clear.success': '{cleared} valeur(s) effacée(s) avec succès.',
+  'prereq.installations.clear.partial':
+    '{cleared} valeur(s) effacée(s), {failed} en échec.',
+  'prereq.installations.clear.error': "Échec de l'effacement des valeurs.",
 
   // ---- Login page ----
   'page.login.title': 'Connexion',
@@ -184,7 +193,7 @@ export const fr: TranslationDictionary = {
   'page.resetPassword.error.failed': 'Échec de la réinitialisation. Le lien a peut-être expiré.',
 
   // ---- Home page ----
-  'page.home.hero.title': 'AI Shai Web Interface',
+  'page.home.hero.title': 'AI Shai Web OPCP Workspace',
   'page.home.hero.intro': 'Ce site a pour objet de proposer un espace de partage entre les clients d\'OPCP et OVH/PSMC, notamment par :',
   'page.home.hero.bullet.prereq': 'les pré-requis à l\'installation d\'OPCP (réseau, cablage, OS...),',
   'page.home.hero.bullet.docs': 'partage des documents essentiels à l\'utilisation d\'OPCP,',
@@ -423,6 +432,7 @@ export const fr: TranslationDictionary = {
   'prereq.servers.credentials.credentialSecret': 'Secret de la credential',
   'prereq.servers.credentials.novaEndpoint': 'Point d\'accès Nova',
   'prereq.servers.credentials.secretStored': 'Un secret est enregistré',
+  'prereq.servers.credentials.caCertificate': 'Certificat CA (PEM)',
   // Retrieve action + loading.
   'prereq.servers.retrieve': 'RÉCUPÉRER LES INFOS',
   'prereq.servers.retrieving': 'Récupération en cours…',
@@ -442,6 +452,7 @@ export const fr: TranslationDictionary = {
   'prereq.servers.error.connection': 'Impossible de contacter OpenStack. Vérifiez le réseau et les URL.',
   'prereq.servers.error.openstack': 'OpenStack a renvoyé une erreur. Veuillez réessayer plus tard.',
   'prereq.servers.error.generic': 'Une erreur est survenue lors de la récupération des serveurs.',
+  'prereq.servers.error.invalidCaCertificate': 'Le certificat CA fourni est invalide (format PEM).',
 };
 
 /** English UI_String text. */
@@ -526,6 +537,14 @@ export const en: TranslationDictionary = {
   'prereq.installations.generateDoc.button': 'Generate Architecture Document',
   'prereq.installations.generateDoc.success': 'Architecture document generated successfully.',
   'prereq.installations.generateDoc.error': 'Failed to generate the document.',
+  'prereq.installations.clear.button': 'Clear All Values',
+  'prereq.installations.clear.confirm':
+    'Clear all values of all parameters, across every tab (Network Checklist, Core Control Plane, CloudStore, VCF) of this installation? This action cannot be undone.',
+  'prereq.installations.clear.confirmButton': 'Clear all',
+  'prereq.installations.clear.clearing': 'Clearing…',
+  'prereq.installations.clear.success': '{cleared} value(s) cleared successfully.',
+  'prereq.installations.clear.partial': '{cleared} value(s) cleared, {failed} failed.',
+  'prereq.installations.clear.error': 'Failed to clear values.',
 
   // ---- Login page ----
   'page.login.title': 'Log in',
@@ -598,7 +617,7 @@ export const en: TranslationDictionary = {
   'page.resetPassword.error.failed': 'Reset failed. The link may have expired.',
 
   // ---- Home page ----
-  'page.home.hero.title': 'AI Shai Web Interface',
+  'page.home.hero.title': 'AI Shai Web OPCP Workspace',
   'page.home.hero.intro': 'This site aims to provide a space for sharing between OPCP clients and OVH/PSMC, in particular through:',
   'page.home.hero.bullet.prereq': 'the prerequisites for installing OPCP (network, cabling, OS...),',
   'page.home.hero.bullet.docs': 'sharing documents essential to using OPCP,',
@@ -837,6 +856,7 @@ export const en: TranslationDictionary = {
   'prereq.servers.credentials.credentialSecret': 'Credential secret',
   'prereq.servers.credentials.novaEndpoint': 'Nova endpoint',
   'prereq.servers.credentials.secretStored': 'A secret is stored',
+  'prereq.servers.credentials.caCertificate': 'CA certificate (PEM)',
   // Retrieve action + loading.
   'prereq.servers.retrieve': 'RETRIEVE INFO',
   'prereq.servers.retrieving': 'Retrieving…',
@@ -856,6 +876,7 @@ export const en: TranslationDictionary = {
   'prereq.servers.error.connection': 'Unable to reach OpenStack. Check the network and the URLs.',
   'prereq.servers.error.openstack': 'OpenStack returned an error. Please try again later.',
   'prereq.servers.error.generic': 'An error occurred while retrieving the servers.',
+  'prereq.servers.error.invalidCaCertificate': 'The provided CA certificate is invalid (PEM format).',
 };
 
 /** All Translation_Dictionaries keyed by Supported_Language. */

@@ -79,6 +79,7 @@ interface CredentialsFormState {
   credentialId: string;
   credentialSecret: string;
   novaEndpoint: string;
+  caCertificate: string;
 }
 
 /**
@@ -112,6 +113,7 @@ const toSaveRequest = (state: CredentialsFormState): SaveCredentialConfigRequest
     auth_url: state.authUrl.trim(),
     credential_id: state.credentialId.trim(),
     nova_endpoint: state.novaEndpoint.trim(),
+    ca_certificate: state.caCertificate.trim(),
   };
   if (state.credentialSecret.trim()) {
     request.credential_secret = state.credentialSecret;
@@ -124,6 +126,7 @@ type ErrorMessageKey =
   | 'prereq.servers.error.invalidCredentials'
   | 'prereq.servers.error.connection'
   | 'prereq.servers.error.openstack'
+  | 'prereq.servers.error.invalidCaCertificate'
   | 'prereq.servers.error.generic';
 
 /** Map a backend `ErrorResponse` code to the localized message key. */
@@ -131,6 +134,7 @@ const ERROR_CODE_TO_KEY: Record<string, ErrorMessageKey> = {
   AUTH_FAILED: 'prereq.servers.error.invalidCredentials',
   CONNECTION_FAILED: 'prereq.servers.error.connection',
   OPENSTACK_ERROR: 'prereq.servers.error.openstack',
+  INVALID_CA_CERTIFICATE: 'prereq.servers.error.invalidCaCertificate',
 };
 
 /**
@@ -186,6 +190,7 @@ const CredentialsForm = ({ installationId }: CredentialsFormProps) => {
     credentialId: '',
     credentialSecret: '',
     novaEndpoint: '',
+    caCertificate: '',
   });
   const [secretStored, setSecretStored] = useState(false);
   const [validationKey, setValidationKey] = useState<CredentialsValidationKey | null>(
@@ -211,6 +216,7 @@ const CredentialsForm = ({ installationId }: CredentialsFormProps) => {
           authUrl: cfg.auth_url ?? '',
           credentialId: cfg.credential_id ?? '',
           novaEndpoint: cfg.nova_endpoint ?? '',
+          caCertificate: cfg.ca_certificate ?? '',
         }));
         setSecretStored(Boolean(cfg.secret_stored));
       })
@@ -319,6 +325,22 @@ const CredentialsForm = ({ installationId }: CredentialsFormProps) => {
             )}
           </div>
         ))}
+      </div>
+
+      <div className="mt-4">
+        <label
+          htmlFor="openstack-ca-certificate"
+          className="mb-1 block text-xs font-medium text-gray-500"
+        >
+          {t('prereq.servers.credentials.caCertificate')}
+        </label>
+        <textarea
+          id="openstack-ca-certificate"
+          rows={6}
+          value={form.caCertificate}
+          onChange={(e) => setField('caCertificate')(e.target.value)}
+          className={`${CRED_FIELD_CLASS} font-mono`}
+        />
       </div>
 
       {validationKey && (

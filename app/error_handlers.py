@@ -116,9 +116,14 @@ async def validation_exception_handler(
             "type": error["type"]
         })
     
-    # Log the validation error
-    logger.info(
-        f"Validation error on {request.url.path}",
+    # Log the validation error at WARNING level so a create/validation failure
+    # (e.g. a 422/400 on event creation) is diagnosable server-side and never
+    # silent. Include the route/path, field, and message for each error.
+    error_summary = "; ".join(
+        f"{err['field']}: {err['message']}" for err in errors
+    ) or "no field details"
+    logger.warning(
+        f"Validation error on {request.method} {request.url.path} - {error_summary}",
         extra={
             "errors": errors,
             "path": request.url.path,

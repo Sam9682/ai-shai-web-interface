@@ -60,6 +60,14 @@ class CredentialConfig(Base):
         default=""
     )
 
+    # OpenStack CA certificate (PEM). Non-secret, optional; NULL/empty means
+    # "use the system default trust store" for TLS verification. Intentionally
+    # NOT encrypted (contrast with credential_secret_encrypted).
+    ca_certificate: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True
+    )
+
     # Encrypted (Fernet) write-only secret; NULL when never provided.
     credential_secret_encrypted: Mapped[str | None] = mapped_column(
         Text,
