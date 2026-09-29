@@ -32,7 +32,8 @@ class DocumentResponse(BaseModel):
     download_count: int
     created_at: datetime
     updated_at: datetime
-    
+    target_url: Optional[str] = None
+
     model_config = {
         "from_attributes": True
     }

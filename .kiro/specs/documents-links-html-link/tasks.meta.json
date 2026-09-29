@@ -1,0 +1,131 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Write bug condition exploration tests (BEFORE implementing the fix)": [
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685037679
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685046063
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685221536
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing the fix)": [
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685038010
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685225580
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685482099
+      }
+    ],
+    "3.1 Backend - expose `target_url` on the list response": [
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685038383
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685489070
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685575309
+      }
+    ],
+    "3.2 Frontend - render an anchor for links documents": [
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685038757
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685579221
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685683770
+      }
+    ],
+    "3.3 Verify bug condition exploration tests now pass": [
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685039000
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685691392
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685753632
+      }
+    ],
+    "3.4 Verify preservation tests still pass": [
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685039183
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685757313
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685819042
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685039380
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685823472
+      },
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790687009540
+      }
+    ],
+    "3. Fix for links documents rendered as Download buttons instead of anchors": [
+      {
+        "executionId": "c608bb41-d071-42c8-9c1c-35736a213216",
+        "chatSessionId": "sess_d7cbfaae-dc7e-443b-98cc-4964b4bddcb1",
+        "timestamp": 1790685819251
+      }
+    ]
+  }
+}

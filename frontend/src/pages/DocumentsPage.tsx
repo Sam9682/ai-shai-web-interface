@@ -184,20 +184,37 @@ export const DocumentsPage = () => {
             <section key={category} className="card p-6 mb-5">
               <h2 className="text-lg font-semibold text-[#000E9C] mb-3">{labelKey ? t(labelKey) : category}</h2>
               <ul className="divide-y divide-gray-100">
-                {docs.map((doc) => (
-                  <li key={doc.id} className="flex items-center justify-between py-2.5">
-                    <div>
-                      <p className="text-sm font-medium text-gray-800">{doc.original_name}</p>
-                      <p className="text-xs text-gray-500">{formatSize(doc.size)}</p>
-                    </div>
-                    <button
-                      onClick={() => handleDownload(doc)}
-                      className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
-                    >
-                      {t('page.documents.download')}
-                    </button>
-                  </li>
-                ))}
+                {docs.map((doc) => {
+                  // Bug condition: a `links` document with a usable target URL
+                  // renders as an anchor opening the URL in a new tab, instead
+                  // of the Download button wired to the file-download flow.
+                  const isLink = doc.category === 'links' && !!doc.target_url;
+                  return (
+                    <li key={doc.id} className="flex items-center justify-between py-2.5">
+                      <div>
+                        <p className="text-sm font-medium text-gray-800">{doc.original_name}</p>
+                        <p className="text-xs text-gray-500">{formatSize(doc.size)}</p>
+                      </div>
+                      {isLink ? (
+                        <a
+                          href={doc.target_url as string}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
+                        >
+                          {`${t('page.documents.openLink')} : ${doc.original_name}`}
+                        </a>
+                      ) : (
+                        <button
+                          onClick={() => handleDownload(doc)}
+                          className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
+                        >
+                          {t('page.documents.download')}
+                        </button>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           );

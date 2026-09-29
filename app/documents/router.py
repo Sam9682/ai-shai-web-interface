@@ -28,6 +28,37 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/documents", tags=["documents"])
 
 
+def _read_link_target(filename: str) -> Optional[str]:
+    """Read the target URL from a stored ``.links`` file.
+
+    Resolves ``filename`` to its on-disk path via
+    ``storage_service.get_file_path`` and returns the first non-empty, stripped
+    line of the file. Returns ``None`` when the file is missing, unreadable, or
+    empty. This helper MUST NOT raise: any failure results in ``None`` so the
+    document is still returned by the list endpoint, just without a
+    ``target_url`` (the frontend then falls back to the download flow).
+
+    Args:
+        filename: Stored filename of the ``.links`` document.
+
+    Returns:
+        The first non-empty stripped line, or ``None`` on any failure/empty file.
+    """
+    try:
+        file_path = storage_service.get_file_path(filename)
+        if not file_path:
+            return None
+        with open(file_path, "r", encoding="utf-8") as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped:
+                    return stripped
+        return None
+    except Exception as e:
+        logger.warning(f"Failed to read link target for {filename}: {str(e)}")
+        return None
+
+
 @router.post(
     "/upload",
     response_model=DocumentUploadResponse,
@@ -265,8 +296,19 @@ async def list_documents(
 
     logger.info(f"Returning {len(documents)} documents")
 
+    # Assemble responses. For links documents, expose the target URL read from
+    # the stored .links file so the frontend can render an anchor without hitting
+    # the download endpoint. target_url stays None for every other category and
+    # for links whose file is missing/unreadable/empty (graceful fallback).
+    responses = []
+    for doc in documents:
+        response = DocumentResponse.model_validate(doc)
+        if doc.category == DocumentCategory.LINKS:
+            response.target_url = _read_link_target(doc.filename)
+        responses.append(response)
+
     return DocumentListResponse(
-        documents=[DocumentResponse.model_validate(doc) for doc in documents],
+        documents=responses,
         total=len(documents)
     )
 

@@ -15,6 +15,7 @@ export interface Document {
   download_count: number;
   created_at: string;
   updated_at: string;
+  target_url?: string | null;
 }
 
 export interface DocumentListResponse {

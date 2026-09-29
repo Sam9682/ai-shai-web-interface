@@ -377,6 +377,7 @@ export const fr: TranslationDictionary = {
   'page.documents.error.load': 'Impossible de charger les documents',
   'page.documents.empty': 'Aucun document disponible.',
   'page.documents.download': 'Télécharger',
+  'page.documents.openLink': 'Ouvrir le lien',
   'page.documents.error.downloadPrefix': 'Échec du téléchargement de « ',
   'page.documents.error.downloadSuffix': ' »',
 
@@ -816,6 +817,7 @@ export const en: TranslationDictionary = {
   'page.documents.error.load': 'Unable to load documents',
   'page.documents.empty': 'No documents available.',
   'page.documents.download': 'Download',
+  'page.documents.openLink': 'Open link',
   'page.documents.error.downloadPrefix': 'Download failed for « ',
   'page.documents.error.downloadSuffix': ' »',
 
