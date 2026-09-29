@@ -38,8 +38,12 @@ export const DocumentsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Per-category callback-ref map: each rendered section owns its own file
+  // <input>, so a section's "Upload" button triggers exactly that section's
+  // input. A single shared ref cannot back multiple simultaneous inputs.
+  const fileInputRefs = useRef<Partial<Record<DocumentCategory, HTMLInputElement | null>>>({});
 
   const isAdmin = authService.isAdmin(); // Requirement 3.1, 3.2
 
@@ -87,12 +91,40 @@ export const DocumentsPage = () => {
     return [...ordered, ...rest];
   }, [grouped]);
 
+  // Sections to render. Non-admins only see sections for categories that
+  // actually have items (grouping/ordering preserved — Requirement 3.6). Admins
+  // additionally see every category section (even when empty) so the per-section
+  // upload control is always available, including for `documents` which is not
+  // part of CATEGORY_ORDER. Present categories keep their order; empty admin-only
+  // sections are appended after.
+  const sectionCategories = useMemo(() => {
+    if (!isAdmin) return orderedCategories;
+    const allCategories: DocumentCategory[] = [...CATEGORY_ORDER, 'documents'];
+    const extras = allCategories.filter((category) => !orderedCategories.includes(category));
+    return [...orderedCategories, ...extras];
+  }, [isAdmin, orderedCategories]);
+
   const handleDownload = async (doc: Document) => {
     try {
       setDownloadError(null);
       await documentService.downloadDocument(doc.id, doc.original_name); // Requirement 10.1
     } catch {
       setDownloadError(`${t('page.documents.error.downloadPrefix')}${doc.original_name}${t('page.documents.error.downloadSuffix')}`); // Requirement 10.3
+    }
+  };
+
+  // Admin-only delete flow. A confirmation step gates the destructive call:
+  // when the user cancels, no service call is made. On success we refresh the
+  // list; on failure we surface a page-level delete-error banner mirroring the
+  // upload/download error pattern. Requirement 2.2, 2.3.
+  const handleDelete = async (doc: Document) => {
+    if (!window.confirm(t('page.documents.delete.confirm'))) return;
+    try {
+      setDeleteError(null);
+      await documentService.deleteDocument(doc.id);
+      await loadDocuments();
+    } catch {
+      setDeleteError(t('page.documents.error.delete'));
     }
   };
 
@@ -106,11 +138,15 @@ export const DocumentsPage = () => {
     }
   };
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle a file selection from a specific section's input. Category stays
+  // server-derived from the file extension, so no client category param is sent
+  // (handleUpload calls uploadDocument(file) with only the File). Reset that
+  // section's input so re-selecting the same file re-triggers change.
+  const onFileChange = (category: DocumentCategory) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) void handleUpload(file);
-    // Reset so selecting the same file again re-triggers change.
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    const input = fileInputRefs.current[category];
+    if (input) input.value = '';
   };
 
   if (loading) return <div className="card p-6 text-gray-600">{t('page.documents.loading')}</div>;
@@ -133,34 +169,6 @@ export const DocumentsPage = () => {
         />
       </div>
 
-      {isAdmin && (
-        <div className="mb-5">
-          <label
-            htmlFor="document-upload-input"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            {t('page.documents.upload.label')}
-          </label>
-          <div className="flex items-center gap-3">
-            <input
-              id="document-upload-input"
-              ref={fileInputRef}
-              type="file"
-              onChange={onFileChange}
-              aria-label={t('page.documents.upload.label')}
-              className="text-sm text-gray-700"
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
-            >
-              {t('page.documents.upload.button')}
-            </button>
-          </div>
-        </div>
-      )}
-
       {uploadError && (
         <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
           {uploadError}
@@ -173,16 +181,60 @@ export const DocumentsPage = () => {
         </div>
       )}
 
-      {filtered.length === 0 ? (
+      {deleteError && (
+        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
+          {deleteError}
+        </div>
+      )}
+
+      {filtered.length === 0 && !isAdmin ? (
         <div className="card p-6 text-gray-600">{t('page.documents.empty')}</div>
       ) : (
-        orderedCategories.map((category) => {
+        sectionCategories.map((category) => {
           const docs = grouped.get(category) ?? [];
-          if (docs.length === 0) return null;
+          // Non-admins never see empty sections; admins always get every
+          // category section so the per-section upload control is available.
+          if (docs.length === 0 && !isAdmin) return null;
           const labelKey = CATEGORY_LABEL_KEYS[category];
+          const categoryLabel = labelKey ? t(labelKey) : category;
+          // Per-section upload accessible label: "<upload label> — <category label>"
+          // (em dash U+2014), so assistive tech and tests can target the right
+          // section's control via within(section).getByLabelText(...).
+          const perSectionUploadLabel = `${t('page.documents.upload.label')} — ${categoryLabel}`;
           return (
             <section key={category} className="card p-6 mb-5">
-              <h2 className="text-lg font-semibold text-[#000E9C] mb-3">{labelKey ? t(labelKey) : category}</h2>
+              <h2 className="text-lg font-semibold text-[#000E9C] mb-3">{categoryLabel}</h2>
+
+              {isAdmin && (
+                <div className="flex items-center gap-3 mb-3">
+                  {/* Base-label control on the `documents` section only, so
+                      getByLabelText('Téléverser un document') resolves to a
+                      single input. */}
+                  {category === 'documents' && (
+                    <label htmlFor={`document-upload-input-${category}`} className="sr-only">
+                      {t('page.documents.upload.label')}
+                    </label>
+                  )}
+                  <input
+                    id={`document-upload-input-${category}`}
+                    ref={(el) => {
+                      fileInputRefs.current[category] = el;
+                    }}
+                    type="file"
+                    onChange={onFileChange(category)}
+                    aria-label={perSectionUploadLabel}
+                    className="text-sm text-gray-700"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRefs.current[category]?.click()}
+                    className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
+                  >
+                    {t('page.documents.upload.button')}
+                  </button>
+                </div>
+              )}
+
               <ul className="divide-y divide-gray-100">
                 {docs.map((doc) => {
                   // Bug condition: a `links` document with a usable target URL
@@ -195,23 +247,37 @@ export const DocumentsPage = () => {
                         <p className="text-sm font-medium text-gray-800">{doc.original_name}</p>
                         <p className="text-xs text-gray-500">{formatSize(doc.size)}</p>
                       </div>
-                      {isLink ? (
-                        <a
-                          href={doc.target_url as string}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
-                        >
-                          {`${t('page.documents.openLink')} : ${doc.original_name}`}
-                        </a>
-                      ) : (
-                        <button
-                          onClick={() => handleDownload(doc)}
-                          className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
-                        >
-                          {t('page.documents.download')}
-                        </button>
-                      )}
+                      <div className="flex items-center gap-3">
+                        {isLink ? (
+                          <a
+                            href={doc.target_url as string}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm font-medium text-[#000E9C] hover:underline transition-colors"
+                          >
+                            {`${t('page.documents.openLink')} : ${doc.original_name}`}
+                          </a>
+                        ) : (
+                          <button
+                            onClick={() => handleDownload(doc)}
+                            className="px-3 py-1.5 text-sm font-medium text-white bg-[#000E9C] rounded hover:bg-[#4949FF] transition-colors"
+                          >
+                            {t('page.documents.download')}
+                          </button>
+                        )}
+                        {/* Admin-only Delete control next to each item, alongside
+                            the Download/hyperlink control. Gated on isAdmin so
+                            non-admins never see it (Requirement 2.3). */}
+                        {isAdmin && (
+                          <button
+                            type="button"
+                            onClick={() => void handleDelete(doc)}
+                            className="px-3 py-1.5 text-sm font-medium text-[#000E9C] border border-[#000E9C] rounded hover:bg-red-50 transition-colors"
+                          >
+                            {t('page.documents.delete')}
+                          </button>
+                        )}
+                      </div>
                     </li>
                   );
                 })}

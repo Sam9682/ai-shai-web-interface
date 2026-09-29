@@ -48,4 +48,8 @@ export const documentService = {
     anchor.remove();
     window.URL.revokeObjectURL(url);
   },
+
+  async deleteDocument(id: string): Promise<void> {
+    await api.delete(`/documents/${id}`);
+  },
 };

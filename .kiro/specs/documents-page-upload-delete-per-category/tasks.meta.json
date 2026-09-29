@@ -1,0 +1,192 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration tests (BEFORE implementing the fix)": {
+      "status": "passed",
+      "failingExample": "All 6 exploration tests FAILED on unfixed code (expected — confirms the bug). Counterexamples:\n(a) Per-section upload: no control labeled \"Téléverser un document — Documentation\"; only a single global upload control exists.\n(b) Admin Delete control: PBT counterexample [[{\"original_name\":\"a\",\"category\":\"documents\"}]] — expected 1 Delete control, got 0. No \"Supprimer\" button rendered.\n(c) Delete wiring: no button /supprimer/i found; deleteDocument never called; list not re-fetched.\n(d) Plain-text link: PBT counterexample [\"a\",\"https://aaa.example.com\"] — anchor class \"px-3 py-1.5 ... bg-[#000E9C] rounded ...\" matched forbidden /bg-\\[#000E9C\\]/; links item renders as a button-styled anchor instead of a plain hyperlink.",
+      "lastRunTimestamp": 1790692987696
+    },
+    "3.7 Verify preservation tests still pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1790693893890
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration tests (BEFORE implementing the fix)": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692851913
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692861072
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693011413
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing the fix)": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692852079
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693015583
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693178701
+      }
+    ],
+    "3.1 Add `deleteDocument` to the document service": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692852199
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693186974
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693260453
+      }
+    ],
+    "3.2 Add per-section admin-only upload control in DocumentsPage": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692852310
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693264887
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693576451
+      }
+    ],
+    "3.3 Add admin-only Delete control with confirmation in DocumentsPage": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692852424
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693581242
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693701121
+      }
+    ],
+    "3.4 Restyle the links anchor as a plain hyperlink in DocumentsPage": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692852538
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693706234
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693792016
+      }
+    ],
+    "3.5 Add delete/confirm translation keys": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692852662
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693796701
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693806533
+      }
+    ],
+    "3.6 Verify bug condition exploration tests now pass": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692852776
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693811073
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693850192
+      }
+    ],
+    "3.7 Verify preservation tests still pass": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692852885
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693854168
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693907395
+      }
+    ],
+    "4. Checkpoint - Ensure the full frontend suite passes": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790692853036
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693913753
+      },
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790694086064
+      }
+    ],
+    "3. Fix for per-category upload, admin delete, and plain-text links on the Documents page": [
+      {
+        "executionId": "ca3e71a3-ad02-428d-9589-047a60927587",
+        "chatSessionId": "sess_57df87c6-a352-43e1-bfd7-d18132a648f6",
+        "timestamp": 1790693907547
+      }
+    ]
+  }
+}

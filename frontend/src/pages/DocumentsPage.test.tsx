@@ -239,8 +239,11 @@ describe('Task 7.2: upload control admin gating', () => {
     renderPage();
     await waitForLoaded();
 
+    // Per-section upload controls (documents-page-upload-delete-per-category):
+    // the base-labelled control resolves to a single input on the documents
+    // section, and at least one "Téléverser" button renders for admins.
     expect(screen.getByLabelText('Téléverser un document')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Téléverser' })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: 'Téléverser' }).length).toBeGreaterThan(0);
   });
 
   it('hides the upload control when isAdmin() is false', async () => {
