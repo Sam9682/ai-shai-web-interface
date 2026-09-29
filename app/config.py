@@ -1,4 +1,5 @@
 """Application configuration using Pydantic settings"""
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings
 from typing import List
 
@@ -65,6 +66,19 @@ class Settings(BaseSettings):
     PG_USER: str = "shai_user"
     PG_PASSWORD: str = "shai_password"
     TABLE_NAME: str = "md_embeddings"
+    
+    # OpenStack forward proxy (empty means no proxy configured -> direct connection)
+    # Accepts the explicit app var plus the standard lowercase/uppercase proxy env vars
+    OPENSTACK_HTTPS_PROXY: str = Field(
+        default="",
+        validation_alias=AliasChoices(
+            "OPENSTACK_HTTPS_PROXY",
+            "https_proxy",
+            "http_proxy",
+            "HTTPS_PROXY",
+            "HTTP_PROXY",
+        ),
+    )
     
     model_config = {
         "env_file": ".env",

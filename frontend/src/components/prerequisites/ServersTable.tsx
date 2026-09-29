@@ -1,10 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SERVER_NODES, type ServerNode } from './serversData';
+import {
+  mergeNodeOverrides,
+  type ServerNodeOverride,
+} from './serverNodeOverrides';
 import { useTranslation } from '../../hooks/useLanguage';
+import { authService } from '../../services/authService';
 import { prerequisitesService } from '../../services/prerequisitesService';
 import type {
   NovaServer,
   SaveCredentialConfigRequest,
+  ServerNodeOverridePayload,
 } from '../../services/prerequisitesService';
 
 interface ServersTableProps {
@@ -25,6 +31,34 @@ interface ServersTableProps {
 }
 
 const PLACEHOLDER = '—';
+
+/** Map a snake_case wire payload to the camelCase override shape. */
+const toServerNodeOverride = (
+  payload: ServerNodeOverridePayload,
+): ServerNodeOverride => ({
+  nodeUuid: payload.node_uuid,
+  serialNumber: payload.serial_number,
+  instanceUuid: payload.instance_uuid,
+  powerState: payload.power_state,
+  provisionState: payload.provision_state,
+  remark: payload.remark,
+});
+
+/**
+ * Inverse of `toServerNodeOverride`: map a camelCase `ServerNode` row to the
+ * snake_case wire payload sent to the backend. Used when persisting the full
+ * merged node list on an edit confirm.
+ */
+const toServerNodeOverridePayload = (
+  node: ServerNode,
+): ServerNodeOverridePayload => ({
+  node_uuid: node.nodeUuid,
+  serial_number: node.serialNumber,
+  instance_uuid: node.instanceUuid,
+  power_state: node.powerState,
+  provision_state: node.provisionState,
+  remark: node.remark,
+});
 
 const HEAD_CELL =
   'px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-[#000E9C] border-b border-gray-200 whitespace-nowrap';
@@ -63,6 +97,43 @@ const MonoCell = ({ value }: { value: string }) =>
   ) : (
     <span className="text-gray-400">{PLACEHOLDER}</span>
   );
+
+const NODE_CELL_INPUT_CLASS =
+  'w-full min-w-[8rem] px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent';
+
+/**
+ * Free-text editor for a single node cell (used for all six columns when the
+ * current user is a member or administrator). Bound to the row's edit state via
+ * `onChange`; the actual persistence (save on blur/Enter) is wired in a later
+ * task.
+ */
+const EditableCell = ({
+  value,
+  label,
+  onChange,
+  onConfirm,
+}: {
+  value: string;
+  label: string;
+  onChange: (next: string) => void;
+  /** Commit the edit (persist to the backend) on blur or Enter. */
+  onConfirm: () => void;
+}) => (
+  <input
+    type="text"
+    aria-label={label}
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    onBlur={onConfirm}
+    onKeyDown={(e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        onConfirm();
+      }
+    }}
+    className={NODE_CELL_INPUT_CLASS}
+  />
+);
 
 const CRED_FIELD_CLASS =
   'w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#4949FF] focus:border-transparent';
@@ -165,6 +236,28 @@ const toErrorMessageKey = (error: unknown): ErrorMessageKey => {
   const code = extractErrorCode(error);
   if (code && code in ERROR_CODE_TO_KEY) return ERROR_CODE_TO_KEY[code];
   return 'prereq.servers.error.generic';
+};
+
+/** i18n keys for the node-save error banner. */
+type NodeErrorMessageKey =
+  | 'prereq.servers.nodes.error.save'
+  | 'prereq.servers.nodes.error.notFound';
+
+/**
+ * Map a backend error code to the node-save message key. `INSTALLATION_NOT_FOUND`
+ * surfaces the not-found message; `DATABASE_ERROR` and any unknown/absent code
+ * fall back to the generic save-failure message.
+ */
+const NODE_ERROR_CODE_TO_KEY: Record<string, NodeErrorMessageKey> = {
+  INSTALLATION_NOT_FOUND: 'prereq.servers.nodes.error.notFound',
+  DATABASE_ERROR: 'prereq.servers.nodes.error.save',
+};
+
+/** Resolve a node-save rejection into the localized message key (with fallback). */
+const toNodeErrorMessageKey = (error: unknown): NodeErrorMessageKey => {
+  const code = extractErrorCode(error);
+  if (code && code in NODE_ERROR_CODE_TO_KEY) return NODE_ERROR_CODE_TO_KEY[code];
+  return 'prereq.servers.nodes.error.save';
 };
 
 interface CredentialsFormProps {
@@ -456,7 +549,99 @@ export const ServersTable = ({
   nodes = SERVER_NODES,
   installationId,
 }: ServersTableProps) => {
+  const { t } = useTranslation();
   const embedded = variant === 'embedded';
+
+  // Per-installation overrides layered over the default inventory. Loaded on
+  // mount when an installation is in context; a load failure leaves the table
+  // on defaults with no blocking error (defaults remain authoritative).
+  const [nodesOverrides, setNodesOverrides] = useState<ServerNodeOverride[]>([]);
+
+  // Node-save error banner key. Set on a rejected `saveServerNodes`, cleared on
+  // the next successful save or the next edit.
+  const [saveErrorKey, setSaveErrorKey] = useState<NodeErrorMessageKey | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (!installationId) {
+      setNodesOverrides([]);
+      return;
+    }
+    let cancelled = false;
+    prerequisitesService
+      .loadServerNodes(installationId)
+      .then((response) => {
+        if (cancelled) return;
+        setNodesOverrides(response.nodes.map(toServerNodeOverride));
+      })
+      .catch(() => {
+        // No stored overrides yet (or load failed): render the defaults.
+        if (!cancelled) setNodesOverrides([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [installationId]);
+
+  const mergedNodes = useMemo(
+    () => mergeNodeOverrides(nodes, nodesOverrides),
+    [nodes, nodesOverrides],
+  );
+
+  // Editing is enabled for members and administrators; visitors and
+  // unauthenticated users get the read-only renderers. Resolved once from
+  // `authService`: administrator via `isAdmin()`, member via the stored role.
+  const isEditable =
+    authService.isAdmin() || authService.getCurrentUser()?.role === 'member';
+
+  // Per-row edit state, keyed by the row's default `nodeUuid` (the merge join
+  // key, which is stable across edits). Kept in sync with the merged node
+  // values so members/administrators start from the currently displayed data
+  // and can edit any of the six fields as free text. The save call and
+  // error banner are wired in a later task.
+  const [editState, setEditState] = useState<Record<string, ServerNode>>({});
+
+  useEffect(() => {
+    const next: Record<string, ServerNode> = {};
+    for (const node of mergedNodes) {
+      next[node.nodeUuid] = { ...node };
+    }
+    setEditState(next);
+  }, [mergedNodes]);
+
+  const handleFieldChange = (
+    rowKey: string,
+    field: keyof ServerNode,
+    value: string,
+  ) => {
+    // A fresh edit clears any stale save-failure banner.
+    setSaveErrorKey(null);
+    setEditState((prev) => {
+      const current = prev[rowKey];
+      if (!current) return prev;
+      return { ...prev, [rowKey]: { ...current, [field]: value } };
+    });
+  };
+
+  // Confirm an edit (blur/Enter): persist the full merged node list (with the
+  // current edits applied) to the backend, scoped to the installation. On
+  // success, store the returned overrides and clear the error banner; on
+  // rejection, surface the mapped error key. No-op without an installation.
+  const handleConfirm = () => {
+    if (!installationId) return;
+    const rows = mergedNodes.map((node) => editState[node.nodeUuid] ?? node);
+    const payload = rows.map(toServerNodeOverridePayload);
+    prerequisitesService
+      .saveServerNodes(installationId, payload)
+      .then((response) => {
+        setNodesOverrides(response.nodes.map(toServerNodeOverride));
+        setSaveErrorKey(null);
+      })
+      .catch((error) => {
+        setSaveErrorKey(toNodeErrorMessageKey(error));
+      });
+  };
 
   const body = (
     <>
@@ -466,7 +651,14 @@ export const ServersTable = ({
         <h1 className="text-2xl font-bold text-[#000E9C] mb-5">{title}</h1>
       )}
 
-      {installationId && <CredentialsForm installationId={installationId} />}
+      {saveErrorKey && (
+        <p
+          role="alert"
+          className="mb-4 rounded bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
+          {t(saveErrorKey)}
+        </p>
+      )}
 
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse">
@@ -493,41 +685,115 @@ export const ServersTable = ({
             </tr>
           </thead>
           <tbody>
-            {nodes.map((node) => (
-              <tr key={node.nodeUuid} className="hover:bg-gray-50">
-                <td className={BODY_CELL}>
-                  <MonoCell value={node.nodeUuid} />
-                </td>
-                <td className={BODY_CELL}>
-                  <MonoCell value={node.serialNumber} />
-                </td>
-                <td className={BODY_CELL}>
-                  <MonoCell value={node.instanceUuid} />
-                </td>
-                <td className={BODY_CELL}>
-                  <StatePill
-                    value={node.powerState}
-                    className={powerStateClass(node.powerState)}
-                  />
-                </td>
-                <td className={BODY_CELL}>
-                  <StatePill
-                    value={node.provisionState}
-                    className={provisionStateClass(node.provisionState)}
-                  />
-                </td>
-                <td className={BODY_CELL}>
-                  {node.remark.trim() ? (
-                    node.remark
+            {mergedNodes.map((node) => {
+              // For editable rows, read from edit state (falls back to the
+              // merged node until the sync effect populates it).
+              const row = editState[node.nodeUuid] ?? node;
+              return (
+                <tr key={node.nodeUuid} className="hover:bg-gray-50">
+                  {isEditable ? (
+                    <>
+                      <td className={BODY_CELL}>
+                        <EditableCell
+                          label="Node UUID"
+                          value={row.nodeUuid}
+                          onChange={(v) =>
+                            handleFieldChange(node.nodeUuid, 'nodeUuid', v)
+                          }
+                          onConfirm={handleConfirm}
+                        />
+                      </td>
+                      <td className={BODY_CELL}>
+                        <EditableCell
+                          label="Serial Number"
+                          value={row.serialNumber}
+                          onChange={(v) =>
+                            handleFieldChange(node.nodeUuid, 'serialNumber', v)
+                          }
+                          onConfirm={handleConfirm}
+                        />
+                      </td>
+                      <td className={BODY_CELL}>
+                        <EditableCell
+                          label="Instance UUID"
+                          value={row.instanceUuid}
+                          onChange={(v) =>
+                            handleFieldChange(node.nodeUuid, 'instanceUuid', v)
+                          }
+                          onConfirm={handleConfirm}
+                        />
+                      </td>
+                      <td className={BODY_CELL}>
+                        <EditableCell
+                          label="Power State"
+                          value={row.powerState}
+                          onChange={(v) =>
+                            handleFieldChange(node.nodeUuid, 'powerState', v)
+                          }
+                          onConfirm={handleConfirm}
+                        />
+                      </td>
+                      <td className={BODY_CELL}>
+                        <EditableCell
+                          label="Provision State"
+                          value={row.provisionState}
+                          onChange={(v) =>
+                            handleFieldChange(node.nodeUuid, 'provisionState', v)
+                          }
+                          onConfirm={handleConfirm}
+                        />
+                      </td>
+                      <td className={BODY_CELL}>
+                        <EditableCell
+                          label="Remark"
+                          value={row.remark}
+                          onChange={(v) =>
+                            handleFieldChange(node.nodeUuid, 'remark', v)
+                          }
+                          onConfirm={handleConfirm}
+                        />
+                      </td>
+                    </>
                   ) : (
-                    <span className="text-gray-400">{PLACEHOLDER}</span>
+                    <>
+                      <td className={BODY_CELL}>
+                        <MonoCell value={node.nodeUuid} />
+                      </td>
+                      <td className={BODY_CELL}>
+                        <MonoCell value={node.serialNumber} />
+                      </td>
+                      <td className={BODY_CELL}>
+                        <MonoCell value={node.instanceUuid} />
+                      </td>
+                      <td className={BODY_CELL}>
+                        <StatePill
+                          value={node.powerState}
+                          className={powerStateClass(node.powerState)}
+                        />
+                      </td>
+                      <td className={BODY_CELL}>
+                        <StatePill
+                          value={node.provisionState}
+                          className={provisionStateClass(node.provisionState)}
+                        />
+                      </td>
+                      <td className={BODY_CELL}>
+                        {node.remark.trim() ? (
+                          node.remark
+                        ) : (
+                          <span className="text-gray-400">{PLACEHOLDER}</span>
+                        )}
+                      </td>
+                    </>
                   )}
-                </td>
-              </tr>
-            ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
+
+      {installationId && <CredentialsForm installationId={installationId} />}
     </>
   );
 

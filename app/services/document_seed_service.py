@@ -32,14 +32,26 @@ def resolve_mime_type(filename: str) -> str:
     return MIME_BY_EXTENSION.get(ext, DEFAULT_MIME)
 
 
-def infer_category(filename: str) -> DocumentCategory:
-    """Infer DocumentCategory for a seeded file.
+# Originating subfolder -> DocumentCategory. The four content subfolders of
+# ``docs/to_publish`` each map to the category whose value equals the subfolder
+# name (Requirement 2.2, 2.4).
+CATEGORY_BY_SUBFOLDER: dict[str, DocumentCategory] = {
+    "docs": DocumentCategory.DOCS,
+    "links": DocumentCategory.LINKS,
+    "scripts": DocumentCategory.SCRIPTS,
+    "trainings": DocumentCategory.TRAININGS,
+}
 
-    The category set is now extension-derived and collapses to the single
-    ``documents`` category for seeded repository docs (consistent with the
-    Category_Migration remapping all legacy rows to ``documents``).
+
+def infer_category(subfolder: str) -> DocumentCategory:
+    """Infer DocumentCategory from a seeded file's originating subfolder.
+
+    Files are discovered from the four content subfolders of ``docs/to_publish``
+    (``docs``, ``links``, ``scripts``, ``trainings``) and grouped by that
+    originating subfolder (Requirement 2.2, 2.4). Any unrecognised subfolder
+    falls back to ``DOCUMENTS`` for backward compatibility.
     """
-    return DocumentCategory.DOCUMENTS
+    return CATEGORY_BY_SUBFOLDER.get(subfolder, DocumentCategory.DOCUMENTS)
 
 
 def compute_hash(content: bytes) -> str:
@@ -64,15 +76,42 @@ def resolve_seeding_admin(db: Session) -> Optional[User]:
     )
 
 
-def discover_source_files(docs_dir: Path) -> list[Path]:
-    """Enumerate top-level files only, non-recursive (Requirement 2.1, 2.2)."""
+# Content subfolders of ``docs/to_publish`` that map to categories, in a
+# deterministic order. Files under any other subfolder (e.g. ``movies``,
+# ``images``) are intentionally excluded from discovery (Requirement 2.4).
+CONTENT_SUBFOLDERS: tuple[str, ...] = ("docs", "links", "scripts", "trainings")
+
+
+def discover_source_files(docs_dir: Path) -> list[tuple[Path, str]]:
+    """Enumerate files within the four content subfolders of ``docs/to_publish``.
+
+    Walks each of ``docs``, ``links``, ``scripts``, ``trainings`` (recursively)
+    and returns each discovered file paired with its originating subfolder name
+    (Requirement 2.4). Non-content subfolders such as ``movies`` and ``images``
+    are excluded. The result is sorted for a deterministic seeding order.
+    """
     if not docs_dir.exists() or not docs_dir.is_dir():
         return []
-    return sorted(p for p in docs_dir.iterdir() if p.is_file())
+
+    discovered: list[tuple[Path, str]] = []
+    for subfolder in CONTENT_SUBFOLDERS:
+        subdir = docs_dir / subfolder
+        if not subdir.is_dir():
+            continue
+        for path in subdir.rglob("*"):
+            if path.is_file():
+                discovered.append((path, subfolder))
+
+    return sorted(discovered, key=lambda entry: (entry[1], entry[0].name))
 
 
-def _seed_single_file(db: Session, admin: User, source: Path) -> None:
-    """Seed or re-sync one Source_File. Raises on unexpected error (caller logs)."""
+def _seed_single_file(db: Session, admin: User, source: Path, subfolder: str = "") -> None:
+    """Seed or re-sync one Source_File. Raises on unexpected error (caller logs).
+
+    ``subfolder`` is the originating content subfolder of ``docs/to_publish``
+    and determines the category for newly created documents (Requirement 2.2, 2.4).
+    An empty/unknown subfolder falls back to the ``DOCUMENTS`` category.
+    """
     content = source.read_bytes()
     size = len(content)
 
@@ -86,7 +125,7 @@ def _seed_single_file(db: Session, admin: User, source: Path) -> None:
 
     source_hash = compute_hash(content)
     mime_type = resolve_mime_type(source.name)
-    category = infer_category(source.name)
+    category = infer_category(subfolder)
 
     # Requirement 6.1: match existing record by original_name.
     existing = (
@@ -155,9 +194,12 @@ def seed_docs_folder(docs_dir: Optional[Path] = None) -> None:
             logger.info("Docs seeding: no files found in %s", resolved_dir)
             return
 
-        for source in files:
+        # discover_source_files yields (Path, originating_subfolder) tuples; the
+        # subfolder is threaded into seeding so each new Document.category
+        # reflects its originating subfolder (Requirement 2.2, 2.4).
+        for source, subfolder in files:
             try:
-                _seed_single_file(db, admin, source)
+                _seed_single_file(db, admin, source, subfolder)
             except Exception:  # Requirement: one bad file must not abort the whole seed.
                 logger.exception("Docs seeding failed for file: %s", source)
                 db.rollback()

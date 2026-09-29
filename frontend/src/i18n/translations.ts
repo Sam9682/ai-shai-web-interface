@@ -363,8 +363,10 @@ export const fr: TranslationDictionary = {
 
   // ---- Documents page ----
   'page.documents.category.documents': 'Documents',
+  'page.documents.category.docs': 'Documentation',
   'page.documents.category.scripts': 'Scripts',
   'page.documents.category.links': 'Liens',
+  'page.documents.category.trainings': 'Formations',
   'page.documents.upload.label': 'Téléverser un document',
   'page.documents.upload.button': 'Téléverser',
   'page.documents.error.upload': 'Échec du téléversement du document.',
@@ -460,6 +462,12 @@ export const fr: TranslationDictionary = {
   'prereq.servers.error.openstack': 'OpenStack a renvoyé une erreur. Veuillez réessayer plus tard.',
   'prereq.servers.error.generic': 'Une erreur est survenue lors de la récupération des serveurs.',
   'prereq.servers.error.invalidCaCertificate': 'Le certificat CA fourni est invalide (format PEM).',
+  // Nodes table (editable inventory) — save states and errors.
+  'prereq.servers.nodes.title': 'Nœuds serveurs',
+  'prereq.servers.nodes.saving': 'Enregistrement en cours…',
+  'prereq.servers.nodes.saved': 'Modifications enregistrées',
+  'prereq.servers.nodes.error.save': 'Échec de l\'enregistrement des nœuds. Veuillez réessayer.',
+  'prereq.servers.nodes.error.notFound': 'Installation introuvable. Impossible d\'enregistrer les nœuds.',
 };
 
 /** English UI_String text. */
@@ -794,8 +802,10 @@ export const en: TranslationDictionary = {
 
   // ---- Documents page ----
   'page.documents.category.documents': 'Documents',
+  'page.documents.category.docs': 'Documentation',
   'page.documents.category.scripts': 'Scripts',
   'page.documents.category.links': 'Links',
+  'page.documents.category.trainings': 'Trainings',
   'page.documents.upload.label': 'Upload a document',
   'page.documents.upload.button': 'Upload',
   'page.documents.error.upload': 'Failed to upload the document.',
@@ -891,6 +901,12 @@ export const en: TranslationDictionary = {
   'prereq.servers.error.openstack': 'OpenStack returned an error. Please try again later.',
   'prereq.servers.error.generic': 'An error occurred while retrieving the servers.',
   'prereq.servers.error.invalidCaCertificate': 'The provided CA certificate is invalid (PEM format).',
+  // Nodes table (editable inventory) — save states and errors.
+  'prereq.servers.nodes.title': 'Server nodes',
+  'prereq.servers.nodes.saving': 'Saving…',
+  'prereq.servers.nodes.saved': 'Changes saved',
+  'prereq.servers.nodes.error.save': 'Failed to save the nodes. Please try again.',
+  'prereq.servers.nodes.error.notFound': 'Installation not found. Unable to save the nodes.',
 };
 
 /** All Translation_Dictionaries keyed by Supported_Language. */

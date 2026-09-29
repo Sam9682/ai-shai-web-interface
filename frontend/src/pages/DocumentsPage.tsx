@@ -5,11 +5,19 @@ import { useTranslation } from '../hooks/useLanguage';
 
 /** Maps each document category to its translation key (resolved at render time). */
 const CATEGORY_LABEL_KEYS: Record<DocumentCategory, string> = {
+  docs: 'page.documents.category.docs',
   documents: 'page.documents.category.documents',
   scripts: 'page.documents.category.scripts',
   links: 'page.documents.category.links',
+  trainings: 'page.documents.category.trainings',
 };
-const CATEGORY_ORDER: DocumentCategory[] = ['documents', 'scripts', 'links'];
+
+/**
+ * Intended section order, matching the content subfolders of `docs/to_publish`.
+ * A legacy `documents` category (and any other valid category not listed here)
+ * is still rendered — see `orderedCategories` below — so no category is dropped.
+ */
+const CATEGORY_ORDER: DocumentCategory[] = ['docs', 'links', 'scripts', 'trainings'];
 
 export function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} o`;
@@ -58,13 +66,26 @@ export const DocumentsPage = () => {
     return documents.filter((d) => d.original_name.toLowerCase().includes(q)); // Requirement 9.1
   }, [documents, search]);
 
+  // Partition the filtered documents by the categories actually present, so
+  // valid-but-unlisted categories (e.g. docs/trainings, or a legacy documents
+  // row) are grouped rather than dropped. Requirement 8.1 partition.
   const grouped = useMemo(() => {
-    const map: Record<DocumentCategory, Document[]> = {
-      documents: [], scripts: [], links: [],
-    };
-    for (const doc of filtered) map[doc.category].push(doc);   // Requirement 8.1 partition
+    const map = new Map<DocumentCategory, Document[]>();
+    for (const doc of filtered) {
+      const bucket = map.get(doc.category);
+      if (bucket) bucket.push(doc);
+      else map.set(doc.category, [doc]);
+    }
     return map;
   }, [filtered]);
+
+  // Render the known subfolder order first, then any remaining present
+  // categories (e.g. a legacy `documents` row) so nothing is dropped.
+  const orderedCategories = useMemo(() => {
+    const ordered = CATEGORY_ORDER.filter((category) => grouped.has(category));
+    const rest = [...grouped.keys()].filter((category) => !CATEGORY_ORDER.includes(category));
+    return [...ordered, ...rest];
+  }, [grouped]);
 
   const handleDownload = async (doc: Document) => {
     try {
@@ -155,12 +176,15 @@ export const DocumentsPage = () => {
       {filtered.length === 0 ? (
         <div className="card p-6 text-gray-600">{t('page.documents.empty')}</div>
       ) : (
-        CATEGORY_ORDER.map((category) =>
-          grouped[category].length > 0 ? (
+        orderedCategories.map((category) => {
+          const docs = grouped.get(category) ?? [];
+          if (docs.length === 0) return null;
+          const labelKey = CATEGORY_LABEL_KEYS[category];
+          return (
             <section key={category} className="card p-6 mb-5">
-              <h2 className="text-lg font-semibold text-[#000E9C] mb-3">{t(CATEGORY_LABEL_KEYS[category])}</h2>
+              <h2 className="text-lg font-semibold text-[#000E9C] mb-3">{labelKey ? t(labelKey) : category}</h2>
               <ul className="divide-y divide-gray-100">
-                {grouped[category].map((doc) => (
+                {docs.map((doc) => (
                   <li key={doc.id} className="flex items-center justify-between py-2.5">
                     <div>
                       <p className="text-sm font-medium text-gray-800">{doc.original_name}</p>
@@ -176,8 +200,8 @@ export const DocumentsPage = () => {
                 ))}
               </ul>
             </section>
-          ) : null
-        )
+          );
+        })
       )}
     </div>
   );

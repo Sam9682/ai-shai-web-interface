@@ -38,6 +38,9 @@ __all__ = [
     "CredentialConfigSaveRequest",
     "NovaServerSchema",
     "RetrieveServersResponse",
+    "ServerNodePayload",
+    "ServerNodesResponse",
+    "ServerNodesSaveRequest",
     "ErrorResponse",
 ]
 
@@ -198,3 +201,39 @@ class RetrieveServersResponse(BaseModel):
     included. Validates Requirements 5.3, 8.4.
     """
     servers: list[NovaServerSchema]
+
+
+class ServerNodePayload(BaseModel):
+    """A single server node override row (wire shape, snake_case).
+
+    Matches the frontend ``ServerNodeOverridePayload`` shape
+    ``{ node_uuid, serial_number, instance_uuid, power_state, provision_state,
+    remark }``. ``node_uuid`` is the join key against the hardcoded default
+    inventory and must be non-empty; the five editable fields default to the
+    empty string. Validates Requirements 3.1, 3.2, 3.3.
+    """
+    node_uuid: str = Field(min_length=1)
+    serial_number: str = ""
+    instance_uuid: str = ""
+    power_state: str = ""
+    provision_state: str = ""
+    remark: str = ""
+
+
+class ServerNodesResponse(BaseModel):
+    """Response schema for the servers-nodes overrides endpoints.
+
+    Matches the frontend ``ServerNodesResponse`` shape ``{ nodes: [...] }``.
+    The list is empty when no overrides are stored for the installation.
+    Validates Requirements 3.1, 3.2, 3.3.
+    """
+    nodes: list[ServerNodePayload]
+
+
+class ServerNodesSaveRequest(BaseModel):
+    """Request schema for saving server node overrides (PUT body).
+
+    Matches the frontend PUT body ``{ nodes: ServerNodeOverridePayload[] }``.
+    Validates Requirements 3.1, 3.2, 3.3.
+    """
+    nodes: list[ServerNodePayload]

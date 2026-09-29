@@ -1,10 +1,23 @@
-"""Property-based tests for the pure helpers in document_seed_service.
+"""Property-based and unit tests for the pure helpers in document_seed_service.
 
 Feature: docs-auto-seed-and-documents-page
+Updated for: documents-page-categories (BUGFIX)
 
-These tests cover the two pure helpers that need no database or fixtures:
-  - resolve_mime_type (Property 1: MIME resolution mapping)
-  - infer_category   (Property 2: Category inference determinism and mapping)
+These tests cover the helpers that need no database:
+  - resolve_mime_type       (Property 1: MIME resolution mapping)
+  - infer_category          (Property 2: subfolder-based category inference)
+  - discover_source_files   (recursive, tuple-returning discovery)
+
+NOTE (documents-page-categories bugfix): the category-inference behavior
+deliberately changed. ``infer_category`` no longer inspects the filename
+extension/keywords; it now takes the file's *originating subfolder* under
+``docs/to_publish`` and maps it to the matching ``DocumentCategory``. Likewise
+``discover_source_files`` is now recursive and returns ``(Path, subfolder)``
+tuples restricted to the four content subfolders. The former keyword-based
+category tests and the enum members they referenced (STATUTES, MINUTES,
+FINANCIAL_REPORTS, OTHER) no longer exist and have been rewritten below to
+assert the new subfolder-based behavior. The MIME-resolution tests are
+unchanged (that behavior was not touched by the bugfix).
 """
 import pytest
 from hypothesis import given, settings, strategies as st
@@ -12,6 +25,9 @@ from hypothesis import given, settings, strategies as st
 from app.services.document_seed_service import (
     resolve_mime_type,
     infer_category,
+    discover_source_files,
+    CATEGORY_BY_SUBFOLDER,
+    CONTENT_SUBFOLDERS,
     DEFAULT_MIME,
 )
 from app.models.document import DocumentCategory
@@ -138,84 +154,144 @@ def test_known_extension_examples():
 
 
 # ---------------------------------------------------------------------------
-# Property 2: Category inference determinism and mapping
-# Feature: docs-auto-seed-and-documents-page
-# Validates: Requirements 4.1, 4.2, 4.3, 4.4
+# Property 2: Subfolder-based category inference
+# Feature: documents-page-categories (BUGFIX)
+# Validates: Requirements 2.2, 2.4
+#
+# infer_category now maps a file's originating subfolder under
+# ``docs/to_publish`` to the corresponding DocumentCategory. The four content
+# subfolders (docs, links, scripts, trainings) each map to the category whose
+# value equals the subfolder name; any unrecognised subfolder falls back to
+# DOCUMENTS for backward compatibility.
 # ---------------------------------------------------------------------------
-
-# Keyword sets mirroring CATEGORY_KEYWORDS precedence in the service.
-STATUTE_KEYWORDS = ("statut",)
-MINUTE_KEYWORDS = ("minute", "compte")
-FINANCIAL_KEYWORDS = ("financ", "report", "rapport")
-ALL_KEYWORDS = STATUTE_KEYWORDS + MINUTE_KEYWORDS + FINANCIAL_KEYWORDS
-
-
-def _expected_category(name: str) -> DocumentCategory:
-    """Reference implementation of the documented precedence."""
-    lowered = name.lower()
-    if any(k in lowered for k in STATUTE_KEYWORDS):
-        return DocumentCategory.STATUTES
-    if any(k in lowered for k in MINUTE_KEYWORDS):
-        return DocumentCategory.MINUTES
-    if any(k in lowered for k in FINANCIAL_KEYWORDS):
-        return DocumentCategory.FINANCIAL_REPORTS
-    return DocumentCategory.OTHER
-
 
 @pytest.mark.property
 @settings(max_examples=200)
-@given(name=st.text(min_size=0, max_size=60))
-def test_property_category_matches_precedence_and_is_deterministic(name):
-    """Property 2: infer_category is deterministic and follows the fixed
-    precedence statut > minute/compte > financ/report/rapport > other.
+@given(subfolder=st.sampled_from(sorted(CATEGORY_BY_SUBFOLDER.keys())))
+def test_property_content_subfolder_maps_to_matching_category(subfolder):
+    """Property 2: each content subfolder maps to the category whose value
+    equals the subfolder name, and inference is deterministic.
 
-    Validates Requirements 4.1, 4.2, 4.3, 4.4.
+    Validates Requirements 2.2, 2.4.
     """
-    first = infer_category(name)
+    result = infer_category(subfolder)
     # Determinism: same input always yields the same output.
-    assert infer_category(name) == first
-    assert infer_category(name) == first  # repeat call, still stable
-    # Mapping matches the documented precedence.
-    assert first == _expected_category(name)
+    assert infer_category(subfolder) == result
+    # The category value equals the originating subfolder name.
+    assert result.value == subfolder
+    assert result == CATEGORY_BY_SUBFOLDER[subfolder]
 
 
 @pytest.mark.property
 @settings(max_examples=200)
 @given(
-    prefix=st.text(max_size=15),
-    keyword=st.sampled_from(ALL_KEYWORDS),
-    suffix=st.text(max_size=15),
-)
-def test_property_keyword_presence_drives_category(prefix, keyword, suffix):
-    """Property 2: a name containing a keyword is classified per precedence,
-    regardless of surrounding text or case.
-
-    Validates Requirements 4.1, 4.2, 4.3.
-    """
-    name = f"{prefix}{keyword}{suffix}"
-    assert infer_category(name) == _expected_category(name)
-    # Case-insensitive matching.
-    assert infer_category(name.upper()) == _expected_category(name.upper())
-
-
-def test_category_precedence_examples():
-    """Targeted precedence examples (Requirements 4.1-4.4)."""
-    # Pure single-category matches.
-    assert infer_category("statuts_2024.pdf") == DocumentCategory.STATUTES
-    assert infer_category("minutes_march.pdf") == DocumentCategory.MINUTES
-    assert infer_category("compte_rendu.pdf") == DocumentCategory.MINUTES
-    assert infer_category("financial_report.pdf") == DocumentCategory.FINANCIAL_REPORTS
-    assert infer_category("rapport_annuel.pdf") == DocumentCategory.FINANCIAL_REPORTS
-    assert infer_category("random.pdf") == DocumentCategory.OTHER
-
-    # Precedence: statut wins over everything else.
-    assert infer_category("statut_financial_report.pdf") == DocumentCategory.STATUTES
-    assert infer_category("statut_minute.pdf") == DocumentCategory.STATUTES
-    # Precedence: minute wins over financial.
-    assert infer_category("minute_financial.pdf") == DocumentCategory.MINUTES
-    assert infer_category("compte_rapport.pdf") == DocumentCategory.MINUTES
-
-    # Determinism sanity check.
-    assert infer_category("statut_financial_report.pdf") == infer_category(
-        "statut_financial_report.pdf"
+    subfolder=st.text(max_size=30).filter(
+        lambda s: s not in CATEGORY_BY_SUBFOLDER
     )
+)
+def test_property_unknown_subfolder_falls_back_to_documents(subfolder):
+    """Property 2: any subfolder outside the four content subfolders (including
+    the empty string) falls back to the DOCUMENTS category.
+
+    Validates Requirement 2.4 (backward-compatible fallback).
+    """
+    assert infer_category(subfolder) == DocumentCategory.DOCUMENTS
+
+
+def test_subfolder_category_examples():
+    """Targeted examples for subfolder-based category inference.
+
+    Validates Requirements 2.2, 2.4.
+    """
+    assert infer_category("docs") == DocumentCategory.DOCS
+    assert infer_category("links") == DocumentCategory.LINKS
+    assert infer_category("scripts") == DocumentCategory.SCRIPTS
+    assert infer_category("trainings") == DocumentCategory.TRAININGS
+    # Unknown / empty subfolders fall back to DOCUMENTS.
+    assert infer_category("") == DocumentCategory.DOCUMENTS
+    assert infer_category("movies") == DocumentCategory.DOCUMENTS
+    assert infer_category("images") == DocumentCategory.DOCUMENTS
+
+
+# ---------------------------------------------------------------------------
+# discover_source_files: recursive, tuple-returning, subfolder-restricted
+# Feature: documents-page-categories (BUGFIX)
+# Validates: Requirement 2.4
+# ---------------------------------------------------------------------------
+
+def _write(path):
+    """Create a file (and its parents) with trivial content."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("x", encoding="utf-8")
+
+
+def test_discover_returns_files_paired_with_originating_subfolder(tmp_path):
+    """discover_source_files pairs each file with its originating content
+    subfolder (Requirement 2.4)."""
+    docs_dir = tmp_path / "to_publish"
+    _write(docs_dir / "docs" / "spec.pdf")
+    _write(docs_dir / "links" / "useful.links")
+    _write(docs_dir / "scripts" / "deploy.sh")
+    _write(docs_dir / "trainings" / "onboarding.md")
+
+    discovered = discover_source_files(docs_dir)
+
+    pairs = {(path.name, subfolder) for path, subfolder in discovered}
+    assert pairs == {
+        ("spec.pdf", "docs"),
+        ("useful.links", "links"),
+        ("deploy.sh", "scripts"),
+        ("onboarding.md", "trainings"),
+    }
+
+
+def test_discover_recurses_into_nested_subfolders(tmp_path):
+    """discover_source_files walks nested directories within a content subfolder
+    and retains the top-level originating subfolder (Requirement 2.4)."""
+    docs_dir = tmp_path / "to_publish"
+    _write(docs_dir / "trainings" / "module-1" / "lesson.md")
+
+    discovered = discover_source_files(docs_dir)
+
+    assert ("lesson.md", "trainings") in {
+        (path.name, subfolder) for path, subfolder in discovered
+    }
+
+
+def test_discover_excludes_non_content_subfolders(tmp_path):
+    """Files under movies/images (and top-level files) are excluded so they do
+    not become category sections (Requirement 2.4)."""
+    docs_dir = tmp_path / "to_publish"
+    _write(docs_dir / "movies" / "intro.mp4")
+    _write(docs_dir / "images" / "logo.png")
+    _write(docs_dir / "top_level.md")
+    _write(docs_dir / "docs" / "spec.pdf")
+
+    discovered = discover_source_files(docs_dir)
+
+    names = {path.name for path, _ in discovered}
+    subfolders = {subfolder for _, subfolder in discovered}
+    assert names == {"spec.pdf"}
+    assert subfolders <= set(CONTENT_SUBFOLDERS)
+    assert "movies" not in subfolders
+    assert "images" not in subfolders
+
+
+def test_discover_missing_directory_returns_empty(tmp_path):
+    """A missing docs directory yields no files (no crash)."""
+    assert discover_source_files(tmp_path / "does_not_exist") == []
+
+
+def test_discover_result_is_sorted_deterministically(tmp_path):
+    """discover_source_files returns a stable, sorted ordering by
+    (subfolder, filename)."""
+    docs_dir = tmp_path / "to_publish"
+    _write(docs_dir / "scripts" / "b.sh")
+    _write(docs_dir / "scripts" / "a.sh")
+    _write(docs_dir / "docs" / "z.pdf")
+
+    discovered = discover_source_files(docs_dir)
+    keys = [(subfolder, path.name) for path, subfolder in discovered]
+    assert keys == sorted(keys)
+    # docs sorts before scripts; within scripts, a.sh before b.sh.
+    assert keys == [("docs", "z.pdf"), ("scripts", "a.sh"), ("scripts", "b.sh")]

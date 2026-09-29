@@ -172,3 +172,105 @@ class PrerequisiteAnswer(Base):
             f"installation_id={self.installation_id}, "
             f"slug={self.slug}, row_id={self.row_id})>"
         )
+
+
+class ServerNodeOverride(Base):
+    """Per-installation override of a server node row, keyed by (installation_id, node_uuid)
+
+    Maps the ``prerequisite_server_node`` table. Stores, per installation, only
+    the node rows that have been edited from the hardcoded default inventory
+    (``SERVER_NODES`` on the frontend), keyed by ``node_uuid``. Defaults remain
+    authoritative for which rows exist; this table is purely an override store
+    of the five editable field values. Mirrors the per-installation, last-write-wins
+    structure of ``PrerequisiteAnswer`` / ``CredentialConfig``.
+
+    Validates Requirements 3.2:
+    - Persists per-installation server node overrides keyed by
+      (installation_id, node_uuid), removed with the installation (ON DELETE CASCADE)
+    """
+    __tablename__ = "prerequisite_server_node"
+
+    # Primary key
+    id: Mapped[uuid.UUID] = mapped_column(
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default="gen_random_uuid()"
+    )
+
+    # Owning installation. Non-null: every override row belongs to exactly one
+    # installation and is removed with it (ON DELETE CASCADE).
+    installation_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey(
+            "installations.id",
+            name="fk_server_node_installation_id",
+            ondelete="CASCADE"
+        ),
+        nullable=False
+    )
+
+    # Join key against the default inventory (nodeUuid). Indexed for lookups.
+    node_uuid: Mapped[str] = mapped_column(
+        String(255),
+        index=True,
+        nullable=False
+    )
+
+    # Editable field values (free text). Default to empty string.
+    serial_number: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        default=""
+    )
+    instance_uuid: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        default=""
+    )
+    power_state: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        default=""
+    )
+    provision_state: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        default=""
+    )
+    remark: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        default=""
+    )
+
+    # Timestamps
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+    # Editor tracking
+    updated_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=True
+    )
+
+    # Owning installation relationship
+    installation = relationship("Installation", back_populates="server_node_overrides")
+
+    # Unique constraint and supporting index (names match the migration)
+    __table_args__ = (
+        UniqueConstraint(
+            "installation_id", "node_uuid",
+            name="uq_server_node_installation_node"
+        ),
+        Index("ix_server_node_installation_id", "installation_id"),
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f"<ServerNodeOverride(id={self.id}, "
+            f"installation_id={self.installation_id}, "
+            f"node_uuid={self.node_uuid})>"
+        )

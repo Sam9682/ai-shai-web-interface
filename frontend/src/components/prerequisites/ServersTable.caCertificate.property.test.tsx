@@ -25,6 +25,11 @@ vi.mock('../../services/prerequisitesService', () => ({
     loadCredentialConfig: vi.fn(),
     saveCredentialConfig: vi.fn(),
     retrieveServers: vi.fn(),
+    // ServersTable's mount effect loads per-installation node overrides;
+    // default to an empty override set so these credential-focused tests are
+    // unaffected by the nodes table. saveServerNodes is unused here.
+    loadServerNodes: vi.fn().mockResolvedValue({ nodes: [] }),
+    saveServerNodes: vi.fn().mockResolvedValue({ nodes: [] }),
   },
 }));
 

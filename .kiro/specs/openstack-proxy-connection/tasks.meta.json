@@ -1,0 +1,195 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Bug confirmed (exploration test FAILED as expected on unfixed code). Counterexamples:\n- test_get_token_client_built_with_configured_proxy: Falsifying example proxy_url='http://51.178.90.72:9999/'. _get_token built httpx.AsyncClient with captured kwargs={'verify': True} — no 'proxy' key though OPENSTACK_HTTPS_PROXY was configured.\n- test_list_servers_client_built_with_configured_proxy: Falsifying example proxy_url='http://51.178.90.72:9999/'. _list_servers built httpx.AsyncClient with captured kwargs={'verify': True} — no 'proxy' key.\n- test_retrieve_builds_both_clients_with_configured_proxy: construction #0 (Keystone) captured kwargs={'verify': True} — no 'proxy' key.\nSymptom reproduction cases PASSED: retrieve raises OpenStackConnectionError and the route returns HTTP 502 CONNECTION_FAILED with no secret/token leak.\nResult: 3 failed, 2 passed — the failures prove the client is built without the proxy.",
+      "lastRunTimestamp": 1790625771757
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625490060
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625499753
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625800823
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625490188
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625806934
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626074920
+      }
+    ],
+    "3.1 Add the `OPENSTACK_HTTPS_PROXY` setting to `app/config.py`": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625490319
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626079085
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626264743
+      }
+    ],
+    "3.2 Add the `_resolve_proxy` helper and wire the proxy into both calls in `app/prerequisites/openstack.py`": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625490430
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626268460
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626475373
+      }
+    ],
+    "3.3 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625490559
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626479123
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626538379
+      }
+    ],
+    "3.4 Verify preservation tests still pass": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625490695
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626548350
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626616867
+      }
+    ],
+    "4.1 Add unit tests for the resolver, both methods, and settings": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625490807
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626625391
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626779090
+      }
+    ],
+    "4.2 Add property-based tests for Property 1 and Property 2": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625490921
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626783474
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790627142946
+      }
+    ],
+    "4.3 Add integration tests for the `retrieve_servers` route flow": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625491038
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790627146900
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790627273466
+      }
+    ],
+    "5. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790625491201
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790627277884
+      },
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790628553730
+      }
+    ],
+    "3. Fix OpenStack calls to route through the configured proxy": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790626617007
+      }
+    ],
+    "4. Add supporting unit, property-based, and integration tests": [
+      {
+        "executionId": "b6a43081-096a-4afc-bf23-4d29e1a982ec",
+        "chatSessionId": "sess_6c82c8d6-5200-4db5-a8dd-d673e1c23cbe",
+        "timestamp": 1790627273655
+      }
+    ]
+  }
+}

@@ -23,11 +23,23 @@ from typing import Any, List
 
 import httpx
 
+from app.config import settings
 from app.logging_config import logger
 
 # Timeout (seconds) for each OpenStack HTTP call, matching the outbound-call
 # convention used in app/oracle/ai_providers.py.
 _HTTP_TIMEOUT = 60.0
+
+
+def _resolve_proxy() -> str | None:
+    """Return the configured forward-proxy URL, or ``None`` for direct connection.
+
+    Reads ``settings.OPENSTACK_HTTPS_PROXY`` and treats empty/whitespace-only
+    values as "no proxy configured". Returning ``None`` yields httpx's default
+    (no explicit proxy), preserving today's direct-connection behaviour.
+    """
+    proxy = settings.OPENSTACK_HTTPS_PROXY
+    return proxy if proxy and proxy.strip() else None
 
 
 class OpenStackError(Exception):
@@ -158,8 +170,13 @@ class OpenStackProxy:
             }
         }
 
+        client_kwargs: dict = {"verify": verify}
+        proxy = _resolve_proxy()
+        if proxy is not None:
+            client_kwargs["proxy"] = proxy
+
         try:
-            async with httpx.AsyncClient(verify=verify) as client:
+            async with httpx.AsyncClient(**client_kwargs) as client:
                 response = await client.post(
                     url,
                     json=payload,
@@ -218,8 +235,13 @@ class OpenStackProxy:
         """
         url = f"{nova_endpoint.rstrip('/')}/servers"
 
+        client_kwargs: dict = {"verify": verify}
+        proxy = _resolve_proxy()
+        if proxy is not None:
+            client_kwargs["proxy"] = proxy
+
         try:
-            async with httpx.AsyncClient(verify=verify) as client:
+            async with httpx.AsyncClient(**client_kwargs) as client:
                 response = await client.get(
                     url,
                     headers={"X-Auth-Token": token},

@@ -32,7 +32,11 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
 from app.models.installation import Installation
-from app.models.prerequisite import PrerequisiteContent, PrerequisiteAnswer
+from app.models.prerequisite import (
+    PrerequisiteContent,
+    PrerequisiteAnswer,
+    ServerNodeOverride,
+)
 from app.models.credential_config import CredentialConfig
 from app.auth.dependencies import get_current_user
 from app.forum.dependencies import get_administrator
@@ -50,6 +54,9 @@ from app.prerequisites.schemas import (
     CredentialConfigSaveRequest,
     NovaServerSchema,
     RetrieveServersResponse,
+    ServerNodePayload,
+    ServerNodesResponse,
+    ServerNodesSaveRequest,
 )
 from app.prerequisites.security import encrypt_secret, decrypt_secret
 from app.prerequisites.openstack import (
@@ -798,3 +805,143 @@ async def retrieve_servers(
             for s in servers
         ]
     )
+
+
+# ---------------------------------------------------------------------------
+# Installation-scoped server node overrides (servers-nodes tab, task 9.1)
+# ---------------------------------------------------------------------------
+
+
+def _server_node_response(
+    overrides: list[ServerNodeOverride],
+) -> ServerNodesResponse:
+    """Map stored ``ServerNodeOverride`` rows to the client response shape.
+
+    Returns the stored overrides as ``{ nodes: [...] }`` (snake_case wire shape).
+    The list is empty when no overrides are stored for the installation. The
+    frontend layers these over its own default inventory (``SERVER_NODES``).
+    """
+    return ServerNodesResponse(
+        nodes=[
+            ServerNodePayload(
+                node_uuid=row.node_uuid,
+                serial_number=row.serial_number,
+                instance_uuid=row.instance_uuid,
+                power_state=row.power_state,
+                provision_state=row.provision_state,
+                remark=row.remark,
+            )
+            for row in overrides
+        ]
+    )
+
+
+@router.get(
+    "/installations/{installation_id}/servers-nodes/nodes",
+    response_model=ServerNodesResponse,
+    summary="Get the stored server node overrides for an installation",
+)
+async def get_server_nodes(
+    installation_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ServerNodesResponse:
+    """Return the stored server node overrides for an installation.
+
+    Returns the persisted override rows (keyed by ``node_uuid``) as
+    ``ServerNodesResponse``; the list is empty when no overrides exist for the
+    installation. Any authenticated user may read. Unknown installations return
+    ``INSTALLATION_NOT_FOUND``. Validates Requirements 3.1, 3.3.
+    """
+    _get_installation_or_404(db, installation_id)
+
+    overrides = (
+        db.query(ServerNodeOverride)
+        .filter(ServerNodeOverride.installation_id == installation_id)
+        .all()
+    )
+
+    return _server_node_response(overrides)
+
+
+@router.put(
+    "/installations/{installation_id}/servers-nodes/nodes",
+    response_model=ServerNodesResponse,
+    summary="Save server node overrides for an installation (member/administrator)",
+)
+async def save_server_nodes(
+    installation_id: UUID,
+    payload: ServerNodesSaveRequest,
+    current_user: User = Depends(get_answering_member),
+    db: Session = Depends(get_db),
+) -> ServerNodesResponse:
+    """Upsert one server node override per ``node_uuid`` for an installation.
+
+    Upserts keyed on ``(installation_id, node_uuid)`` (last-write-wins), commits,
+    and returns the stored overrides. A member or administrator (any
+    authenticated user, matching the answers write path via ``get_answering_member``)
+    may save. Unknown installations return ``INSTALLATION_NOT_FOUND``; DB failures
+    roll back and return ``DATABASE_ERROR`` (500). Validates Requirements 3.1, 3.2, 3.3, 3.4.
+    """
+    _get_installation_or_404(db, installation_id)
+
+    try:
+        existing = (
+            db.query(ServerNodeOverride)
+            .filter(ServerNodeOverride.installation_id == installation_id)
+            .all()
+        )
+        by_uuid = {row.node_uuid: row for row in existing}
+
+        for node in payload.nodes:
+            row = by_uuid.get(node.node_uuid)
+            if row is None:
+                row = ServerNodeOverride(
+                    installation_id=installation_id,
+                    node_uuid=node.node_uuid,
+                    serial_number=node.serial_number,
+                    instance_uuid=node.instance_uuid,
+                    power_state=node.power_state,
+                    provision_state=node.provision_state,
+                    remark=node.remark,
+                    updated_by=current_user.id,
+                )
+                db.add(row)
+                by_uuid[node.node_uuid] = row
+            else:
+                row.serial_number = node.serial_number
+                row.instance_uuid = node.instance_uuid
+                row.power_state = node.power_state
+                row.provision_state = node.provision_state
+                row.remark = node.remark
+                row.updated_by = current_user.id
+
+        db.commit()
+
+        overrides = (
+            db.query(ServerNodeOverride)
+            .filter(ServerNodeOverride.installation_id == installation_id)
+            .all()
+        )
+
+        logger.info(
+            f"Server node overrides saved for installation_id={installation_id} "
+            f"({len(payload.nodes)} rows)"
+        )
+        return _server_node_response(overrides)
+
+    except Exception as e:  # pragma: no cover - defensive DB error path
+        db.rollback()
+        logger.error(
+            f"Failed to save server node overrides for "
+            f"installation_id={installation_id}: {e}",
+            exc_info=True,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ErrorResponse.create(
+                code="DATABASE_ERROR",
+                message="Failed to save server node overrides",
+                details={"error": str(e)},
+            ),
+        )

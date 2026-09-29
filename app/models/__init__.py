@@ -10,11 +10,16 @@ from app.models.document import (
     classify_extension,
 )
 from app.models.event import Event, EventRegistration, EventStatus, EventAssignment
+from app.models.task import Task, TaskAssignment, TaskStatus
 from app.models.notification import Notification, NotificationPreferences, NotificationType
 from app.models.audit import AuditLog
 from app.models.token_blacklist import TokenBlacklist
 from app.models.user_deletion import ScheduledUserDeletion
-from app.models.prerequisite import PrerequisiteContent, PrerequisiteAnswer
+from app.models.prerequisite import (
+    PrerequisiteContent,
+    PrerequisiteAnswer,
+    ServerNodeOverride,
+)
 from app.models.installation import Installation
 from app.models.credential_config import CredentialConfig
 from app.models.ai_provider_config import (
@@ -31,11 +36,12 @@ __all__ = [
     "Document", "DocumentCategory", "AccessLevel",
     "CATEGORY_MAPPING", "classify_extension",
     "Event", "EventRegistration", "EventStatus", "EventAssignment",
+    "Task", "TaskAssignment", "TaskStatus",
     "Notification", "NotificationPreferences", "NotificationType",
     "AuditLog",
     "TokenBlacklist",
     "ScheduledUserDeletion",
-    "PrerequisiteContent", "PrerequisiteAnswer",
+    "PrerequisiteContent", "PrerequisiteAnswer", "ServerNodeOverride",
     "Installation",
     "CredentialConfig",
     "AIProviderConfig",

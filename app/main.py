@@ -11,6 +11,7 @@ from app.forum.router import router as forum_router
 from app.payments.router import router as payments_router
 from app.documents.router import router as documents_router
 from app.events.router import router as events_router
+from app.tasks.router import router as tasks_router
 from app.admin.router import router as admin_router
 from app.notifications.router import router as notifications_router
 from app.info.router import router as info_router
@@ -81,6 +82,7 @@ app.include_router(forum_router)
 app.include_router(payments_router)
 app.include_router(documents_router)
 app.include_router(events_router)
+app.include_router(tasks_router)
 app.include_router(admin_router)
 app.include_router(notifications_router)
 app.include_router(info_router)

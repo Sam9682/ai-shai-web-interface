@@ -1,0 +1,275 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Implement `mergeNodeOverrides` pure util and `ServerNodeOverride` type": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629761847
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629772673
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630267760
+      }
+    ],
+    "2.1 Add `loadServerNodes` / `saveServerNodes` and wire types": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629761981
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629776794
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630269065
+      }
+    ],
+    "3.1 Reorder JSX so the nodes table renders above CredentialsForm": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629762146
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630278040
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630646411
+      }
+    ],
+    "3.2 Load overrides on mount and render merged nodes": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629762261
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630663855
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630789298
+      }
+    ],
+    "3.3 Add role-gated inline editable inputs": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629762371
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630793242
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790631057408
+      }
+    ],
+    "3.4 Wire save-on-confirm and save-failure error banner": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629762504
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790631062371
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790631206826
+      }
+    ],
+    "4.1 Add `prereq.servers.nodes.*` keys (French + English)": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629762628
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629778135
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630270485
+      }
+    ],
+    "6. Checkpoint - frontend": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629762754
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790631211655
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790631600646
+      }
+    ],
+    "7.1 Add `ServerNodeOverride` model and Installation relationship": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629762870
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629779520
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630271904
+      }
+    ],
+    "7.2 Create Alembic migration for `prerequisite_server_node`": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629762990
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630279410
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630647676
+      }
+    ],
+    "8.1 Add Pydantic schemas": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629763114
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629780452
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630273178
+      }
+    ],
+    "9.1 Implement GET/PUT under `/servers-nodes/nodes`": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629763247
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630280622
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630648976
+      }
+    ],
+    "11. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790629763387
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790631605212
+      },
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790631642619
+      }
+    ],
+    "1. Frontend override merge util": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630267910
+      }
+    ],
+    "2. Frontend prerequisitesService node persistence": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630269177
+      }
+    ],
+    "4. Frontend i18n keys": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630270604
+      }
+    ],
+    "8. Backend schemas": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630273298
+      }
+    ],
+    "7. Backend model and migration": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630647795
+      }
+    ],
+    "9. Backend endpoints": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790630649137
+      }
+    ],
+    "3. Frontend ServersTable layout and editing": [
+      {
+        "executionId": "35986fea-dab8-47bd-bce0-6984a7a41e5b",
+        "chatSessionId": "sess_fb3ad290-80c8-45f1-803e-a167fdb9af54",
+        "timestamp": 1790631206971
+      }
+    ]
+  }
+}

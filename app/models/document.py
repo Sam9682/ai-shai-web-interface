@@ -9,10 +9,20 @@ from app.database import Base
 
 
 class DocumentCategory(str, enum.Enum):
-    """Document category enumeration (extension-derived)."""
+    """Document category enumeration.
+
+    Members map to originating subfolders of ``docs/to_publish`` for
+    subfolder-based grouping (``docs``, ``links``, ``scripts``, ``trainings``).
+    ``DOCUMENTS`` is retained for backward compatibility with already-seeded
+    rows and extension-based uploads. Because the column uses
+    ``SQLEnum(..., native_enum=False)``, values are stored as strings, so
+    adding members requires no native DB enum ALTER / migration.
+    """
     DOCUMENTS = "documents"
     SCRIPTS = "scripts"
     LINKS = "links"
+    DOCS = "docs"
+    TRAININGS = "trainings"
 
 
 # Category_Mapping: file extension (lowercase, no dot) -> DocumentCategory

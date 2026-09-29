@@ -57,6 +57,23 @@ export interface RetrieveServersResponse {
   servers: NovaServer[];
 }
 
+/**
+ * A stored per-installation node override (snake_case wire shape). Keyed by
+ * `node_uuid`; the remaining fields carry the edited values for that row.
+ */
+export interface ServerNodeOverridePayload {
+  node_uuid: string;
+  serial_number: string;
+  instance_uuid: string;
+  power_state: string;
+  provision_state: string;
+  remark: string;
+}
+
+export interface ServerNodesResponse {
+  nodes: ServerNodeOverridePayload[];
+}
+
 /** Prerequisites slug for the OpenStack servers/nodes tab. */
 export const SERVERS_SLUG = 'servers-nodes';
 
@@ -159,6 +176,26 @@ export const prerequisitesService = {
     const response = await api.post(
       `/prerequisites/installations/${installationId}/${SERVERS_SLUG}/servers/retrieve`,
       cfg,
+    );
+    return response.data;
+  },
+
+  // Per-installation node overrides (servers-nodes tab). The backend is a pure
+  // override store keyed by `node_uuid`; defaults define row existence.
+  async loadServerNodes(installationId: string): Promise<ServerNodesResponse> {
+    const response = await api.get(
+      `/prerequisites/installations/${installationId}/${SERVERS_SLUG}/nodes`,
+    );
+    return response.data;
+  },
+
+  async saveServerNodes(
+    installationId: string,
+    nodes: ServerNodeOverridePayload[],
+  ): Promise<ServerNodesResponse> {
+    const response = await api.put(
+      `/prerequisites/installations/${installationId}/${SERVERS_SLUG}/nodes`,
+      { nodes },
     );
     return response.data;
   },

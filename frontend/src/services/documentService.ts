@@ -1,6 +1,6 @@
 import api from './api';
 
-export type DocumentCategory = 'documents' | 'scripts' | 'links';
+export type DocumentCategory = 'documents' | 'scripts' | 'links' | 'docs' | 'trainings';
 export type AccessLevel = 'public' | 'members' | 'administrators';
 
 export interface Document {

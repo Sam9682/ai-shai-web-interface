@@ -1,0 +1,205 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Backend (tests/test_documents_page_categories_bug.py): 6 failed, 1 passed.\n- discover_source_files omits subfolder files: docs/to_publish/trainings/onboarding.md was not discovered (non-recursive iterdir).\n- File under docs/links/scripts/trainings NOT seeded at all (seeder logs \"no files found\") — confirms non-recursive discovery (Req 1.4, 2.4).\n- DocumentCategory has no 'trainings'/'docs' member — assert 'trainings' in {'documents','links','scripts'} fails; originating subfolder cannot be represented (Req 2.2).\n\nFrontend (frontend/src/pages/DocumentsPage.categories.bug.test.tsx): 3 failed.\n- TypeError: Cannot read properties of undefined (reading 'push') at DocumentsPage.tsx:65 — static `grouped` map {documents,scripts,links} has no key for docs/trainings, so map[doc.category].push throws. trainings/docs sections not rendered (category dropped by static CATEGORY_ORDER/grouped) (Req 2.1, 2.3).",
+      "lastRunTimestamp": 1790666032321
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665824316
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665832886
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790666055099
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665824464
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790666062216
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790666669635
+      }
+    ],
+    "3.1 Expand the `DocumentCategory` enum": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665824571
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790666682141
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790666750294
+      }
+    ],
+    "3.2 Make discovery recursive and retain the originating subfolder": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665824671
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790666753884
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790666881988
+      }
+    ],
+    "3.3 Infer category from the originating subfolder and thread it through seeding": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665824780
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790666885565
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667424146
+      }
+    ],
+    "3.4 Widen the frontend `DocumentCategory` type": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665824879
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667427913
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667523471
+      }
+    ],
+    "3.5 Render category sections dynamically and add label keys": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665824999
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667527262
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667635452
+      }
+    ],
+    "3.6 Add French and English translations for the new categories": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665825130
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667639102
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667718196
+      }
+    ],
+    "3.7 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665825230
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667723491
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667774543
+      }
+    ],
+    "3.8 Verify preservation tests still pass": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665825346
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790667778274
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790668086590
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790665825448
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790668092953
+      },
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790677230322
+      }
+    ],
+    "3. Fix subfolder-based category grouping for the Documents page": [
+      {
+        "executionId": "7cd14ec4-e178-4b3d-94ec-dd5cd9dd8897",
+        "chatSessionId": "sess_48bb4acb-e542-4eae-98e2-5e752a94f8a0",
+        "timestamp": 1790668086727
+      }
+    ]
+  }
+}

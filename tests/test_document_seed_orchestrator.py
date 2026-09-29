@@ -127,26 +127,35 @@ def test_property_seeded_records_are_members_and_admin_owned(
 
 
 # ---------------------------------------------------------------------------
-# Property 4: Non-recursive oversized-aware discovery and skipping
-# Feature: docs-auto-seed-and-documents-page
-# Validates: Requirements 2.1, 2.3
+# Property 4: Recursive, subfolder-aware, oversized-aware discovery
+# Feature: documents-page-categories (BUGFIX) — supersedes the former
+#          non-recursive contract.
+# Validates: Requirements 2.4 (bugfix); Requirement 2.3 (oversize skip)
+#
+# NOTE (documents-page-categories bugfix): discover_source_files was changed to
+# recurse into the four content subfolders (docs, links, scripts, trainings) of
+# docs/to_publish and return (Path, originating_subfolder) tuples, EXCLUDING
+# top-level files and non-content subfolders (movies/images). The former test
+# asserted the opposite (only top-level files, nested never discovered) — that
+# behavior was deliberately removed, so this test now asserts the new contract.
 # ---------------------------------------------------------------------------
 
 @pytest.mark.property
 @settings(max_examples=100, deadline=None,
           suppress_health_check=[HealthCheck.function_scoped_fixture])
 @given(
+    content_stems=st.lists(filename_stem_strategy, min_size=0, max_size=6, unique=True),
     top_level=st.lists(filename_stem_strategy, min_size=0, max_size=6, unique=True),
-    nested=st.lists(filename_stem_strategy, min_size=0, max_size=6, unique=True),
     sizes=st.lists(st.integers(min_value=0, max_value=40), min_size=0, max_size=6),
 )
-def test_property_discovery_is_non_recursive_and_oversize_aware(
-    db_session, isolated_storage, monkeypatch, top_level, nested, sizes
+def test_property_discovery_is_recursive_subfolder_and_oversize_aware(
+    db_session, isolated_storage, monkeypatch, content_stems, top_level, sizes
 ):
-    """Property 4: discover_source_files returns only top-level files; seeding
-    registers exactly files whose size <= MAX_UPLOAD_SIZE and skips oversized.
+    """Property 4: discover_source_files walks the four content subfolders and
+    pairs each file with its originating subfolder, excludes top-level files and
+    non-content subfolders; seeding registers exactly non-oversized files.
 
-    Validates Requirements 2.1, 2.3.
+    Validates Requirements 2.3, 2.4.
     """
     db_session.query(Document).delete()
     db_session.commit()
@@ -165,32 +174,45 @@ def test_property_discovery_is_non_recursive_and_oversize_aware(
             if child.is_file():
                 child.unlink()
     docs_dir.mkdir(exist_ok=True)
-    subdir = docs_dir / "sub"
-    subdir.mkdir(exist_ok=True)
 
-    # Top-level files with varying sizes.
-    expected_top_files = set()
-    expected_registered = set()
-    for i, stem in enumerate(top_level):
+    # Place each content file under a rotating content subfolder so discovery
+    # must recurse into subfolders to find them.
+    subfolders = ("docs", "links", "scripts", "trainings")
+    for sf in subfolders:
+        (docs_dir / sf).mkdir(exist_ok=True)
+    (docs_dir / "movies").mkdir(exist_ok=True)
+    (docs_dir / "images").mkdir(exist_ok=True)
+
+    expected_pairs = set()       # (name, subfolder) discovery should surface
+    expected_registered = set()  # names seeding should persist (size <= max)
+    for i, stem in enumerate(content_stems):
         size = sizes[i % len(sizes)] if sizes else 0
+        subfolder = subfolders[i % len(subfolders)]
         name = f"{stem}.txt"
-        (docs_dir / name).write_bytes(b"x" * size)
-        expected_top_files.add(name)
+        (docs_dir / subfolder / name).write_bytes(b"x" * size)
+        expected_pairs.add((name, subfolder))
         if size <= max_size:
             expected_registered.add(name)
 
-    # Nested files (should never be discovered).
-    for stem in nested:
-        (subdir / f"{stem}.txt").write_bytes(b"y" * 5)
+    # Top-level files and non-content-subfolder files must NOT be discovered.
+    for stem in top_level:
+        (docs_dir / f"{stem}.txt").write_bytes(b"t" * 5)
+    for stem in top_level:
+        (docs_dir / "movies" / f"{stem}.mp4").write_bytes(b"m" * 5)
+        (docs_dir / "images" / f"{stem}.png").write_bytes(b"i" * 5)
 
-    # Discovery is non-recursive: only top-level files, files only.
+    # Discovery is recursive within content subfolders and returns tuples of
+    # (Path, originating_subfolder).
     discovered = discover_source_files(docs_dir)
-    assert {p.name for p in discovered} == expected_top_files
-    assert all(p.parent == docs_dir for p in discovered)
+    assert {(p.name, sf) for p, sf in discovered} == expected_pairs
+    # Every discovered file lives under its reported content subfolder.
+    for path, sf in discovered:
+        assert sf in subfolders
+        assert path.parent == docs_dir / sf
 
-    # Seeding registers exactly the non-oversized top-level files.
-    for source in discovered:
-        _seed_single_file(db_session, admin, source)
+    # Seeding registers exactly the non-oversized content-subfolder files.
+    for source, subfolder in discovered:
+        _seed_single_file(db_session, admin, source, subfolder)
     db_session.commit()
 
     registered = {d.original_name for d in db_session.query(Document).all()}
@@ -232,20 +254,28 @@ def test_property_idempotency_across_repeated_runs(
 
     docs_dir = isolated_storage.parent / "docs_p5"
     docs_dir.mkdir(exist_ok=True)
-    for f in docs_dir.iterdir():
+    # Clean any prior content (files nested under content subfolders too).
+    for f in docs_dir.rglob("*"):
         if f.is_file():
             f.unlink()
+
+    # Files live under content subfolders so the recursive, subfolder-aware
+    # discovery (documents-page-categories bugfix) surfaces them.
+    subfolders = ("docs", "links", "scripts", "trainings")
+    for sf in subfolders:
+        (docs_dir / sf).mkdir(exist_ok=True)
 
     names = []
     for i, stem in enumerate(stems):
         name = f"{stem}.txt"
-        (docs_dir / name).write_bytes(contents[i % len(contents)])
+        subfolder = subfolders[i % len(subfolders)]
+        (docs_dir / subfolder / name).write_bytes(contents[i % len(contents)])
         names.append(name)
     unique_names = set(names)
 
-    # First run.
-    for source in discover_source_files(docs_dir):
-        _seed_single_file(db_session, admin, source)
+    # First run. discover_source_files yields (Path, subfolder) tuples.
+    for source, subfolder in discover_source_files(docs_dir):
+        _seed_single_file(db_session, admin, source, subfolder)
     db_session.commit()
 
     first_docs = db_session.query(Document).all()
@@ -255,8 +285,8 @@ def test_property_idempotency_across_repeated_runs(
 
     # Additional runs must not create new rows or stored files.
     for _ in range(runs - 1):
-        for source in discover_source_files(docs_dir):
-            _seed_single_file(db_session, admin, source)
+        for source, subfolder in discover_source_files(docs_dir):
+            _seed_single_file(db_session, admin, source, subfolder)
         db_session.commit()
 
     final_docs = db_session.query(Document).all()

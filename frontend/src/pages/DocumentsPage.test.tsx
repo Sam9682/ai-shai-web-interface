@@ -44,10 +44,15 @@ const NUM_RUNS = 100;
 
 const CATEGORIES: DocumentCategory[] = ['documents', 'scripts', 'links'];
 
+// Full label map for the widened DocumentCategory union (French — the default
+// Active_Language). docs -> "Documentation", trainings -> "Formations" per the
+// translation keys; the three original entries are unchanged.
 const CATEGORY_LABELS: Record<DocumentCategory, string> = {
   documents: 'Documents',
   scripts: 'Scripts',
   links: 'Liens',
+  docs: 'Documentation',
+  trainings: 'Formations',
 };
 
 // Build a full Document record from the fields that matter to the page.
@@ -177,11 +182,34 @@ describe('Property 7: grouping is a partition by category', () => {
 });
 
 // -----------------------------------------------------------------------------
-// Task 7.1 — Unit: CATEGORY_ORDER drives grouped rendering order.
-// Validates: Requirement 1.2
+// Category order drives grouped rendering order.
+// Validates: Requirements 2.1, 2.3 (documents-page-categories bugfix)
+//
+// The documents-page-categories bugfix replaced the old hard-coded
+// ['documents','scripts','links'] order with the content-subfolder order
+// CATEGORY_ORDER = ['docs','links','scripts','trainings']; any category outside
+// that list (e.g. a legacy `documents` row) is rendered AFTER the ordered ones
+// so nothing is dropped. This test asserts that new intended ordering.
 // -----------------------------------------------------------------------------
-describe('Task 7.1: category order drives grouped rendering', () => {
-  it('renders category sections in the order documents, scripts, links', async () => {
+describe('category order drives grouped rendering', () => {
+  it('renders the four subfolder sections in CATEGORY_ORDER', async () => {
+    const docs = [
+      makeDocument('t1', 'a.md', 10, 'trainings'),
+      makeDocument('s1', 'b.sh', 20, 'scripts'),
+      makeDocument('l1', 'c.links', 30, 'links'),
+      makeDocument('d1', 'd.pdf', 40, 'docs'),
+    ];
+    mockedListDocuments.mockResolvedValue({ documents: docs, total: docs.length });
+
+    renderPage();
+    await waitForLoaded();
+
+    const headings = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
+    // CATEGORY_ORDER = docs, links, scripts, trainings.
+    expect(headings).toEqual(['Documentation', 'Liens', 'Scripts', 'Formations']);
+  });
+
+  it('renders a legacy documents category after the ordered subfolder sections', async () => {
     const docs = [
       makeDocument('l1', 'a.links', 10, 'links'),
       makeDocument('s1', 'b.sh', 20, 'scripts'),
@@ -193,7 +221,9 @@ describe('Task 7.1: category order drives grouped rendering', () => {
     await waitForLoaded();
 
     const headings = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
-    expect(headings).toEqual(['Documents', 'Scripts', 'Liens']);
+    // links + scripts are in CATEGORY_ORDER; the legacy `documents` category is
+    // not, so it renders last.
+    expect(headings).toEqual(['Liens', 'Scripts', 'Documents']);
   });
 });
 

@@ -80,6 +80,11 @@ class Installation(Base):
         cascade="all, delete-orphan",
         uselist=False
     )
+    server_node_overrides: Mapped[list["ServerNodeOverride"]] = relationship(
+        "ServerNodeOverride",
+        back_populates="installation",
+        cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"<Installation(id={self.id}, project_name={self.project_name})>"
