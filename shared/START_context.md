@@ -14,34 +14,44 @@ command -v docker-compose || exit 1
 #### 2. Calculate HTTP Ports, which are the ports used by the docker containers of the application. Use the following command:
 
 source {{APPLICATION_FOLDER}}/conf/deploy.ini
+RANGE_START=${RANGE_START:-6000}
+RANGE_RESERVED=${RANGE_RESERVED:-100}
+RANGE_PORTS_PER_APPLICATION=${RANGE_PORTS_PER_APPLICATION:-12}
 if ! [[ "$USER_ID" =~ ^[0-9]+$ ]]; then
     USER_ID=0
 fi
-export PORT_RANGE_BEGIN=$((RANGE_START+USER_ID*RANGE_RESERVED))
-export HTTPS_PORT=$((PORT_RANGE_BEGIN+APPLICATION_IDENTITY_NUMBER*RANGE_PORTS_PER_APPLICATION))
-export HTTP_PORT=$(($HTTPS_PORT+1))
-export HTTPS_PORT1=$(($HTTP_PORT+1))
-export HTTP_PORT1=$(($HTTPS_PORT1+1))
-export HTTPS_PORT2=$(($HTTP_PORT1+1))
-export HTTP_PORT2=$(($HTTPS_PORT2+1))
-export HTTPS_PORT3=$(($HTTP_PORT2+1))
-export HTTP_PORT3=$(($HTTPS_PORT3+1))
-export HTTPS_PORT4=$(($HTTP_PORT3+1))
-export HTTP_PORT4=$(($HTTPS_PORT4+1))
-export HTTPS_PORT5=$(($HTTP_PORT4+1))
-export HTTP_PORT5=$(($HTTPS_PORT5+1))
-export DOMAIN=$(($DOMAIN))
+PORT_NAMES=(
+    HTTPS_PORT HTTP_PORT
+    HTTPS_PORT1 HTTP_PORT1
+    HTTPS_PORT2 HTTP_PORT2
+    HTTPS_PORT3 HTTP_PORT3
+    HTTPS_PORT4 HTTP_PORT4
+    HTTPS_PORT5 HTTP_PORT5
+)
+PORT_RANGE_BEGIN=$((RANGE_START + USER_ID * RANGE_RESERVED))
+base=$((PORT_RANGE_BEGIN + APPLICATION_IDENTITY_NUMBER * RANGE_PORTS_PER_APPLICATION))
+offset=0
+for name in "${PORT_NAMES[@]}"; do
+    printf -v "$name" '%s' "$((base + offset))"
+    export "$name"
+    offset=$((offset + 1))
+done
 
 #### 3. Generate Secrets (only if .env.prod doesn't exist)
 
 DB_PASSWORD=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-25)
 JWT_SECRET=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
 cat > .env.prod << EOF
+# Database Configuration (PostgreSQL)
+POSTGRES_USER=${NAME_OF_APPLICATION}
+POSTGRES_PASSWORD=$DB_PASSWORD
+POSTGRES_DB=${NAME_OF_APPLICATION}
+DATABASE_URL=postgresql://${NAME_OF_APPLICATION}:$DB_PASSWORD@postgres:5432/${NAME_OF_APPLICATION}
 JWT_SECRET=$JWT_SECRET
-DOMAIN=www.${DOMAIN}
-API_URL=https://www.${DOMAIN}
+DOMAIN=${DOMAIN}
+API_URL=https://${DOMAIN}
 SSL_EMAIL=admin@${DOMAIN}
-REACT_APP_API_URL=https://www.${DOMAIN}
+REACT_APP_API_URL=https://${DOMAIN}
 EOF
 chmod 600 .env.prod
 
@@ -76,6 +86,6 @@ fi
 
 #### 7. Verify the docker service is up and running using the following command:
 
-curl -f -s "http://www.${DOMAIN}:${HTTP_PORT1}" || true
+curl -f -s "https://${DOMAIN}:${HTTPS_PORT}/" || true
 
-Finaly, display the link to the web site so the user can click on it to open the application: https://www.${DOMAIN}:${HTTPS_PORT}
+Finaly, display the link to the web site so the user can click on it to open the application: https://${DOMAIN}:${HTTPS_PORT}

@@ -7,23 +7,28 @@ IMPORTANT :
 #### 1. Calculate HTTP Ports, which are the ports used by the docker containers of the application. Use the following command:
 
 source {{APPLICATION_FOLDER}}/conf/deploy.ini
+RANGE_START=${RANGE_START:-6000}
+RANGE_RESERVED=${RANGE_RESERVED:-100}
+RANGE_PORTS_PER_APPLICATION=${RANGE_PORTS_PER_APPLICATION:-12}
 if ! [[ "$USER_ID" =~ ^[0-9]+$ ]]; then
     USER_ID=0
 fi
-export PORT_RANGE_BEGIN=$((RANGE_START+USER_ID*RANGE_RESERVED))
-export HTTPS_PORT=$((PORT_RANGE_BEGIN+APPLICATION_IDENTITY_NUMBER*RANGE_PORTS_PER_APPLICATION))
-export HTTP_PORT=$(($HTTPS_PORT+1))
-export HTTPS_PORT1=$(($HTTP_PORT+1))
-export HTTP_PORT1=$(($HTTPS_PORT1+1))
-export HTTPS_PORT2=$(($HTTP_PORT1+1))
-export HTTP_PORT2=$(($HTTPS_PORT2+1))
-export HTTPS_PORT3=$(($HTTP_PORT2+1))
-export HTTP_PORT3=$(($HTTPS_PORT3+1))
-export HTTPS_PORT4=$(($HTTP_PORT3+1))
-export HTTP_PORT4=$(($HTTPS_PORT4+1))
-export HTTPS_PORT5=$(($HTTP_PORT4+1))
-export HTTP_PORT5=$(($HTTPS_PORT5+1))
-export DOMAIN=$(($DOMAIN))
+PORT_NAMES=(
+    HTTPS_PORT HTTP_PORT
+    HTTPS_PORT1 HTTP_PORT1
+    HTTPS_PORT2 HTTP_PORT2
+    HTTPS_PORT3 HTTP_PORT3
+    HTTPS_PORT4 HTTP_PORT4
+    HTTPS_PORT5 HTTP_PORT5
+)
+PORT_RANGE_BEGIN=$((RANGE_START + USER_ID * RANGE_RESERVED))
+base=$((PORT_RANGE_BEGIN + APPLICATION_IDENTITY_NUMBER * RANGE_PORTS_PER_APPLICATION))
+offset=0
+for name in "${PORT_NAMES[@]}"; do
+    printf -v "$name" '%s' "$((base + offset))"
+    export "$name"
+    offset=$((offset + 1))
+done
 
 #### 2. Check the Status of the application using docker-compose command. If the containers is not started, do not ask to start or do something else. Use the following commands to get the status of the application:
 
@@ -85,7 +90,7 @@ jq -n --arg user_id "$USER_ID" \
         "git_remote": $git_remotes
       }'
 
-Finaly, display the link to the web site so the user can click on it to open the application: https://www.${DOMAIN}:$HTTPS_PORT
+Finaly, display the link to the web site so the user can click on it to open the application: https://${DOMAIN}:$HTTPS_PORT
 
 As an example, this is and example of the expected JSON Output Format:
 {

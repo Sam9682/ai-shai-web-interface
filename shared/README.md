@@ -59,7 +59,7 @@ HTTP_PORT5 = HTTPS_PORT5 + 1
 2. If not exists:
    - Generate secure DB password: `openssl rand -base64 32 | tr -d "=+/" | cut -c1-25`
    - Generate JWT secret: `openssl rand -base64 32 | tr -d "=+/" | cut -c1-32`
-   - Create `.env.prod` with DATABASE_URL, JWT_SECRET, DOMAIN, API_URL, SSL_EMAIL, REACT_APP_API_URL
+   - Create `.env.prod` with PostgreSQL settings (POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, DATABASE_URL), JWT_SECRET, DOMAIN, API_URL, SSL_EMAIL, REACT_APP_API_URL
    - Set file permissions to 600
 
 **Steps for Nginx Config**:
@@ -99,19 +99,19 @@ HTTP_PORT5 = HTTPS_PORT5 + 1
 1. Stop existing services:
    ```bash
    HTTPS_PORT=$HTTPS_PORT HTTP_PORT=$HTTP_PORT HTTPS_PORT1=$HTTPS_PORT1 HTTP_PORT1=$HTTP_PORT1 HTTPS_PORT2=$HTTPS_PORT2 HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT3=$HTTPS_PORT3 HTTP_PORT3=$HTTP_PORT3 HTTPS_PORT4=$HTTPS_PORT4 HTTP_PORT4=$HTTP_PORT4 HTTPS_PORT5=$HTTPS_PORT5 HTTP_PORT5=$HTTP_PORT5 USER_ID=$USER_ID \
-   docker-compose -p "-$USER_ID-$HTTPS_PORT" -f docker-compose.yml down
+   docker-compose -p "$NAME_OF_APPLICATION-$USER_ID-$HTTPS_PORT" -f docker-compose.yml down
    ```
 
 2. Build Docker images:
    ```bash
    HTTPS_PORT=$HTTPS_PORT HTTP_PORT=$HTTP_PORT HTTPS_PORT1=$HTTPS_PORT1 HTTP_PORT1=$HTTP_PORT1 HTTPS_PORT2=$HTTPS_PORT2 HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT3=$HTTPS_PORT3 HTTP_PORT3=$HTTP_PORT3 HTTPS_PORT4=$HTTPS_PORT4 HTTP_PORT4=$HTTP_PORT4 HTTPS_PORT5=$HTTPS_PORT5 HTTP_PORT5=$HTTP_PORT5 USER_ID=$USER_ID \
-   docker-compose -p "-$USER_ID-$HTTPS_PORT" -f docker-compose.yml build --no-cache --build-arg PIP_UPGRADE=1
+   docker-compose -p "$NAME_OF_APPLICATION-$USER_ID-$HTTPS_PORT" -f docker-compose.yml build --no-cache --build-arg PIP_UPGRADE=1
    ```
 
 3. Start services:
    ```bash
    HTTPS_PORT=$HTTPS_PORT HTTP_PORT=$HTTP_PORT HTTPS_PORT1=$HTTPS_PORT1 HTTP_PORT1=$HTTP_PORT1 HTTPS_PORT2=$HTTPS_PORT2 HTTP_PORT2=$HTTP_PORT2 HTTPS_PORT3=$HTTPS_PORT3 HTTP_PORT3=$HTTP_PORT3 HTTPS_PORT4=$HTTPS_PORT4 HTTP_PORT4=$HTTP_PORT4 HTTPS_PORT5=$HTTPS_PORT5 HTTP_PORT5=$HTTP_PORT5 USER_ID=$USER_ID \
-   docker-compose -p "-$USER_ID-$HTTPS_PORT" -f docker-compose.yml --env-file .env.prod up -d
+   docker-compose -p "$NAME_OF_APPLICATION-$USER_ID-$HTTPS_PORT" -f docker-compose.yml --env-file .env.prod up -d
    ```
 
 4. Wait 3 seconds for services to initialize
@@ -137,7 +137,7 @@ HTTP_PORT5 = HTTPS_PORT5 + 1
 
 3. Test API health endpoint:
    ```bash
-   curl -f -s "https://www.softfluid.fr:${HTTPS_PORT}/"
+   curl -f -s "https://${DOMAIN}:${HTTPS_PORT}/"
    ```
 
 4. Return success if services are running (health check is optional)
@@ -355,8 +355,8 @@ Note: The script no longer resets firewall rules or changes default policies to 
 ## Backup
 
 A backup script is created at `./scripts/backup.sh` that:
-- Backs up the SQLite database using docker-compose exec
-- Copies database from container to host
+- Backs up the PostgreSQL database using `pg_dump` against the running database container
+- Writes a gzip-compressed SQL dump to the host `backups/` directory
 - Keeps last 7 backups
 - Can be run manually or via cron
 - Uses the calculated project name pattern for container identification
