@@ -4,6 +4,7 @@ import { forumService, type Topic } from '../services/forumService';
 import { authService } from '../services/authService';
 import { infoService, type Stats } from '../services/infoService';
 import { useTranslation } from '../hooks/useLanguage';
+import { buildPublicHtmlUrl } from '../utils/forumLinks';
 import OPCPpng from '../assets/OPCP.png';
 
 export const HomePage = () => {
@@ -12,12 +13,24 @@ export const HomePage = () => {
   const [loadingTopics, setLoadingTopics] = useState(true);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
+  const [viewButtonEnabled, setViewButtonEnabled] = useState(true);
   const isAuthenticated = authService.isAuthenticated();
 
   useEffect(() => {
     loadTopics();
     loadStats();
+    loadForumConfig();
   }, []);
+
+  const loadForumConfig = async () => {
+    try {
+      const cfg = await forumService.getForumConfig();
+      setViewButtonEnabled(cfg.view_button_enabled);
+    } catch (err) {
+      console.error('Error loading forum config:', err);
+      // leave viewButtonEnabled = true on error
+    }
+  };
 
   const loadTopics = async () => {
     try {
@@ -198,9 +211,9 @@ export const HomePage = () => {
                     <span className="text-xs font-medium text-[#000E9C] bg-blue-50 px-2 py-1 rounded">
                       {topic.post_count} {t('page.home.topic.repliesSuffix')}
                     </span>
-                    {!isAuthenticated && (
+                    {!isAuthenticated && viewButtonEnabled && (
                       <a
-                        href={`https://opcp-psmc.com/api/forum/topics/${topic.id}/publichtml`}
+                        href={buildPublicHtmlUrl(window.location.origin, topic.id)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs font-medium text-white bg-[#27ae60] hover:bg-[#219a52] px-2 py-1 rounded transition-colors hover:no-underline"

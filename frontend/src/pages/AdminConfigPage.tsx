@@ -30,6 +30,11 @@ export const AdminConfigPage = () => {
   const [savingProviders, setSavingProviders] = useState(false);
   const [providerFeedback, setProviderFeedback] = useState<'saved' | 'error' | null>(null);
 
+  // Forum config state
+  const [viewButtonEnabled, setViewButtonEnabled] = useState(true);
+  const [savingForum, setSavingForum] = useState(false);
+  const [forumFeedback, setForumFeedback] = useState<'saved' | 'error' | null>(null);
+
   const loadProviders = useCallback(async () => {
     try {
       const response = await adminService.getAIProviderConfig();
@@ -42,6 +47,19 @@ export const AdminConfigPage = () => {
   useEffect(() => {
     loadProviders();
   }, [loadProviders]);
+
+  const loadForumConfig = useCallback(async () => {
+    try {
+      const cfg = await adminService.getForumConfig();
+      setViewButtonEnabled(cfg.view_button_enabled);
+    } catch (error) {
+      console.error('Failed to load forum config:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadForumConfig();
+  }, [loadForumConfig]);
 
   const toggleProvider = (id: AIProviderId, enabled: boolean) => {
     setProviderFeedback(null);
@@ -64,6 +82,21 @@ export const AdminConfigPage = () => {
       setProviderFeedback('error');
     } finally {
       setSavingProviders(false);
+    }
+  };
+
+  const saveForum = async () => {
+    try {
+      setSavingForum(true);
+      setForumFeedback(null);
+      const cfg = await adminService.updateForumConfig(viewButtonEnabled);
+      setViewButtonEnabled(cfg.view_button_enabled);
+      setForumFeedback('saved');
+    } catch (error) {
+      console.error('Failed to save forum config:', error);
+      setForumFeedback('error');
+    } finally {
+      setSavingForum(false);
     }
   };
 
@@ -146,6 +179,42 @@ export const AdminConfigPage = () => {
           )}
           {providerFeedback === 'error' && (
             <span className="text-sm text-red-600">{t('page.adminConfig.aiProviders.error')}</span>
+          )}
+        </div>
+      </div>
+
+      {/* Forum configuration */}
+      <div className="card p-4 mb-8">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">{t('page.adminConfig.forum.title')}</h2>
+        </div>
+
+        <div className="flex items-center justify-between py-3">
+          <span className="text-sm font-medium text-gray-900">{t('page.adminConfig.forum.viewButtonLabel')}</span>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              className="sr-only peer"
+              checked={viewButtonEnabled}
+              onChange={(e) => { setForumFeedback(null); setViewButtonEnabled(e.target.checked); }}
+            />
+            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-[#000E9C] peer-disabled:opacity-50 peer-disabled:cursor-not-allowed after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
+          </label>
+        </div>
+
+        <div className="flex items-center gap-3 mt-4">
+          <button
+            onClick={saveForum}
+            disabled={savingForum}
+            className="px-4 py-2 bg-[#000E9C] text-white text-sm font-medium rounded hover:bg-[#4949FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {savingForum ? t('page.adminConfig.forum.saving') : t('page.adminConfig.forum.save')}
+          </button>
+          {forumFeedback === 'saved' && (
+            <span className="text-sm text-green-600">{t('page.adminConfig.forum.saved')}</span>
+          )}
+          {forumFeedback === 'error' && (
+            <span className="text-sm text-red-600">{t('page.adminConfig.forum.error')}</span>
           )}
         </div>
       </div>

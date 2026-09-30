@@ -70,6 +70,10 @@ export interface AIProviderConfigResponse {
   providers: AIProviderStatus[];
 }
 
+export interface ForumConfig {
+  view_button_enabled: boolean;
+}
+
 export const adminService = {
   async listUsers(): Promise<UserListResponse> {
     const response = await api.get('/admin/members');
@@ -123,6 +127,16 @@ export const adminService = {
     updates: { provider: AIProviderId; enabled: boolean }[]
   ): Promise<AIProviderConfigResponse> {
     const response = await api.put('/admin/ai-providers', { providers: updates });
+    return response.data;
+  },
+
+  async getForumConfig(): Promise<ForumConfig> {
+    const response = await api.get('/admin/forum-config');
+    return response.data;
+  },
+
+  async updateForumConfig(view_button_enabled: boolean): Promise<ForumConfig> {
+    const response = await api.put('/admin/forum-config', { view_button_enabled });
     return response.data;
   },
 };

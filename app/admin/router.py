@@ -28,8 +28,14 @@ from app.admin.schemas import (
     AIProviderStatus,
     AIProviderConfigResponse,
     AIProviderConfigUpdateRequest,
+    ForumConfigResponse,
+    ForumConfigUpdateRequest,
 )
 from app.oracle.provider_config import get_enabled_map, set_enabled_map
+from app.forum.config_service import (
+    get_view_button_enabled,
+    set_view_button_enabled,
+)
 from app.models.ai_provider_config import (
     AI_PROVIDER_IDS,
     ALWAYS_ENABLED_PROVIDER,
@@ -1076,3 +1082,53 @@ async def update_ai_provider_config(
         f"Administrator {current_user.id} updated AI provider config: {updates}"
     )
     return AIProviderConfigResponse(providers=_build_provider_statuses(enabled_map))
+
+
+@router.get(
+    "/forum-config",
+    response_model=ForumConfigResponse,
+    status_code=status.HTTP_200_OK,
+    responses={
+        403: {"description": "Insufficient permissions - administrator role required"},
+    },
+)
+async def get_forum_config(
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> ForumConfigResponse:
+    """Return the current forum configuration flags.
+
+    Administrator only. Currently exposes the ``view_button_enabled`` flag that
+    controls whether the public home page shows the "View" button.
+    """
+    return ForumConfigResponse(view_button_enabled=get_view_button_enabled(db))
+
+
+@router.put(
+    "/forum-config",
+    response_model=ForumConfigResponse,
+    status_code=status.HTTP_200_OK,
+    responses={
+        403: {"description": "Insufficient permissions - administrator role required"},
+    },
+)
+@limiter.limit("30/hour")
+async def update_forum_config(
+    request: Request,
+    update_data: ForumConfigUpdateRequest,
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> ForumConfigResponse:
+    """Update forum configuration flags.
+
+    Administrator only. Persists the ``view_button_enabled`` flag; when disabled
+    the public home page hides the "View" button for logged-out visitors.
+    """
+    enabled = set_view_button_enabled(
+        db, update_data.view_button_enabled, updated_by=current_user.id
+    )
+    logger.info(
+        f"Administrator {current_user.id} updated forum config: "
+        f"view_button_enabled={update_data.view_button_enabled}"
+    )
+    return ForumConfigResponse(view_button_enabled=enabled)

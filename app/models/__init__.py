@@ -28,6 +28,11 @@ from app.models.ai_provider_config import (
     ALWAYS_ENABLED_PROVIDER,
     DEFAULT_PROVIDER_ENABLED,
 )
+from app.models.forum_config import (
+    ForumConfig,
+    FORUM_VIEW_BUTTON_KEY,
+    DEFAULT_FORUM_CONFIG,
+)
 
 __all__ = [
     "User", "UserRole",
@@ -48,5 +53,8 @@ __all__ = [
     "AI_PROVIDER_IDS",
     "ALWAYS_ENABLED_PROVIDER",
     "DEFAULT_PROVIDER_ENABLED",
+    "ForumConfig",
+    "FORUM_VIEW_BUTTON_KEY",
+    "DEFAULT_FORUM_CONFIG",
 ]
 from app.models.oracle import OracleQuery

@@ -13,6 +13,7 @@ from sqlalchemy import func
 from app.database import get_db
 from app.models import User, Topic, Post
 from app.forum.dependencies import get_verified_member, get_administrator
+from app.forum.config_service import get_view_button_enabled
 from app.forum.schemas import (
     TopicCreate,
     TopicResponse,
@@ -26,6 +27,25 @@ from app.services.notification_service import notification_service
 
 
 router = APIRouter(prefix="/api/forum", tags=["forum"])
+
+
+@router.get("/config")
+async def get_forum_config(
+    db: Session = Depends(get_db)
+):
+    """Return the public forum configuration (public, unauthenticated).
+
+    Exposes the ``view_button_enabled`` flag so logged-out visitors on the home
+    page can decide whether to render the "View" button. No auth dependency is
+    used here, consistent with ``/forum/topics/public``.
+
+    Args:
+        db: Database session
+
+    Returns:
+        A JSON object of the shape ``{"view_button_enabled": <bool>}``.
+    """
+    return {"view_button_enabled": get_view_button_enabled(db)}
 
 
 @router.get("/topics/public", response_model=list[TopicResponse])

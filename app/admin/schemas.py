@@ -276,3 +276,17 @@ class AIProviderConfigUpdateRequest(BaseModel):
     providers: list[AIProviderUpdateItem] = Field(
         description="Enablement changes to apply"
     )
+
+
+class ForumConfigResponse(BaseModel):
+    """Forum configuration flags exposed to admins."""
+    view_button_enabled: bool = Field(
+        description='Whether the "View" button is displayed on the public home page'
+    )
+
+
+class ForumConfigUpdateRequest(BaseModel):
+    """Update request for forum configuration flags."""
+    view_button_enabled: bool = Field(
+        description='Desired state for the "View" button on the public home page'
+    )

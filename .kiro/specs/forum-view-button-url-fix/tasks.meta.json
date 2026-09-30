@@ -1,0 +1,393 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test for the \"View\" button URL (Bug 1)": {
+      "status": "passed",
+      "failingExample": "Counterexample: [{\"siteOrigin\":\"https://opcp-psmc.com:8443\",\"topicId\":\"42\"}] — AssertionError: expected '443' to be '8443'. The unfixed hardcoded host `https://opcp-psmc.com/api/forum/topics/42/publichtml` drops the port, so portOf(result)=443 but portOf(siteOrigin)=8443. The browser resolves the link on the default HTTPS port (443) → \"page not found\". The second scoped origin https://staging.example.com:9000 fails identically (wrong host and port 443). The path segment /api/forum/topics/42/publichtml is correct (path-integrity check passed); only the origin is wrong. This failure confirms Bug 1 exists.",
+      "lastRunTimestamp": 1790756544163
+    },
+    "3.4 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1790757007821
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test for the \"View\" button URL (Bug 1)": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756440280
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756451650
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756565734
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing the fix)": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756440469
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756569511
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756717170
+      }
+    ],
+    "3.1 Add the `buildPublicHtmlUrl(origin, topicId)` helper": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756440641
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756725256
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756787643
+      }
+    ],
+    "3.2 Use the helper in the HomePage \"View\" anchor": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756440755
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756791287
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756850784
+      }
+    ],
+    "3.3 Add unit tests for `buildPublicHtmlUrl`": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756440870
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756854255
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756944298
+      }
+    ],
+    "3.4 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756441007
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756950249
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757023966
+      }
+    ],
+    "3.5 Verify preservation tests still pass": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756441154
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757027780
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757062467
+      }
+    ],
+    "4.1 Add the `forum_config` model": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756441310
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757073706
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757178464
+      }
+    ],
+    "4.2 Add the Forum config service helper": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756441437
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757182879
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757276186
+      }
+    ],
+    "4.3 Add admin schemas": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756441594
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757282258
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757352005
+      }
+    ],
+    "4.4 Add admin endpoints": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756441755
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757358662
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757480338
+      }
+    ],
+    "4.5 Add public read endpoint": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756441886
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757484622
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757561228
+      }
+    ],
+    "4.6 Add Alembic migration": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756442035
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757565027
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757785721
+      }
+    ],
+    "4.7 Add backend unit tests": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756442153
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757789605
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757887731
+      }
+    ],
+    "5.1 Add frontend service methods": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756442286
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757893933
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757951961
+      }
+    ],
+    "5.2 Add i18n keys (FR + EN)": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756442405
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757957386
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758023124
+      }
+    ],
+    "5.3 Add the \"Forum\" card/toggle to AdminConfigPage": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756442525
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758029599
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758125529
+      }
+    ],
+    "5.4 Gate the HomePage \"View\" button on the setting": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756442691
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758130019
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758187507
+      }
+    ],
+    "5.5 Add property-based test for the toggle render decision": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756442804
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758193255
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758261246
+      }
+    ],
+    "5.6 Add integration tests": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756442946
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758265128
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758430034
+      }
+    ],
+    "6. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790756443085
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758437491
+      },
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790760163819
+      }
+    ],
+    "3. Fix Bug 1 — origin-based \"View\" button URL construction": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757062623
+      }
+    ],
+    "4. Enhancement 2 — Backend Forum config storage + endpoints": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790757887910
+      }
+    ],
+    "5. Enhancement 2 — Frontend service + Config UI + HomePage read": [
+      {
+        "executionId": "97f8e7ae-339a-43d2-bb61-69309bc22753",
+        "chatSessionId": "sess_7e69c741-49ad-4dde-9487-44f2d006e7bf",
+        "timestamp": 1790758430188
+      }
+    ]
+  }
+}

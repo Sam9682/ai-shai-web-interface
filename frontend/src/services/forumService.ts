@@ -78,4 +78,10 @@ export const forumService = {
   async deletePost(postId: string): Promise<void> {
     await api.delete(`/forum/posts/${postId}`);
   },
+
+  async getForumConfig(): Promise<{ view_button_enabled: boolean }> {
+    // Endpoint public sans authentification (utilisé par HomePage)
+    const response = await api.get('/forum/config');
+    return response.data;
+  },
 };
