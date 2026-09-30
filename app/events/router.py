@@ -268,7 +268,7 @@ L'équipe OPCP
             L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association OPCP - Loi 1901</p>
+            <p>OPCP - OVH</p>
         </div>
     </div>
 </body>
@@ -894,7 +894,7 @@ L'équipe OPCP
             L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association OPCP - Loi 1901</p>
+            <p>OPCP - OVH</p>
         </div>
     </div>
 </body>
@@ -984,13 +984,13 @@ async def export_events_ical(
         
         # Create calendar
         cal = Calendar()
-        cal.add('prodid', '-//OPCP Association//Events Calendar//FR')
+        cal.add('prodid', '-//OPCP PSMC//Events Calendar//FR')
         cal.add('version', '2.0')
         cal.add('calscale', 'GREGORIAN')
         cal.add('method', 'PUBLISH')
         cal.add('x-wr-calname', 'OPCP Events')
         cal.add('x-wr-timezone', 'Europe/Paris')
-        cal.add('x-wr-caldesc', 'Événements de l\'association OPCP')
+        cal.add('x-wr-caldesc', 'Événements de l\'PSMC OPCP')
         
         # Add each event to the calendar
         for event in events:
@@ -1017,8 +1017,8 @@ async def export_events_ical(
             ical_event.add('created', event.created_at)
             ical_event.add('last-modified', event.updated_at)
             
-            # Add organizer (association)
-            ical_event.add('organizer', 'OPCP Association')
+            # Add organizer (PSMC)
+            ical_event.add('organizer', 'OPCP PSMC')
             
             # Add to calendar
             cal.add_component(ical_event)

@@ -72,7 +72,7 @@ def valid_event_data():
     
     return {
         "title": "Assemblée Générale 2026",
-        "description": "Assemblée générale annuelle de l'association",
+        "description": "Assemblée générale annuelle de l'PSMC",
         "start_date": start_date.isoformat(),
         "end_date": end_date.isoformat(),
         "location": "Salle des fêtes, 123 Rue de Paris",

@@ -1,4 +1,4 @@
-"""Information API endpoints for association information"""
+"""Information API endpoints for PSMC information"""
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -14,7 +14,7 @@ from app.info.schemas import (
     StatsResponse
 )
 from app.info.config import (
-    ASSOCIATION_INFO,
+    PSMC_INFO,
     MISSION,
     ACTIVITIES,
     CONTACT_EMAIL,
@@ -38,23 +38,23 @@ router = APIRouter(prefix="/api/info", tags=["information"])
     }
 )
 async def get_homepage_info() -> HomepageResponse:
-    """Get homepage information including association details, mission, and activities.
+    """Get homepage information including PSMC details, mission, and activities.
     
     Validates Requirements 1.1, 1.2, 1.4, 8.1, 8.2:
-    - Returns association information (name, address, board members)
+    - Returns PSMC information (name, address, board members)
     - Returns mission and activities description
     - Returns contact information
     
     This endpoint is public and does not require authentication.
     
     Returns:
-        HomepageResponse with association information, mission, activities, and contact details
+        HomepageResponse with PSMC information, mission, activities, and contact details
     """
     try:
         logger.info("Homepage information requested")
         
         return HomepageResponse(
-            association=ASSOCIATION_INFO,
+            PSMC=PSMC_INFO,
             mission=MISSION,
             activities=ACTIVITIES,
             contact_email=CONTACT_EMAIL,
@@ -81,14 +81,14 @@ async def get_homepage_info() -> HomepageResponse:
     }
 )
 async def get_legal_info() -> LegalInfoResponse:
-    """Get legal information including association statutes and regulations.
+    """Get legal information including PSMC statutes and regulations.
     
     Validates Requirements 8.2, 8.3:
-    - Returns association statutes
+    - Returns PSMC statutes
     - Returns internal regulations
     
     This endpoint is public and does not require authentication, ensuring
-    transparency as required for associations loi 1901.
+    transparency as required for PSMCs OVH.
     
     Returns:
         LegalInfoResponse with statutes and regulations
@@ -125,7 +125,7 @@ async def get_board_info() -> BoardInfoResponse:
     
     Validates Requirements 8.2:
     - Returns board member information with contact details
-    - Provides transparency about association leadership
+    - Provides transparency about PSMC leadership
     
     This endpoint is public and does not require authentication.
     
@@ -136,7 +136,7 @@ async def get_board_info() -> BoardInfoResponse:
         logger.info("Board information requested")
         
         return BoardInfoResponse(
-            board_members=ASSOCIATION_INFO.board_members,
+            board_members=PSMC_INFO.board_members,
             last_updated=BOARD_LAST_UPDATED
         )
         
@@ -215,7 +215,7 @@ async def get_financial_reports(
     }
 )
 async def get_stats(db: Session = Depends(get_db)) -> StatsResponse:
-    """Get public statistics about the association.
+    """Get public statistics about the PSMC.
     
     Returns statistics including:
     - Total number of users
@@ -228,7 +228,7 @@ async def get_stats(db: Session = Depends(get_db)) -> StatsResponse:
         db: Database session
         
     Returns:
-        StatsResponse with association statistics
+        StatsResponse with PSMC statistics
     """
     try:
         logger.info("Statistics requested")

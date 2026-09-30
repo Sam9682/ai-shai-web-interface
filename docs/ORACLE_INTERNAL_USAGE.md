@@ -61,7 +61,7 @@ async def analyze_forum(db: Session, ai_provider: str = "kiro"):
 
 ### 2. Génération automatique de rapports
 
-**Objectif:** Générer des rapports mensuels sur l'activité de l'association
+**Objectif:** Générer des rapports mensuels sur l'activité de l'PSMC
 
 **Implémentation:**
 ```python

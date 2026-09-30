@@ -116,7 +116,17 @@ volumes:
   postgres_data:
   app_data:
 
+# The compose-internal alias "shai-network" is mapped to a Docker network whose
+# real name is unique per deployment (keyed on USER_ID). This isolation is
+# critical: multiple deployments run on the same host, and a shared fixed
+# network name made the Docker embedded DNS resolve service names like
+# "frontend"/"ai-shai-web-interface" to containers belonging to OTHER
+# deployments. That caused nginx to round-robin onto a stale frontend whose
+# hashed assets (e.g. index-<hash>.js) did not exist, returning the SPA
+# index.html (text/html) for a JS request and producing the browser error:
+# "Loading module ... was blocked because of a disallowed MIME type (text/html)".
+# A per-deployment network name scopes DNS to this deployment only.
 networks:
   shai-network:
     driver: bridge
-    name: shai-network
+    name: shai-network-${USER_ID:-1}

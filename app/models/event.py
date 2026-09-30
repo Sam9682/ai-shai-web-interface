@@ -15,7 +15,7 @@ class EventStatus(str, enum.Enum):
 
 
 class Event(Base):
-    """Event model for managing association events and meetings
+    """Event model for managing PSMC events and meetings
     
     Validates Requirements 6.1, 6.2, 6.3:
     - Stores event details (title, description, dates, location)

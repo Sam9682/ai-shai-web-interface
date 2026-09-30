@@ -1,1 +1,1 @@
-"""Information endpoints module for association information"""
+"""Information endpoints module for PSMC information"""

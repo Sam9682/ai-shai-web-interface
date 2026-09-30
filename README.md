@@ -146,4 +146,4 @@ This project follows PEP 8 style guidelines.
 
 ## License
 
-Copyright © 2026 AI-SHAI Association
+Copyright © 2026 AI-SHAI PSMC

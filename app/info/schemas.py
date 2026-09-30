@@ -11,8 +11,8 @@ class BoardMember(BaseModel):
     email: Optional[str] = None
 
 
-class AssociationInfo(BaseModel):
-    """Association basic information"""
+class PSMCInfo(BaseModel):
+    """PSMC basic information"""
     name: str
     address: str
     siret: Optional[str] = None
@@ -23,11 +23,11 @@ class HomepageResponse(BaseModel):
     """Response schema for homepage endpoint
     
     Validates Requirements 1.1, 1.2, 1.4, 8.1, 8.2:
-    - Association information (name, address, board members)
+    - PSMC information (name, address, board members)
     - Mission and activities description
     - Contact information
     """
-    association: AssociationInfo
+    PSMC: PSMCInfo
     mission: str
     activities: str
     contact_email: str
@@ -46,7 +46,7 @@ class LegalInfoResponse(BaseModel):
     """Response schema for legal information endpoint
     
     Validates Requirements 8.2, 8.3:
-    - Association statutes
+    - PSMC statutes
     - Internal regulations
     """
     statutes: LegalDocument
@@ -86,7 +86,7 @@ class FinancialReportsResponse(BaseModel):
 class StatsResponse(BaseModel):
     """Response schema for statistics endpoint
     
-    Returns public statistics about the association
+    Returns public statistics about the PSMC
     """
     total_users: int
     total_events: int

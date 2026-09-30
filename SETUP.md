@@ -172,4 +172,4 @@ All requirements from Task 1 have been successfully implemented and tested! ✅
 
 ## License
 
-Copyright © 2026 AI-SHAI Association
+Copyright © 2026 AI-SHAI PSMC

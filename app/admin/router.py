@@ -687,7 +687,7 @@ async def get_activity_report(
     current_user: User = Depends(require_admin),
     db: Session = Depends(get_db)
 ) -> ActivityReportResponse:
-    """Generate activity report for the association.
+    """Generate activity report for the PSMC.
     
     Validates Requirements 8.4:
     - Generates annual activity reports accessible to all members

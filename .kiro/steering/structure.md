@@ -66,7 +66,7 @@ app/
 ├── payments/              # Payment processing
 ├── notifications/         # Notification system
 ├── admin/                 # Admin dashboard
-├── info/                  # Association information
+├── info/                  # PSMC information
 ├── oracle/                # AI assistant module
 │
 ├── services/              # Business logic services

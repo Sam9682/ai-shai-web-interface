@@ -219,13 +219,13 @@ export const OraclePage = () => {
           <div className="card p-4">
             <h4 className="text-sm font-medium text-gray-700 mb-2">{t('page.oracle.examples.title')}</h4>
             <ul className="space-y-2 text-xs text-gray-600">
-              <li className="cursor-pointer hover:text-[#4949FF] transition-colors" onClick={() => setInput("En tant qu'étudiant en médecine, explique-moi le fonctionnement du système immunitaire")}>
+              <li className="cursor-pointer hover:text-[#4949FF] transition-colors" onClick={() => setInput("What is OPCP ?")}>
                 {t('page.oracle.examples.medical')}
               </li>
-              <li className="cursor-pointer hover:text-[#4949FF] transition-colors" onClick={() => setInput("Génère une page web HTML qui présente une analyse politique de l'Europe")}>
+              <li className="cursor-pointer hover:text-[#4949FF] transition-colors" onClick={() => setInput("What is Openstack ?")}>
                 {t('page.oracle.examples.web')}
               </li>
-              <li className="cursor-pointer hover:text-[#4949FF] transition-colors" onClick={() => setInput("Dans un contexte éducatif, explique les enjeux éthiques de l'IA")}>
+              <li className="cursor-pointer hover:text-[#4949FF] transition-colors" onClick={() => setInput("Display curl command to get the list of servers via API openstack ?")}>
                 {t('page.oracle.examples.ethics')}
               </li>
             </ul>
@@ -256,7 +256,7 @@ export const OraclePage = () => {
                     )}
                     {message.provider && (
                       <div className="text-xs mt-2 opacity-60">
-                        {message.provider} · {message.processingTime?.toFixed(2)}s
+                        {message.provider} Â· {message.processingTime?.toFixed(2)}s
                       </div>
                     )}
                     {message.role === 'assistant' && message.sources?.length ? (
@@ -313,7 +313,7 @@ export const OraclePage = () => {
                 onClick={() => setShowHistory(false)}
                 className="text-gray-400 hover:text-gray-600 text-xl"
               >
-                ×
+                Ã—
               </button>
             </div>
             <div className="p-5 overflow-y-auto max-h-[60vh]">
@@ -330,7 +330,7 @@ export const OraclePage = () => {
                       <div className="text-sm font-medium text-gray-900 mb-1">{item.question}</div>
                       <div className="text-xs text-gray-600 line-clamp-2">{item.answer}</div>
                       <div className="text-xs text-gray-400 mt-2">
-                        {item.ai_provider} · {new Date(item.created_at).toLocaleString('fr-FR')}
+                        {item.ai_provider} Â· {new Date(item.created_at).toLocaleString('fr-FR')}
                       </div>
                     </div>
                   ))}

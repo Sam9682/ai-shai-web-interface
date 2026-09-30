@@ -10,7 +10,7 @@ def test_get_legal_info_success():
     """Test successful retrieval of legal information.
     
     Validates Requirements 8.2, 8.3:
-    - Returns association statutes
+    - Returns PSMC statutes
     - Returns internal regulations
     """
     response = client.get("/api/info/legal")
@@ -56,7 +56,7 @@ def test_legal_info_statutes_content():
     
     # Verify key sections are present
     assert "Article" in statutes_content
-    assert "association" in statutes_content.lower()
+    assert "PSMC" in statutes_content.lower()
 
 
 def test_legal_info_regulations_content():

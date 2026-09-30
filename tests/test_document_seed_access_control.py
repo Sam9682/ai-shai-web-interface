@@ -87,7 +87,7 @@ def seeded_members_document(client, db_session, isolated_storage, tmp_path, monk
 
     # Use a unique original_name so this document is unambiguous even when the
     # lifespan has seeded the real docs/ folder into the shared test database.
-    original_name = "statuts-association-seed-test.pdf"
+    original_name = "statuts-PSMC-seed-test.pdf"
     admin = _make_admin(db_session)
 
     # Create a real source file inside the docs dir and seed it.

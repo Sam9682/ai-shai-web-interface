@@ -10,7 +10,7 @@ def test_get_homepage_info_success():
     """Test successful retrieval of homepage information.
     
     Validates Requirements 1.1, 1.2, 1.4, 8.1, 8.2:
-    - Returns association information
+    - Returns PSMC information
     - Returns mission and activities
     - Returns contact information
     """
@@ -19,15 +19,15 @@ def test_get_homepage_info_success():
     assert response.status_code == 200
     data = response.json()
     
-    # Verify association information
-    assert "association" in data
-    assert data["association"]["name"] == "OPCP"
-    assert "address" in data["association"]
-    assert "board_members" in data["association"]
-    assert len(data["association"]["board_members"]) > 0
+    # Verify PSMC information
+    assert "PSMC" in data
+    assert data["PSMC"]["name"] == "OPCP"
+    assert "address" in data["PSMC"]
+    assert "board_members" in data["PSMC"]
+    assert len(data["PSMC"]["board_members"]) > 0
     
     # Verify board member structure
-    board_member = data["association"]["board_members"][0]
+    board_member = data["PSMC"]["board_members"][0]
     assert "name" in board_member
     assert "position" in board_member
     
@@ -49,7 +49,7 @@ def test_homepage_info_contains_president():
     assert response.status_code == 200
     data = response.json()
     
-    board_members = data["association"]["board_members"]
+    board_members = data["PSMC"]["board_members"]
     positions = [member["position"] for member in board_members]
     
     # Should have a president
@@ -63,7 +63,7 @@ def test_homepage_info_contains_treasurer():
     assert response.status_code == 200
     data = response.json()
     
-    board_members = data["association"]["board_members"]
+    board_members = data["PSMC"]["board_members"]
     positions = [member["position"] for member in board_members]
     
     # Should have a treasurer (masculine or feminine form)
@@ -77,7 +77,7 @@ def test_homepage_info_contains_secretary():
     assert response.status_code == 200
     data = response.json()
     
-    board_members = data["association"]["board_members"]
+    board_members = data["PSMC"]["board_members"]
     positions = [member["position"] for member in board_members]
     
     # Should have a secretary
@@ -101,11 +101,11 @@ def test_homepage_info_response_structure():
     data = response.json()
     
     # Verify all required fields are present
-    required_fields = ["association", "mission", "activities", "contact_email"]
+    required_fields = ["PSMC", "mission", "activities", "contact_email"]
     for field in required_fields:
         assert field in data, f"Missing required field: {field}"
     
-    # Verify association structure
-    association_fields = ["name", "address", "board_members"]
-    for field in association_fields:
-        assert field in data["association"], f"Missing association field: {field}"
+    # Verify PSMC structure
+    PSMC_fields = ["name", "address", "board_members"]
+    for field in PSMC_fields:
+        assert field in data["PSMC"], f"Missing PSMC field: {field}"

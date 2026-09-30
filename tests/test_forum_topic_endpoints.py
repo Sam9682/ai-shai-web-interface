@@ -68,7 +68,7 @@ def test_list_topics_empty(client, verified_member, auth_headers):
 def test_create_topic_success(client, verified_member, auth_headers, db_session):
     """Test creating a new topic successfully
     
-    Validates Requirement 3.2: Topic creation and association with user
+    Validates Requirement 3.2: Topic creation and PSMC with user
     """
     topic_data = {"title": "My First Topic"}
     

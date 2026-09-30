@@ -26,7 +26,7 @@ class InvoiceGenerator:
     
     Validates Requirements 4.3:
     - Generates PDF invoices with payment details
-    - Includes association information
+    - Includes PSMC information
     - Assigns unique invoice numbers
     """
     
@@ -137,13 +137,13 @@ class InvoiceGenerator:
             story.append(Paragraph("FACTURE / INVOICE", title_style))
             story.append(Spacer(1, 10*mm))
             
-            # Association information
-            story.append(Paragraph("Association OPCP", heading_style))
-            association_info = """
+            # PSMC information
+            story.append(Paragraph("PSMC OPCP", heading_style))
+            PSMC_info = """
             OVH PSMC Team <br/>
             Email: contact@opcp-psmc.com
             """
-            story.append(Paragraph(association_info, normal_style))
+            story.append(Paragraph(PSMC_info, normal_style))
             story.append(Spacer(1, 10*mm))
             
             # Invoice details
@@ -234,7 +234,7 @@ class InvoiceGenerator:
             footer_text = """
             Merci pour votre paiement / Thank you for your payment<br/>
             Cette facture est générée automatiquement / This invoice is automatically generated<br/>
-            Association OPCP - Loi 1901
+            PSMC OPCP - OVH
             """
             story.append(Paragraph(footer_text, footer_style))
             

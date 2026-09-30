@@ -61,7 +61,7 @@ frontend/
 - Logout button for authenticated users
 
 #### 5. Pages
-- **HomePage**: Welcome page with association information
+- **HomePage**: Welcome page with PSMC information
 - **LoginPage**: Login form with validation and error handling
 - **RegisterPage**: Registration form with all required fields and validation
 

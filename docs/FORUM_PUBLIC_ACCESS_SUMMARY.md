@@ -174,7 +174,7 @@ Les endpoints suivants restent protégés et nécessitent une authentification:
 - ✅ Incitation à s'inscrire
 - ✅ Transparence sur les discussions
 
-### Pour l'association
+### Pour l'PSMC
 
 - ✅ Meilleure visibilité du forum
 - ✅ Augmentation potentielle des inscriptions

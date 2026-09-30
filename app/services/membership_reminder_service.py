@@ -76,7 +76,7 @@ class MembershipReminderService:
         body_text = f"""
 Bonjour {user_name},
 
-Votre adhésion à l'association OPCP expire le {expiry_date}.
+Votre adhésion à l'PSMC OPCP expire le {expiry_date}.
 
 Pour continuer à profiter de tous les avantages de votre adhésion, nous vous invitons à renouveler votre cotisation dès maintenant.
 
@@ -148,7 +148,7 @@ The OPCP Team
             L'équipe OPCP / The OPCP Team</p>
         </div>
         <div class="footer">
-            <p>Association OPCP - Loi 1901</p>
+            <p>PSMC OPCP - OVH</p>
         </div>
     </div>
 </body>

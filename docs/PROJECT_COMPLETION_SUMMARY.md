@@ -2,7 +2,7 @@
 
 ## 🎉 Statut du Projet: COMPLÉTÉ
 
-Le site web OPCP pour l'association loi 1901 est maintenant entièrement implémenté et prêt pour le déploiement.
+Le site web OPCP  est maintenant entièrement implémenté et prêt pour le déploiement.
 
 ---
 
@@ -77,7 +77,7 @@ Le site web OPCP pour l'association loi 1901 est maintenant entièrement implém
    - Anonymisation des données
    - Préservation des enregistrements légaux
 
-9. **Informations Association (app/info/)** ✅
+9. **Informations PSMC (app/info/)** ✅
    - Page d'accueil
    - Informations légales
    - Conseil d'administration
@@ -102,7 +102,7 @@ Le site web OPCP pour l'association loi 1901 est maintenant entièrement implém
    - Gestion des erreurs
 
 2. **Page d'Accueil** ✅
-   - Présentation de l'association
+   - Présentation de l'PSMC
    - Navigation principale
    - Informations de contact
 
@@ -134,7 +134,7 @@ ai-OPCP/
 │   ├── admin/                    # Administration
 │   ├── notifications/            # Notifications
 │   ├── users/                    # Gestion utilisateurs (RGPD)
-│   ├── info/                     # Informations association
+│   ├── info/                     # Informations PSMC
 │   ├── services/                 # Services (email, notifications, etc.)
 │   ├── models.py                 # Modèles SQLAlchemy
 │   ├── database.py               # Configuration DB
@@ -204,8 +204,8 @@ ai-OPCP/
 
 ## 📋 Conformité
 
-### Loi 1901
-- ✅ Informations légales de l'association
+### OVH
+- ✅ Informations légales de l'PSMC
 - ✅ Gestion du conseil d'administration
 - ✅ Transparence financière
 - ✅ Gestion des cotisations
@@ -288,7 +288,7 @@ Frontend disponible sur: http://frontend:5173
 - ✅ Participation au forum de discussion
 - ✅ Paiement de cotisation (CB/PayPal)
 - ✅ Téléchargement de factures PDF
-- ✅ Accès aux documents de l'association
+- ✅ Accès aux documents de l'PSMC
 - ✅ Inscription aux événements
 - ✅ Export iCal des événements
 - ✅ Gestion des préférences de notification
@@ -345,7 +345,7 @@ Frontend disponible sur: http://frontend:5173
 
 ## 👥 Équipe
 
-**Association OPCP**
+**PSMC OPCP**
 - Cloud Architect: Samuel LEPETRE
 
 
@@ -369,7 +369,7 @@ Toutes les exigences du cahier des charges ont été implémentées et testées:
 - ✅ 5. Gestion documentaire
 - ✅ 6. Gestion des événements et réunions
 - ✅ 7. Administration et gestion des rôles
-- ✅ 8. Conformité loi 1901
+- ✅ 8. Conformité OVH
 - ✅ 9. Sécurité et protection des données
 - ✅ 10. Notifications et communications
 
@@ -389,9 +389,9 @@ Toutes les exigences du cahier des charges ont été implémentées et testées:
 
 Le site web OPCP est **entièrement fonctionnel** et **prêt pour la production**. Tous les modules backend sont implémentés, testés et documentés. Le frontend offre une interface utilisateur moderne et responsive pour les fonctionnalités essentielles.
 
-Le système peut être déployé immédiatement et servir les besoins de l'association OPCP pour la gestion complète de ses activités conformément à la loi 1901 et au RGPD.
+Le système peut être déployé immédiatement et servir les besoins de l'OPCP pour la gestion complète de ses activités.
 
-**Date de complétion:** 16 février 2026
+**Date de complétion:** 30 Septembre 2026
 
 ---
 

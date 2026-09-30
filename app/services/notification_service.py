@@ -228,7 +228,7 @@ L'équipe OPCP
             L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association OPCP - Loi 1901</p>
+            <p>OPCP - OVH</p>
         </div>
     </div>
 </body>
@@ -367,7 +367,7 @@ L'équipe OPCP
             L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association OPCP - Loi 1901</p>
+            <p>PSMC OPCP - OVH</p>
         </div>
     </div>
 </body>
@@ -482,7 +482,7 @@ L'équipe OPCP
             L'équipe OPCP</p>
         </div>
         <div class="footer">
-            <p>Association OPCP - Loi 1901</p>
+            <p>PSMC OPCP - OVH</p>
         </div>
     </div>
 </body>

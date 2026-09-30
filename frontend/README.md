@@ -1,6 +1,6 @@
 # OPCP Frontend
 
-React + TypeScript frontend application for the OPCP association website.
+React + TypeScript frontend application for the OPCP PSMC website.
 
 ## Tech Stack
 

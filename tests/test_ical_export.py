@@ -129,7 +129,7 @@ def test_ical_export_returns_valid_ical(client, db_session, test_events, auth_he
     cal = Calendar.from_ical(response.content)
     
     # Verify calendar properties
-    assert cal.get('prodid') == '-//OPCP Association//Events Calendar//FR'
+    assert cal.get('prodid') == '-//OPCP PSMC//Events Calendar//FR'
     assert cal.get('version') == '2.0'
     assert cal.get('calscale') == 'GREGORIAN'
     assert cal.get('method') == 'PUBLISH'
