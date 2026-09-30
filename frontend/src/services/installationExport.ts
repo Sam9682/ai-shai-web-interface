@@ -364,7 +364,7 @@ const DOC_LABELS: Record<Language, DocLabels> = {
   fr: {
     htmlLang: 'fr',
     title: "Document d'architecture",
-    agent: 'Oracle AI — Shai Agent',
+    agent: 'Export Agent',
     summary: 'Sommaire',
     projectLabel: 'Projet',
     generatedOnLabel: 'Généré le',
@@ -387,7 +387,7 @@ const DOC_LABELS: Record<Language, DocLabels> = {
   en: {
     htmlLang: 'en',
     title: 'Architecture document',
-    agent: 'Oracle AI — Shai Agent',
+    agent: 'Export Agent',
     summary: 'Summary',
     projectLabel: 'Project',
     generatedOnLabel: 'Generated on',
@@ -618,7 +618,7 @@ export const buildArchitectureDocumentHtml = (
 };
 
 /**
- * Generate and download the "Oracle AI — Shai Agent" architecture document for
+ * Generate and download the "Export Agent" architecture document for
  * an installation. It fetches the current values across every tab (reusing the
  * export builder) and renders them, together with the server-node list, into a
  * self-contained HTML file the browser downloads.
