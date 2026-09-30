@@ -34,7 +34,7 @@ const MarkerLegend = () => {
  * customer instructions (Req 3.3).
  */
 const COMPLETION_TIPS: readonly string[] = [
-  'Commencez par la page « Basics » avant de compléter les autres onglets.',
+  'Selectionnez une installation puis commencez par la page « Network Checklist » avant de compléter les autres onglets.',
   'Répondez à toutes les questions Obligatoires (🔴) dans la colonne « Réponse client ».',
   'Les questions Optionnelles (⚪) peuvent être traitées plus tard.',
   'Remplacez les valeurs d’exemple par votre configuration réelle.',

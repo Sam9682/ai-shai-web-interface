@@ -12,11 +12,13 @@ import { NewTopicPage } from './pages/NewTopicPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
 import { AdminConfigPage } from './pages/AdminConfigPage';
 import { AdminEventsPage } from './pages/AdminEventsPage';
+import { AdminTasksPage } from './pages/AdminTasksPage';
 import { OraclePage } from './pages/OraclePage';
 import { HowToUsePage } from './pages/HowToUsePage';
 import { InstallationListPage } from './components/prerequisites/InstallationListPage';
 import { InstallationPrereqPage } from './pages/InstallationPrereqPage';
 import { DocumentsPage } from './pages/DocumentsPage';
+import { EventsPage } from './pages/EventsPage';
 import { SecurityPage } from './pages/SecurityPage';
 import { LanguageProvider } from './hooks/useLanguage';
 
@@ -76,6 +78,14 @@ function App() {
                   }
                 />
                 <Route
+                  path="/admin/tasks"
+                  element={
+                    <ProtectedRoute>
+                      <AdminTasksPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/admin/configuration"
                   element={
                     <ProtectedRoute>
@@ -120,6 +130,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <DocumentsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/events"
+                  element={
+                    <ProtectedRoute>
+                      <EventsPage />
                     </ProtectedRoute>
                   }
                 />

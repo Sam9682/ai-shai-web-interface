@@ -1,0 +1,192 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Bug confirmed on unfixed code. Authenticated non-admin member at initial route '/events' with eventService.listEvents mocked to resolve. Counterexample (holds for empty [], one event, and several events):\n- TestingLibraryElementError: Unable to find role=\"heading\" and name /[ée]v[ée]nements|events/i  → no member events view mounts for '/events' (blank content area).\n- Unable to find text \"Assemblée générale\" → returned events never render.\n- expect(listEvents).toHaveBeenCalled() → never called; no component mounts at '/events'.\nAll 4 tests failed as expected. Root cause confirmed: no <Route path=\"/events\"> in App.tsx inner <Routes> and no member-facing component that calls listEvents(). Documented counterexample: \"Navigating to /events renders no page component and no events; listEvents() is never called.\"",
+      "lastRunTimestamp": 1790772733548
+    },
+    "3.5 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1790773520658
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772558446
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772566798
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772754260
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772558591
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772758227
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773128077
+      }
+    ],
+    "3.1 Create the read-only `EventsPage` component": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772558693
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773138488
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773221953
+      }
+    ],
+    "3.2 Add member events translation keys": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772558793
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773227176
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773286464
+      }
+    ],
+    "3.3 Wire the protected `/events` route in `App.tsx`": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772558913
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773291422
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773360577
+      }
+    ],
+    "3.4 Add unit tests for EventsPage and the route mapping": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772559014
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773364131
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773488457
+      }
+    ],
+    "3.5 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772559124
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773492053
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773532884
+      }
+    ],
+    "3.6 Verify preservation tests still pass": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772559227
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773536470
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773607447
+      }
+    ],
+    "3.7 Add integration tests for the member events flow": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772559329
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773611233
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773812896
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790772559446
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773816958
+      },
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790774215858
+      }
+    ],
+    "3. Fix for member `/events` route missing (blank content area, no data fetch)": [
+      {
+        "executionId": "9fa5e5a6-ef1f-449d-a5bf-5af9f93ee82d",
+        "chatSessionId": "sess_b8b388a3-7352-42c9-b101-7acb7fcc698c",
+        "timestamp": 1790773813078
+      }
+    ]
+  }
+}

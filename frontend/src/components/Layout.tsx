@@ -42,6 +42,7 @@ export const Layout = ({ children }: LayoutProps) => {
   const headerLabel = computeHeaderLabel(authService.getCurrentUser());
   const { language, setLanguage, t } = useTranslation();
   const [showEventsMenu, setShowEventsMenu] = useState(false);
+  const [showTasksMenu, setShowTasksMenu] = useState(false);
   const [showPrereqMenu, setShowPrereqMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -81,6 +82,18 @@ export const Layout = ({ children }: LayoutProps) => {
                       <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded shadow-lg border border-gray-200 py-1 z-50">
                         <Link to="/admin/events" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:no-underline">
                           {t('nav.events.manage')}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                  <div className="relative" onMouseEnter={() => setShowTasksMenu(true)} onMouseLeave={() => setShowTasksMenu(false)}>
+                    <Link to="/tasks" className="px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded transition-colors hover:no-underline">
+                      {t('nav.tasks')} {isAdmin && <span className="ml-0.5 text-xs">▾</span>}
+                    </Link>
+                    {isAdmin && showTasksMenu && (
+                      <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded shadow-lg border border-gray-200 py-1 z-50">
+                        <Link to="/admin/tasks" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:no-underline">
+                          {t('nav.tasks.manage')}
                         </Link>
                       </div>
                     )}
@@ -220,6 +233,14 @@ export const Layout = ({ children }: LayoutProps) => {
                 {isAdmin && (
                   <Link to="/admin/events" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 pl-6 text-sm text-gray-600 hover:bg-gray-50 rounded hover:no-underline">
                     {t('nav.events.manage')}
+                  </Link>
+                )}
+                <Link to="/tasks" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">
+                  {t('nav.tasks')}
+                </Link>
+                {isAdmin && (
+                  <Link to="/admin/tasks" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 pl-6 text-sm text-gray-600 hover:bg-gray-50 rounded hover:no-underline">
+                    {t('nav.tasks.manage')}
                   </Link>
                 )}
                 <Link to="/documents" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded hover:no-underline">

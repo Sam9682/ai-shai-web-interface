@@ -34,6 +34,8 @@ export const fr: TranslationDictionary = {
   'nav.forum': 'Forum',
   'nav.events': 'Événements',
   'nav.events.manage': 'Gérer les événements',
+  'nav.tasks': 'Tâches',
+  'nav.tasks.manage': 'Gérer les tâches',
   'nav.documents': 'Documents',
   'nav.oracle': 'Oracle IA',
   'nav.prerequisites': 'OPCP installations',
@@ -367,6 +369,11 @@ export const fr: TranslationDictionary = {
   'page.adminEvents.error.create': 'Échec de la création de l\'événement.',
   'page.adminEvents.error.update': 'Échec de la mise à jour de l\'événement.',
 
+  // ---- Member events page ----
+  'page.events.title': 'Événements',
+  'page.events.loading': 'Chargement...',
+  'page.events.empty': 'Aucun événement.',
+
   // ---- Documents page ----
   'page.documents.category.documents': 'Documents',
   'page.documents.category.docs': 'Documentation',
@@ -486,6 +493,8 @@ export const en: TranslationDictionary = {
   'nav.forum': 'Forum',
   'nav.events': 'Events',
   'nav.events.manage': 'Manage events',
+  'nav.tasks': 'Tasks',
+  'nav.tasks.manage': 'Manage tasks',
   'nav.documents': 'Documents',
   'nav.oracle': 'AI Oracle',
   'nav.prerequisites': 'OPCP installations',
@@ -815,6 +824,11 @@ export const en: TranslationDictionary = {
   'page.adminEvents.assignees.none': 'None (public event)',
   'page.adminEvents.error.create': 'Failed to create the event.',
   'page.adminEvents.error.update': 'Failed to update the event.',
+
+  // ---- Member events page ----
+  'page.events.title': 'Events',
+  'page.events.loading': 'Loading...',
+  'page.events.empty': 'No events.',
 
   // ---- Documents page ----
   'page.documents.category.documents': 'Documents',

@@ -1,0 +1,165 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770510197
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770521405
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770731291
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770510447
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770735758
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770951530
+      }
+    ],
+    "3.1 Add Tasks translation keys": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770510640
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770960375
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771005906
+      }
+    ],
+    "3.2 Wire the Tasks menu into Layout (desktop and mobile)": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770510806
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771009980
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771116547
+      }
+    ],
+    "3.3 Register the /admin/tasks route and page": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770511016
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771121897
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771344828
+      }
+    ],
+    "3.4 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770511371
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771351985
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771432098
+      }
+    ],
+    "3.5 Verify preservation tests still pass": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770511781
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771436359
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771482393
+      }
+    ],
+    "4. Add integration coverage for the Tasks navigation flow": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770512035
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771487244
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771733023
+      }
+    ],
+    "5. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790770512215
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771737201
+      },
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771892169
+      }
+    ],
+    "3. Fix for missing Tasks navigation wiring": [
+      {
+        "executionId": "8466f9e1-df6c-4a0b-aa3a-d02ee610d46a",
+        "chatSessionId": "sess_0807be5c-f65e-432c-b7ef-1f5208f10b3d",
+        "timestamp": 1790771482541
+      }
+    ]
+  }
+}
