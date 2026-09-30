@@ -63,13 +63,14 @@ Article 1 - Constitution et dénomination
 Article 2 - Objet
 
 Article 3 - Durée
+"""
 )
 
 REGULATIONS = LegalDocument(
     title="Règlement Intérieur de l'OPCP",
     description="Le règlement intérieur précise les modalités d'application des statuts et les règles de fonctionnement quotidien.",
     content="""RÈGLEMENT INTÉRIEUR DE L'OPCP
-
+"""
 )
 
 # Financial reports (Requirement 8.5)

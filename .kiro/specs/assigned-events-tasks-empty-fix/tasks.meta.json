@@ -1,0 +1,159 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "failed",
+      "failingExample": "Bug condition exploration test FAILED on unfixed code as expected — this CONFIRMS the bug. 4/4 tests failed at initial route /tasks:\n\n1. Member at /tasks: TestingLibraryElementError: Unable to find role=\"heading\" and name /t[aâ]ches|tasks/i — no member Tasks page mounts.\n2. Admin at /tasks: Unable to find role=\"heading\" and name /t[aâ]ches|tasks/i — no page mounts (not even a read-only member page).\n3. Mocked tasks display: Unable to find an element with the text: \"Préparer le rapport trimestriel\" — no task card renders.\n4. Empty state: AssertionError: expected \"vi.fn()\" to be called at least once — expect(mockedListTasks).toHaveBeenCalled() FAILED. taskService.listTasks() is NEVER called.\n\nRoot cause confirmed: frontend/src/App.tsx has no <Route path=\"/tasks\"> and there is no member-facing TasksPage component, so navigating to /tasks matches nothing inside Layout, mounts no component, leaves a blank content area, and never invokes taskService.listTasks(). This is the exact analog of the previously fixed Events defect (/events -> EventsPage).",
+      "lastRunTimestamp": 1790779041069
+    },
+    "3.3 Verify bug condition exploration test now passes": {
+      "status": "failed",
+      "failingExample": "Test case 3 \"renders a card with the task title, formatted dates, and status\" (App.memberTasksRoute.test.tsx:175) fails: TestingLibraryElementError: Found multiple elements with the text: /01\\/03\\/2030/ — matching elements: <p>01/03/2030 10:00:00</p> (start_date) and <p>01/03/2030 18:00:00</p> (end_date). The sampleTask start_date '2030-03-01T09:00:00Z' and end_date '2030-03-01T17:00:00Z' fall on the same calendar day, so the day/month/year fragment '01/03/2030' appears twice, and findByText (single-match) throws. This is a test-assertion flaw (ambiguous matcher), not an application defect — the fix works: 3/4 cases pass, TasksPage mounts, listTasks() is called, and title/dates/status all render.",
+      "lastRunTimestamp": 1790779542682
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790778878748
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790778887880
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779062057
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790778878892
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779065873
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779303874
+      }
+    ],
+    "3.1 Create the member-facing `TasksPage` component": [
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790778879025
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779308037
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779411779
+      }
+    ],
+    "3.2 Register the `/tasks` route in `App.tsx`": [
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790778879200
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779415978
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779469400
+      }
+    ],
+    "3.3 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790778879322
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779477351
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779614431
+      }
+    ],
+    "3.4 Verify preservation tests still pass": [
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790778879436
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779618421
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779663711
+      }
+    ],
+    "4. Add unit and integration coverage": [
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790778879565
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779668036
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779926933
+      }
+    ],
+    "5. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790778879698
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779932340
+      },
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790780104482
+      }
+    ],
+    "3. Fix for missing member-facing `/tasks` route (mirror the Events solution)": [
+      {
+        "executionId": "3a8629e5-5860-4106-a52e-7cb8a137ed48",
+        "chatSessionId": "sess_416393bf-7abc-49ef-9e08-8e9a1e0b2e57",
+        "timestamp": 1790779663865
+      }
+    ]
+  }
+}

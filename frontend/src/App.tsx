@@ -19,6 +19,7 @@ import { InstallationListPage } from './components/prerequisites/InstallationLis
 import { InstallationPrereqPage } from './pages/InstallationPrereqPage';
 import { DocumentsPage } from './pages/DocumentsPage';
 import { EventsPage } from './pages/EventsPage';
+import { TasksPage } from './pages/TasksPage';
 import { SecurityPage } from './pages/SecurityPage';
 import { LanguageProvider } from './hooks/useLanguage';
 
@@ -138,6 +139,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <EventsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/tasks"
+                  element={
+                    <ProtectedRoute>
+                      <TasksPage />
                     </ProtectedRoute>
                   }
                 />

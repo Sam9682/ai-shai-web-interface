@@ -374,6 +374,14 @@ export const fr: TranslationDictionary = {
   'page.events.loading': 'Chargement...',
   'page.events.empty': 'Aucun événement.',
 
+  // ---- Member tasks page ----
+  'page.tasks.title': 'Tâches',
+  'page.tasks.loading': 'Chargement...',
+  'page.tasks.empty': 'Aucune tâche.',
+  'page.tasks.start': 'Début :',
+  'page.tasks.end': 'Fin :',
+  'page.tasks.location': 'Lieu :',
+
   // ---- Documents page ----
   'page.documents.category.documents': 'Documents',
   'page.documents.category.docs': 'Documentation',
@@ -829,6 +837,14 @@ export const en: TranslationDictionary = {
   'page.events.title': 'Events',
   'page.events.loading': 'Loading...',
   'page.events.empty': 'No events.',
+
+  // ---- Member tasks page ----
+  'page.tasks.title': 'Tasks',
+  'page.tasks.loading': 'Loading...',
+  'page.tasks.empty': 'No tasks.',
+  'page.tasks.start': 'Start:',
+  'page.tasks.end': 'End:',
+  'page.tasks.location': 'Location:',
 
   // ---- Documents page ----
   'page.documents.category.documents': 'Documents',
