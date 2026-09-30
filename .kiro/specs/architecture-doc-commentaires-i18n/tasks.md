@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Write bug condition exploration test
+- [x] 1. Write bug condition exploration test
   - **Property 1: Bug Condition** - Comments rendered in the active language with localized labels
   - **CRITICAL**: This test MUST FAIL on unfixed code - failure confirms the bug exists
   - **DO NOT attempt to fix the test or the code when it fails**
@@ -21,7 +21,7 @@
   - Mark task complete when test is written, run, and failure is documented
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 2. Write preservation property tests (BEFORE implementing fix)
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
   - **Property 2: Preservation** - French output and document structure preserved
   - **IMPORTANT**: Follow observation-first methodology
   - Observe behavior on UNFIXED code for the invariants that must not regress, then encode them:
@@ -43,9 +43,9 @@
   - Mark task complete when tests are written, run, and passing on unfixed code
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-- [ ] 3. Fix for architecture-document comments field and i18n localization
+- [x] 3. Fix for architecture-document comments field and i18n localization
 
-  - [ ] 3.1 Introduce a per-language `DocLabels` map and thread `language` through the builder
+  - [x] 3.1 Introduce a per-language `DocLabels` map and thread `language` through the builder
     - In `frontend/src/services/installationExport.ts`, define a `DocLabels` interface and a `DOC_LABELS: Record<Language, DocLabels>` constant near the architecture-document section, importing only the `Language` type from `../i18n/translations`
     - Populate `DOC_LABELS` for `fr` and `en`: chrome (`htmlLang`, `title`, `agent`, `summary`, `projectLabel`, `generatedOnLabel`, `footerGeneratedBy`), QA header (`paramQuestion`, `value`, `comments`), servers (`serversNodes`, `openstackConfig`, `nodeInventory`, `authUrl`, `credentialId`, `novaEndpoint`, `caCertificate`, `secret`, `secretStored`, `secretNotConfigured`, `noOpenstackConfig`)
     - `renderRow(row, answer, labels)`: read `row.commentsHint` instead of `row.exampleValue`; keep marker, value cell, em-dash placeholder, and HTML-escaping unchanged
@@ -59,7 +59,7 @@
     - _Preservation: answer cell + em-dash, markers, HTML-escaping, full section set, node/credential fields, filename, unchanged-meaning French wording_
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-  - [ ] 3.2 Verify bug condition exploration test now passes
+  - [x] 3.2 Verify bug condition exploration test now passes
     - **Property 1: Expected Behavior** - Comments rendered in the active language with localized labels
     - **IMPORTANT**: Re-run the SAME test from task 1 - do NOT write a new test
     - The test from task 1 encodes the expected behavior; when it passes it confirms the expected behavior is satisfied
@@ -67,7 +67,7 @@
     - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed)
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [ ] 3.3 Verify preservation tests still pass
+  - [x] 3.3 Verify preservation tests still pass
     - **Property 2: Preservation** - French output and document structure preserved
     - **IMPORTANT**: Re-run the SAME tests from task 2 - do NOT write new tests
     - Run the preservation property tests from step 2
@@ -75,7 +75,7 @@
     - Confirm all tests still pass after fix (no regressions)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-  - [ ] 3.4 Add focused unit tests for the helpers and edge cases
+  - [x] 3.4 Add focused unit tests for the helpers and edge cases
     - `renderRow` renders `commentsHint` (not `exampleValue`) with the correct marker and value cell, in both languages
     - `renderQaSection` header cells localize to the active language
     - `renderServersSection` headings, credential labels, secret statuses, and empty message localize to the active language; node column headers unchanged
@@ -83,7 +83,7 @@
     - Edge cases: undefined `commentsHint` yields the muted `—`, empty answers yield `—`, null/empty credentials yield the empty-configuration message
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 3.2, 3.4_
 
-- [ ] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Run `npm test` (vitest) in `frontend/` and confirm the exploration test (task 1), preservation tests (task 2), and unit tests (task 3.4) all pass
   - Run `npm run build` to confirm the threaded `language` parameter type-checks across the service and `InstallationListPage.tsx`
   - Ensure all tests pass; ask the user if questions arise

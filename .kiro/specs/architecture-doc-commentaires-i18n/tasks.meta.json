@@ -1,0 +1,137 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Bug confirmed on unfixed buildArchitectureDocumentHtml. Counterexamples (with language='en' and a QA row having distinct exampleValue/commentsHint):\n- Output starts with <html lang=\"fr\"> even when language='en' (no language threaded).\n- QA rows render row.exampleValue under an \"Exemple\" column instead of row.commentsHint; e.g. HTML contains the CloudStore example text but NOT the row's commentsHint \"A dedicated OpenStack network with a ...\".\n- QA header emits French-only \"Paramètre / Question\", \"Valeur\", \"Exemple\" — missing \"Parameter / Question\" / \"Value\" / \"Comments / Details\".\n- Servers section emits French-only \"Certificat CA\", \"Enregistré (non exporté)\", \"Aucune configuration OpenStack enregistrée.\" — missing \"CA certificate\" / \"Stored (not exported)\" / \"No OpenStack configuration saved.\"\n- Chrome hardcoded French: \"Document d'architecture\" instead of \"Architecture document\".\nResult: 5 bug-condition assertions FAILED (expected), 1 non-bug edge-case assertion passed (em-dash placeholder present, no crash).",
+      "lastRunTimestamp": 1790781970784
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790781830484
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790781838637
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782000652
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790781830650
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782005136
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782281832
+      }
+    ],
+    "3.1 Introduce a per-language `DocLabels` map and thread `language` through the builder": [
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790781830822
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782287772
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782824901
+      }
+    ],
+    "3.2 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790781830965
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782834313
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782885008
+      }
+    ],
+    "3.3 Verify preservation tests still pass": [
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790781831120
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782888822
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782938644
+      }
+    ],
+    "3.4 Add focused unit tests for the helpers and edge cases": [
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790781831253
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790782942541
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790783091189
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790781831402
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790783095608
+      },
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790783352287
+      }
+    ],
+    "3. Fix for architecture-document comments field and i18n localization": [
+      {
+        "executionId": "38fcc8f2-e125-4014-ba77-b7e97eef299c",
+        "chatSessionId": "sess_977fb343-365a-4013-b348-93a607832608",
+        "timestamp": 1790783091407
+      }
+    ]
+  }
+}

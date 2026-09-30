@@ -54,7 +54,7 @@ const FIELD_CLASS =
  * confirmation is rendered here in the meantime.
  */
 export const InstallationListPage = () => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const isAdmin = authService.isAdmin();
   const isAuthenticated = authService.isAuthenticated();
 
@@ -126,7 +126,7 @@ export const InstallationListPage = () => {
     setBusyId(installation.id);
     clearStatus(installation.id);
     try {
-      await generateArchitectureDocument(installation);
+      await generateArchitectureDocument(installation, language);
       showRowStatus(installation.id, 'success', t('prereq.installations.generateDoc.success'));
     } catch {
       showRowStatus(installation.id, 'error', t('prereq.installations.generateDoc.error'));
