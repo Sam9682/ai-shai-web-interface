@@ -105,3 +105,43 @@ export interface ClientAnswers {
   slug: string;
   answers: Record<string, string>;
 }
+
+// ---------------------------------------------------------------------------
+// Context-archetype data models (OPCP Context tab). These render a labeled
+// key/value information form grouped into sections and nested subsections
+// (Contacts). They live alongside the existing ParameterRow/SubSection types,
+// which are retained unchanged for TrackingForm. The existing SubSection does
+// not nest, which is why a dedicated nested shape is introduced here.
+// ---------------------------------------------------------------------------
+
+// A single labeled key/value entry. `id` is stable and unique page-wide
+// (it is the persistence rowId). `defaultValue` seeds the field when no
+// saved value exists for the installation.
+export interface ContextRow {
+  id: string; // stable, unique within the context page (the rowId)
+  label: string; // French label shown to the user
+  defaultValue: string; // seeded value; '' means "empty default"
+}
+
+// A nested subsection (used by the Contacts section). Mirrors the shape of a
+// section minus further nesting — subsections do not nest further.
+export interface ContextSubSection {
+  id: string;
+  title: string; // French subsection heading
+  rows: ContextRow[];
+}
+
+// An ordered section. A section carries either direct rows, nested
+// subsections, or both. Rendering order is: section rows first (if any),
+// then each subsection with its heading above its rows.
+export interface ContextSection {
+  id: string;
+  title: string; // French section heading
+  rows?: ContextRow[];
+  subsections?: ContextSubSection[];
+}
+
+// The configuration shape for the OPCP Context tab.
+export interface ContextConfig {
+  sections: ContextSection[];
+}

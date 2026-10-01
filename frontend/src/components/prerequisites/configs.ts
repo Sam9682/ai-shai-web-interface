@@ -1,4 +1,4 @@
-import type { FormConfig, QuestionFormConfig } from './types';
+import type { ContextConfig, FormConfig, QuestionFormConfig } from './types';
 
 // CloudStore page configuration.
 // Derived directly from Requirement 4's seven reference sub-sections.
@@ -158,44 +158,44 @@ export const networkChecklistConfig: QuestionFormConfig = {
           id: 'nc-deploy-remote-access',
           questionPrimary: 'Can we access OPCP racks remotely ? If yes, how ? (VPN, Bastion)',
           mandatory: false,
-          exampleValue: 'YES – OPCP Code already installed. Remote access OK',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-deploy-remote-access-provided',
           questionPrimary: 'Remote access have been provided ?',
           mandatory: false,
-          exampleValue: 'YES – OPCP Code already installed. Remote access OK',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-deploy-site-access',
           questionPrimary: 'How do we access deployment site ?',
           mandatory: true,
-          exampleValue: 'N/A – OPCP Code already installed. Remote access OK',
+          exampleValue: 'Remote access / Onsite access / No access',
         },
         {
           id: 'nc-deploy-internet-access',
           questionPrimary: 'On-site Internet access allowed ?',
           mandatory: false,
-          exampleValue: 'N/A – OPCP Code already installed. Remote access OK',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-deploy-phone-calls',
           questionPrimary: 'On-site phone calls allowed ?',
           mandatory: false,
-          exampleValue: 'N/A – OPCP Code already installed. Remote access OK',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-deploy-own-laptop',
           questionPrimary: 'Can technician use their own laptop ?',
           mandatory: false,
-          exampleValue: 'N/A – OPCP Code already installed. Remote access OK',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-deploy-artifacts-delivery',
           questionPrimary:
             "Can OVH provide installation files (Artifacts) using their own devices (USB key, untrusted laptop) ? If not, what's the method to provide installation source files (if client provides USB key, must be USB 3.2 Gen1 and mini. 50Gb) ?",
           mandatory: true,
-          exampleValue: 'N/A – OPCP Code already installed. Remote access OK',
+          exampleValue: 'YES – NO',
         },
       ],
     },
@@ -207,19 +207,19 @@ export const networkChecklistConfig: QuestionFormConfig = {
           id: 'nc-ship-racks-delivered',
           questionPrimary: 'Are OPCP racks delivered ?',
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-ship-racks-installed',
           questionPrimary: 'Are OPCP racks installed ? (rack, power, cables)',
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-ship-pv-recette',
           questionPrimary: 'PV recette ?',
           mandatory: false,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES – NO',
         },
       ],
     },
@@ -232,33 +232,33 @@ export const networkChecklistConfig: QuestionFormConfig = {
           questionPrimary:
             '(Control plane/OOB) Is client switch capable of 10G ? 1 port for each controller',
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-cp-sfp-lc-fiber',
           questionPrimary:
             "(Control plane/OOB) 10G-SR LC SFP Module are provided, are client switch's ports available with LC fiber and equivalent SFP module(s) ?",
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-cp-oob-network-exists',
           questionPrimary: 'Is OOB client network for control plane access exists ?',
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-cp-oob-reachable',
           questionPrimary: 'Is Control Plane (OOB) network reachable from deployment site ?',
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-cp-ip-addressing',
           questionPrimary:
             'What is the planned IP addressing for control plane? (subnet, gateway, VLAN ID)',
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES – NO',
         },
         {
           id: 'nc-cp-mono-mode-transceivers',
@@ -308,19 +308,19 @@ export const networkChecklistConfig: QuestionFormConfig = {
           id: 'nc-wan-connection-type',
           questionPrimary: 'Cross-DC WAN : what type of connection ? (Fiber, bandwidth, L2, etc)',
           mandatory: false,
-          exampleValue: 'N/A – Standalone Demo Rack',
+          exampleValue: 'YES - NO - N/A',
         },
         {
           id: 'nc-wan-inter-site-ready',
           questionPrimary: 'Cross-DC WAN : are inter-site connections ready ?',
           mandatory: false,
-          exampleValue: 'N/A – Standalone Demo Rack',
+          exampleValue: 'YES - NO - N/A',
         },
         {
           id: 'nc-wan-max-latency',
           questionPrimary: 'Cross-DC WAN: what is the maximum acceptable latency between sites?',
           mandatory: false,
-          exampleValue: 'N/A – Standalone Demo Rack',
+          exampleValue: 'YES - NO - N/A',
         },
       ],
     },
@@ -332,33 +332,33 @@ export const networkChecklistConfig: QuestionFormConfig = {
           id: 'nc-svc-dns-servers',
           questionPrimary: 'Are internal DNS servers available? If yes, provide IPs.',
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES - NO',
         },
         {
           id: 'nc-svc-ntp-servers',
           questionPrimary: 'Are NTP servers available? If yes, provide IPs or FQDNs.',
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES - NO',
         },
         {
           id: 'nc-svc-http-proxy',
           questionPrimary:
             'Is an HTTP/HTTPS proxy required for Internet access? If yes, provide address.',
           mandatory: false,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES - NO',
         },
         {
           id: 'nc-svc-firewall-rules',
           questionPrimary:
             'Are firewall rules to be opened for platform operation? (flow list provided by OVHcloud)',
           mandatory: true,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES - NO',
         },
         {
           id: 'nc-svc-syslog-server',
           questionPrimary: 'Is a centralized Syslog server available to receive logs?',
           mandatory: false,
-          exampleValue: 'YES. OPCP Code up & running',
+          exampleValue: 'YES - NO',
         },
       ],
     },
@@ -370,7 +370,7 @@ export const networkChecklistConfig: QuestionFormConfig = {
           id: 'nc-service-model-type',
           questionPrimary: 'Airgap or Fully managed ? If managed, fill in OVH IPsec sheet',
           mandatory: true,
-          exampleValue: 'Managed',
+          exampleValue: 'Managed - AirGap',
         },
       ],
     },
@@ -388,21 +388,22 @@ export const coreControlPlaneConfig: QuestionFormConfig = {
   sections: [
     {
       id: 'ccp-services',
-      title: 'Services du plan de contrôle',
+      title: 'Services du Control Plan',
       rows: [
         {
           id: 'ccp-managed-interconnection',
           questionPrimary: 'Managed OPCP interconnection',
           mandatory: true,
           commentsHint:
-            'For Managed OPCP customer only | Used to prepare the interconnection for remote deployment and remote support. For IKE (Phase 1) and IPsec (Phase 2) parameters, our default values are: IKEv2 only (IKEv1 not supported), PSK authentication, AES-256 encryption, SHA-256 hash, DH group 14, PFS enabled. For AES-256 encryption, we do not recommend going below it for security reasons, but we can study it if it is blocking your side.',
+            'For Managed OPCP customer only | Used to prepare the interconnection for remote deployment and remote support. For IKE (Phase 1) and IPsec (Phase 2) parameters, our default values are: IKEv2 only (IKEv1 not supported), PSK authentication, AES-256 encryption, SHA-256 hash, DH group 14, PFS enabled. For AES-256 encryption, we do not recommend going below it for security reasons.',
         },
         {
           id: 'ccp-network',
           questionPrimary: 'Network',
           mandatory: true,
           commentsHint:
-            'Definition of the management network used by OPCP - Subnet - VLAN ID - Default gateway',
+            'Definition of the management network used by OPCP - Subnet | VLAN ID | Default gateway.',
+          exampleValue: '172.18.0.5 | 801 | GW 172.18.0.254'        
         },
         {
           id: 'ccp-variables',
@@ -1124,6 +1125,75 @@ export const vcfConfig: QuestionFormConfig = {
           exampleValue: '805',
           commentsHint: 'Example: 2049',
         },
+      ],
+    },
+  ],
+};
+
+// ===========================================================================
+// Context-archetype config (ContextConfig)
+// ===========================================================================
+// OPCP Context tab — a labeled key/value information form grouped into
+// sections and nested subsections (Contacts). Slug `opcp-context`, title
+// `OPCP Context`. Seeds come directly from the design data table. Row ids are
+// stable and unique page-wide (they are the persistence rowIds, keyed by
+// (installationId, slug, rowId)). `defaultValue` is required on every row;
+// `''` models an empty default.
+export const opcpContextConfig: ContextConfig = {
+  sections: [
+    {
+      id: 'ctx-client-environnement',
+      title: 'Client Environnement',
+      rows: [
+        { id: 'ctx-env-client-name', label: 'Nom du client', defaultValue: 'MDC MAROC' },
+        { id: 'ctx-env-deployment-type', label: 'Type de deploiement', defaultValue: 'NanoPod' },
+        {
+          id: 'ctx-env-site1-location',
+          label: 'Site 1 Location',
+          defaultValue: '« Demo » MDC Rabat',
+        },
+        { id: 'ctx-env-site2-location', label: 'Site 2 Location', defaultValue: '' },
+        { id: 'ctx-env-install-wish-date', label: 'Installation wish date', defaultValue: '' },
+        { id: 'ctx-env-managed-airgapped', label: 'Managed / Air-gapped', defaultValue: 'Managed' },
+      ],
+    },
+    {
+      id: 'ctx-contacts',
+      title: 'Contacts',
+      subsections: [
+        {
+          id: 'ctx-contact-ovh',
+          title: 'OVH PSMC Architecte',
+          rows: [
+            { id: 'ctx-contact-ovh-name', label: 'Nom', defaultValue: 'Samuel LEPETRE' },
+            { id: 'ctx-contact-ovh-phone', label: 'Téléphone', defaultValue: '' },
+            {
+              id: 'ctx-contact-ovh-email',
+              label: 'Email',
+              defaultValue: 'samuel.lepetre@ovhcloud.com',
+            },
+          ],
+        },
+        {
+          id: 'ctx-contact-client',
+          title: 'Client : MDC MAROC',
+          rows: [
+            { id: 'ctx-contact-client-name', label: 'Nom', defaultValue: '' },
+            { id: 'ctx-contact-client-phone', label: 'Téléphone', defaultValue: '' },
+            { id: 'ctx-contact-client-email', label: 'Email', defaultValue: '' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'ctx-use-cases',
+      title: 'Use cases (?)',
+      rows: [
+        { id: 'ctx-usecase-vcf', label: 'VCF', defaultValue: 'Within Scope' },
+        { id: 'ctx-usecase-suse-harvester', label: 'SUSE Harvester', defaultValue: 'Out of Scope' },
+        { id: 'ctx-usecase-nutanix', label: 'Nutanix', defaultValue: 'Out of Scope' },
+        { id: 'ctx-usecase-ia', label: 'IA', defaultValue: 'Out of Scope' },
+        { id: 'ctx-usecase-kubernetes', label: 'Kubernetes', defaultValue: 'Out of Scope' },
       ],
     },
   ],

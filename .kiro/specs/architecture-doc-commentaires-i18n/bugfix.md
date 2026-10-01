@@ -4,9 +4,9 @@
 
 On the OPCP installations page, the "Generate Architecture Document" button produces an HTML architecture document for a selected installation. The generated document has three defects:
 
-1. It renders each question's example value (`exampleValue`, labeled "Exemple") instead of the intended comments/details value (`commentsHint`, labeled "Commentaires / Détails") that the web page shows alongside each question.
+1. It renders each question's example value (`exampleValue`, labeled "Exemple") instead of the intended comments/details value (`commentsHint`, labeled "Commentaires") that the web page shows alongside each question.
 2. It is hardcoded in French (`<html lang="fr">`, French titles, headers, section names, footer, and credential labels), so it cannot be generated in English even when the user's active interface language is English.
-3. Even beyond the document title/headers, several keywords remain French-only (for example the column header "Commentaires / Détails"), so they are never localized to English.
+3. Even beyond the document title/headers, several keywords remain French-only (for example the column header "Commentaires"), so they are never localized to English.
 
 The document should render the comments/details value in place of the example value, be generated in the user's active interface language (English or French), and localize every previously hardcoded French keyword, header, section title, and label in both languages. The active language is persisted in the Language_Store (`localStorage` key `opcp.language`, normalized to `en` or `fr`), so the fix drives the document language from that value.
 
@@ -16,7 +16,7 @@ The document should render the comments/details value in place of the example va
 
 When the "Generate Architecture Document" button is clicked, the generated HTML document exhibits the following incorrect behavior:
 
-1.1 WHEN a question row is rendered THEN the system renders the row's example value (`row.exampleValue`, under an "Exemple" column) instead of the comments/details value (`row.commentsHint`, "Commentaires / Détails")
+1.1 WHEN a question row is rendered THEN the system renders the row's example value (`row.exampleValue`, under an "Exemple" column) instead of the comments/details value (`row.commentsHint`, "Commentaires")
 1.2 WHEN the active interface language is English THEN the system still generates the document in French (`<html lang="fr">` and French title, meta, section titles, footer)
 1.3 WHEN the QA section table header is rendered THEN the system emits French-only header text ("Paramètre / Question", "Valeur", "Exemple")
 1.4 WHEN the servers section is rendered THEN the system emits French-only text ("Servers nodes", "Configuration OpenStack", "Inventaire des nœuds serveurs", "Certificat CA", "Enregistré (non exporté)", "Non configuré", "Aucune configuration OpenStack enregistrée.")
@@ -24,7 +24,7 @@ When the "Generate Architecture Document" button is clicked, the generated HTML 
 
 ### Expected Behavior (Correct)
 
-2.1 WHEN a question row is rendered THEN the system SHALL render the row's comments/details value (`row.commentsHint`) under a column labeled "Commentaires / Détails" (FR) / "Comments / Details" (EN), and SHALL NOT render the example value
+2.1 WHEN a question row is rendered THEN the system SHALL render the row's comments/details value (`row.commentsHint`) under a column labeled "Commentaires" (FR) / "Comments / Details" (EN), and SHALL NOT render the example value
 2.2 WHEN the active interface language is English THEN the system SHALL generate the document in English (`<html lang="en">` and English title, meta, section titles, footer); WHEN it is French THEN the system SHALL generate the document in French
 2.3 WHEN the QA section table header is rendered THEN the system SHALL emit header text localized to the active language for "Parameter / Question", "Value", and "Comments / Details"
 2.4 WHEN the servers section is rendered THEN the system SHALL emit text localized to the active language for the servers heading, OpenStack configuration heading, server-node inventory heading, credential labels, secret-stored/not-configured statuses, and the empty-configuration message

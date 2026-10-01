@@ -1,7 +1,8 @@
 import { useId, useState } from 'react';
+import { ContextForm } from './ContextForm';
 import { QuestionAnswerForm } from './QuestionAnswerForm';
 import { ServersTable } from './ServersTable';
-import type { QuestionFormConfig } from './types';
+import type { ContextConfig, QuestionFormConfig } from './types';
 
 /**
  * A checklist tab is either a question/answer category (driven by a
@@ -19,6 +20,12 @@ export type ChecklistTab =
       kind: 'servers';
       slug: string;
       title: string;
+    }
+  | {
+      kind: 'context';
+      slug: string;
+      title: string;
+      config: ContextConfig;
     };
 
 interface ChecklistTabsProps {
@@ -122,6 +129,14 @@ export const ChecklistTabs = ({ installationId, tabs }: ChecklistTabsProps) => {
         >
           {tab.kind === 'servers' ? (
             <ServersTable title={tab.title} variant="embedded" installationId={installationId} />
+          ) : tab.kind === 'context' ? (
+            <ContextForm
+              installationId={installationId}
+              slug={tab.slug}
+              title={tab.title}
+              config={tab.config}
+              variant="embedded"
+            />
           ) : (
             <QuestionAnswerForm
               installationId={installationId}

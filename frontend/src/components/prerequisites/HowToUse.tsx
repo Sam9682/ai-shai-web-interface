@@ -40,7 +40,7 @@ const COMPLETION_TIPS: readonly string[] = [
   'Remplacez les valeurs d’exemple par votre configuration réelle.',
   'Impliquez les équipes réseau et datacenter dès le début.',
   'Si une question n’est pas claire, laissez-la vide et ajoutez un commentaire.',
-  'La colonne « Commentaires / Détails » fournit des indications utiles.',
+  'La colonne « Commentaires » fournit des indications utiles.',
 ];
 
 /**

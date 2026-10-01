@@ -5,11 +5,17 @@ import {
 } from './prerequisitesService';
 import {
   CHECKLIST_CATEGORIES,
+  CONTEXT_CATEGORY,
   QA_CATEGORIES,
   SERVERS_NODES_SLUG,
 } from '../components/prerequisites/checklistCategories';
 import { SERVER_NODES, type ServerNode } from '../components/prerequisites/serversData';
-import type { QuestionFormConfig, QuestionRow } from '../components/prerequisites/types';
+import type {
+  ContextConfig,
+  ContextRow,
+  QuestionFormConfig,
+  QuestionRow,
+} from '../components/prerequisites/types';
 import type { Language } from '../i18n/translations';
 
 /**
@@ -135,6 +141,18 @@ export const buildInstallationExport = async (
     }),
   );
 
+  // The context tab is answer-backed like the QA tabs but is not in
+  // QA_CATEGORIES (its config is a ContextConfig), so load it explicitly.
+  try {
+    const r = await prerequisitesService.loadClientAnswers(
+      installation.id,
+      CONTEXT_CATEGORY.slug,
+    );
+    tabs[CONTEXT_CATEGORY.slug] = r.answers ?? {};
+  } catch {
+    tabs[CONTEXT_CATEGORY.slug] = {};
+  }
+
   let credentials: InstallationExport['servers']['credentials'] = null;
   try {
     const cfg: CredentialConfig = await prerequisitesService.loadCredentialConfig(
@@ -238,6 +256,16 @@ export const importInstallation = async (
     validRowIdsBySlug.set(category.slug, ids);
   }
 
+  // The context tab is not in QA_CATEGORIES, so add its valid row ids
+  // explicitly, flattening sections and nested subsections into one id set.
+  const contextIds = new Set<string>();
+  for (const section of (CONTEXT_CATEGORY.config as ContextConfig).sections) {
+    for (const row of section.rows ?? []) contextIds.add(row.id);
+    for (const sub of section.subsections ?? [])
+      for (const row of sub.rows) contextIds.add(row.id);
+  }
+  validRowIdsBySlug.set(CONTEXT_CATEGORY.slug, contextIds);
+
   let written = 0;
   let failed = 0;
   const unknownSlugs: string[] = [];
@@ -315,6 +343,28 @@ export const clearInstallationValues = async (
     }
   }
 
+  // The context tab is not in QA_CATEGORIES; clear every context row id
+  // (across all sections and nested subsections) to '' explicitly.
+  for (const section of (CONTEXT_CATEGORY.config as ContextConfig).sections) {
+    const rows = [
+      ...(section.rows ?? []),
+      ...(section.subsections ?? []).flatMap((s) => s.rows),
+    ];
+    for (const row of rows) {
+      try {
+        await prerequisitesService.saveClientAnswer(
+          installationId,
+          CONTEXT_CATEGORY.slug,
+          row.id,
+          '',
+        );
+        cleared += 1;
+      } catch {
+        failed += 1;
+      }
+    }
+  }
+
   return { cleared, failed };
 };
 
@@ -371,7 +421,7 @@ const DOC_LABELS: Record<Language, DocLabels> = {
     footerGeneratedBy: 'Généré par',
     paramQuestion: 'Paramètre / Question',
     value: 'Valeur',
-    comments: 'Commentaires / Détails',
+    comments: 'Commentaires',
     serversNodes: 'Servers nodes',
     openstackConfig: 'Configuration OpenStack',
     nodeInventory: 'Inventaire des nœuds serveurs',
@@ -410,11 +460,7 @@ const DOC_LABELS: Record<Language, DocLabels> = {
 };
 
 /** Render one question row into a table row of the architecture document. */
-const renderRow = (
-  row: QuestionRow,
-  answer: string | undefined,
-  _labels: DocLabels,
-): string => {
+const renderRow = (row: QuestionRow, answer: string | undefined): string => {
   const marker = row.mandatory ? '🔴' : '⚪';
   const value = (answer ?? '').trim();
   const valueCell = value
@@ -443,7 +489,7 @@ const renderQaSection = (
   const sections = config.sections
     .map((section) => {
       const rows = section.rows
-        .map((row) => renderRow(row, answers[row.id], labels))
+        .map((row) => renderRow(row, answers[row.id]))
         .join('');
       return `
       <h3>${escapeHtml(section.title)}</h3>
@@ -465,6 +511,69 @@ const renderQaSection = (
   return `
     <section>
       <h2>${escapeHtml(title)}</h2>
+      ${sections}
+    </section>`;
+};
+
+/**
+ * Render the OPCP Context tab (config + answers) into a section of the
+ * document. Each section renders an `<h3>` heading with a two-column
+ * (label / value) table for its direct rows, and for each subsection an
+ * `<h4>` heading above its own label/value table. Every value cell resolves
+ * to `answers[row.id] ?? row.defaultValue`, escaped via {@link escapeHtml}.
+ */
+const renderContextSection = (
+  config: ContextConfig,
+  answers: Record<string, string>,
+  labels: DocLabels,
+): string => {
+  const renderRowsTable = (rows: ContextRow[]): string => {
+    const body = rows
+      .map((row) => {
+        const value = answers[row.id] ?? row.defaultValue;
+        const valueCell = value
+          ? escapeHtml(value)
+          : '<span class="muted">—</span>';
+        return `
+        <tr>
+          <td>${escapeHtml(row.label)}</td>
+          <td class="value">${valueCell}</td>
+        </tr>`;
+      })
+      .join('');
+    return `
+      <table>
+        <thead>
+          <tr>
+            <th>${labels.paramQuestion}</th>
+            <th>${labels.value}</th>
+          </tr>
+        </thead>
+        <tbody>${body}
+        </tbody>
+      </table>`;
+  };
+
+  const sections = config.sections
+    .map((section) => {
+      const directRows = section.rows ?? [];
+      const directTable = directRows.length ? renderRowsTable(directRows) : '';
+      const subsections = (section.subsections ?? [])
+        .map(
+          (sub) => `
+      <h4>${escapeHtml(sub.title)}</h4>
+      ${renderRowsTable(sub.rows)}`,
+        )
+        .join('');
+      return `
+      <h3>${escapeHtml(section.title)}</h3>
+      ${directTable}${subsections}`;
+    })
+    .join('');
+
+  return `
+    <section>
+      <h2>${escapeHtml(CONTEXT_CATEGORY.title)}</h2>
       ${sections}
     </section>`;
 };
@@ -536,6 +645,13 @@ export const buildArchitectureDocumentHtml = (
 ): string => {
   const labels = DOC_LABELS[language];
   const generatedAt = new Date().toLocaleString();
+  // The context tab is not in QA_CATEGORIES; render it explicitly, before the
+  // QA sections, to match its position as the first checklist category.
+  const contextSection = renderContextSection(
+    CONTEXT_CATEGORY.config as ContextConfig,
+    data.tabs[CONTEXT_CATEGORY.slug] ?? {},
+    labels,
+  );
   const qaSections = QA_CATEGORIES.map((category) =>
     renderQaSection(
       category.title,
@@ -606,8 +722,7 @@ export const buildArchitectureDocumentHtml = (
       <ol>${toc}</ol>
     </nav>
 
-    ${qaSections}
-    ${serversSection}
+    ${contextSection}${qaSections}${serversSection}
 
     <footer>
       ${labels.footerGeneratedBy} ${labels.agent} · OPCP · ${escapeHtml(data.exported_at.slice(0, 10))}

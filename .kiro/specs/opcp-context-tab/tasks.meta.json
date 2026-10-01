@@ -1,0 +1,210 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Add context config types": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857711456
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857720289
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857794020
+      }
+    ],
+    "2.1 Define `opcpContextConfig: ContextConfig` in `frontend/src/components/prerequisites/configs.ts` with all sections, subsections, rows, stable page-wide-unique row ids, French labels, and seeded defaults exactly per the design data table (Client Environnement direct rows; Contacts with two subsections and no direct rows; Use cases direct rows).": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857711703
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857798831
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858014373
+      }
+    ],
+    "3. Extend the `ChecklistTab` union with `context`": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857711890
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857799882
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858015255
+      }
+    ],
+    "4.1 In `frontend/src/components/prerequisites/checklistCategories.ts`, add `CONTEXT_SLUG = 'opcp-context'`, register `{ kind: 'context', slug: CONTEXT_SLUG, title: 'OPCP Context', config: opcpContextConfig }` as the FIRST entry of `CHECKLIST_CATEGORIES` (before network/core/cloudstore/vcf/servers), tighten the `QA_CATEGORIES` predicate to exclude both `kind: 'servers'` and `kind: 'context'`, and add the type-narrowed `CONTEXT_CATEGORY` export.": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857712147
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858021947
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858098255
+      }
+    ],
+    "5.1 Create `frontend/src/components/prerequisites/ContextForm.tsx` modeled on `QuestionAnswerForm`": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857712285
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858105634
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858229565
+      }
+    ],
+    "6. Checkpoint — ensure all tests pass": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857712402
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858473483
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858827515
+      }
+    ],
+    "7.1 In `frontend/src/components/prerequisites/ChecklistTabs.tsx`, add the `tab.kind === 'context'` branch rendering `ContextForm` with the `embedded` variant and the tab's `installationId`, `slug`, `title`, `config`; leave the `servers` and default `qa` branches and all tab-list/ARIA/focus/mount behavior unchanged.": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857712512
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858832013
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858907160
+      }
+    ],
+    "8.1 Export + import + clear in `frontend/src/services/installationExport.ts`": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857712640
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858914509
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790859044125
+      }
+    ],
+    "8.2 Architecture-document rendering in `frontend/src/services/installationExport.ts`": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857712803
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790859047574
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790859182845
+      }
+    ],
+    "9. Final verification": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790857712922
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790859186653
+      },
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790859559164
+      }
+    ],
+    "2. Add `opcpContextConfig` data": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858014542
+      }
+    ],
+    "4. Register the context tab and category exports": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858098378
+      }
+    ],
+    "5. Create the `ContextForm` component": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858229693
+      }
+    ],
+    "7. Add the `context` render branch": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790858907297
+      }
+    ],
+    "8. Export / import / clear / architecture-document wiring": [
+      {
+        "executionId": "4d38c25a-68c0-411a-8bdc-2ef79faf9d27",
+        "chatSessionId": "sess_11034a60-4f5b-494b-a657-89e3ec28d6f7",
+        "timestamp": 1790859183041
+      }
+    ]
+  }
+}

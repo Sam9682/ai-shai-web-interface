@@ -548,7 +548,7 @@ describe('Task 3.4 — helper + edge-case unit tests (Requirements 2.1-2.5, 3.2,
 
       expect(html).toContain('Paramètre / Question');
       expect(html).toContain('Valeur');
-      expect(html).toContain('Commentaires / Détails');
+      expect(html).toContain('Commentaires');
     });
 
     it('renders the English QA header cells when language = "en" (2.3)', () => {
@@ -559,7 +559,7 @@ describe('Task 3.4 — helper + edge-case unit tests (Requirements 2.1-2.5, 3.2,
       expect(html).toContain('Comments / Details');
       // French header wording must not leak into an English document.
       expect(html).not.toContain('Paramètre / Question');
-      expect(html).not.toContain('Commentaires / Détails');
+      expect(html).not.toContain('Commentaires');
     });
   });
 
