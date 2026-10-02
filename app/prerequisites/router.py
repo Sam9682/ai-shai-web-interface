@@ -76,7 +76,7 @@ router = APIRouter(prefix="/api/prerequisites", tags=["prerequisites"])
 # Static slugs render editable static content; qa slugs render question/answer forms.
 STATIC_SLUGS: frozenset[str] = frozenset({"basics", "network-flux"})
 QA_SLUGS: frozenset[str] = frozenset(
-    {"network-checklist", "core-control-plane", "cloudstore", "vcf"}
+    {"opcp-context", "network-checklist", "core-control-plane", "cloudstore", "vcf"}
 )
 
 
