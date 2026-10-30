@@ -141,6 +141,8 @@ cython_debug/
 *.swp
 *.swo
 *~
+.kiro/
+.shai/
 
 # OS
 .DS_Store
